@@ -1,2 +1,3 @@
 User-agent: *
 Disallow: /thank-you.html
+Disallow: /get-mab-x7k2/

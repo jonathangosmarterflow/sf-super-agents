@@ -4,209 +4,136 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>You're in! | The Super Agent Builder</title>
+<title>You're in! | The Managed Agent Builder</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* Mobile-first: base styles target ~390px. Desktop enhances via min-width query. */
+/* Desktop-first: base styles target a ~760px reading column. Mobile collapses via max-width query. */
 :root{
   --vio:#7c3aed; --ind:#4f46e5; --pk:#db2777; --pk-soft:#c4489f;
-  --ink:#191627; --muted:#5f5a75;
-  --bg:#ffffff; --bg-soft:#faf8ff; --line:#eae6f6;
+  --ink:#191627; --muted:#5f5a75; --muted2:#7d7793;
+  --bg:#ffffff; --bg-soft:#faf8ff; --soft:#faf8ff; --line:#eae6f6;
   --ground:radial-gradient(1100px 680px at 74% -14%,#f3edff 0%,#ffffff 60%);
   --grad:linear-gradient(100deg,var(--ind),var(--vio) 60%,var(--pk-soft));
   --head:'Sora',system-ui,sans-serif; --body:'Plus Jakarta Sans',system-ui,sans-serif;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{font-family:var(--body);color:var(--ink);background:var(--bg);background-image:var(--ground);background-attachment:fixed;line-height:1.6;font-size:17px}
-.wordmark{font-family:var(--head);font-weight:800;letter-spacing:-.03em;color:var(--ink);text-decoration:none;font-size:20px}
+.wordmark{font-family:var(--head);font-weight:800;letter-spacing:-.03em;color:var(--ink);text-decoration:none;font-size:22px}
 .wordmark b{background:linear-gradient(100deg,var(--ind),var(--pk));-webkit-background-clip:text;background-clip:text;color:transparent}
 nav{border-bottom:1px solid var(--line);background:rgba(255,255,255,.92)}
-.nav-in{max-width:620px;margin:0 auto;padding:12px 20px}
-main{max-width:620px;margin:0 auto;padding:36px 20px 72px}
+.nav-in{max-width:820px;margin:0 auto;padding:14px 24px}
+main{max-width:820px;margin:0 auto;padding:52px 24px 88px}
 .pill{display:inline-block;background:var(--grad);color:#fff;font-family:var(--head);font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:6px 14px;margin-bottom:18px}
-h1{font-family:var(--head);font-weight:800;letter-spacing:-.03em;font-size:clamp(28px,7vw,42px);line-height:1.1;margin-bottom:12px}
-.sub{color:var(--muted);font-size:17px;margin-bottom:28px}
-h2{font-family:var(--head);font-weight:700;letter-spacing:-.02em;font-size:22px;margin:28px 0 10px}
-.btn{display:block;width:100%;background:var(--grad);color:#fff;font-family:var(--head);font-weight:700;font-size:17px;border:0;border-radius:14px;padding:17px 24px;min-height:56px;cursor:pointer;text-decoration:none;text-align:center;margin:10px 0 0;box-shadow:0 10px 26px rgba(124,58,237,.22)}
-.btn:active{transform:translateY(1px)}
-.btn.ghost{background:var(--bg-soft);color:var(--ind);border:1px solid var(--line);box-shadow:none}
-ol,ul{margin:0 0 16px 22px}
-li{margin-bottom:8px}
-.deliver{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px 20px;margin-bottom:14px;box-shadow:0 16px 50px rgba(124,58,237,.08)}
-.promptbox{background:#0d1526;color:#cdd9f2;border-radius:12px;padding:18px;margin:16px 0 0;font-size:12.5px;line-height:1.55;white-space:pre-wrap;max-height:320px;overflow:auto;font-family:ui-monospace,Menlo,monospace}
-.callout{background:var(--bg-soft);border:1px solid var(--line);border-left:4px solid var(--vio);border-radius:10px;padding:15px 18px;margin:18px 0;font-size:15px}
-.capture{background:linear-gradient(150deg,#191430,#2c2154 55%,#3b2a68);color:#d9d2f2;border-radius:20px;padding:26px 22px;margin-top:32px}
-.capture h2{color:#fff;margin-top:0}
-.capture p{color:#c9c2e4;font-size:15.5px}
-.capture label{display:block;font-weight:600;color:#fff;margin:18px 0 6px;font-size:15px}
-.capture input{width:100%;padding:14px 16px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-family:var(--body);font-size:16px}
-.capture input::placeholder{color:#9a91bd}
-.capture .done{display:none;margin-top:18px;color:#2fe39a;font-weight:600}
-footer{border-top:1px solid var(--line);padding:24px 20px 40px;text-align:center;color:var(--muted);font-size:13.5px}
+h1{font-family:var(--head);font-weight:800;letter-spacing:-.03em;font-size:42px;line-height:1.1;margin-bottom:12px}
+.sub{color:var(--muted);font-size:17.5px;margin-bottom:34px}
+h2{font-family:var(--head);font-weight:700;letter-spacing:-.02em;font-size:26px;margin:0 0 12px}
+h3{font-family:var(--head);font-weight:700;letter-spacing:-.02em;font-size:17px;margin:22px 0 8px}
+.stepnum{display:inline-block;font-family:var(--head);font-weight:800;font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:8px}
+.card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:32px 30px;margin-bottom:22px;box-shadow:0 16px 50px rgba(124,58,237,.08)}
+.card p{color:var(--muted);font-size:16.5px}
+.card p b,.card p strong{color:var(--ink)}
+.fallback{background:var(--bg-soft);border:1px solid var(--line);border-left:4px solid var(--vio);border-radius:10px;padding:16px 20px;margin-top:20px;font-size:15.5px;color:var(--muted)}
+.fallback b{color:var(--ink)}
+a{color:var(--ind)}
+
+/* STEP 2: dark premium panel */
+.snap{background:linear-gradient(150deg,#191430,#2c2154 55%,#3b2a68);color:#d9d2f2;border-radius:22px;padding:36px 34px;margin-top:34px;box-shadow:0 30px 70px rgba(25,20,48,.3)}
+.snap .stepnum{background:linear-gradient(90deg,#8b7bff,#f0abfc);-webkit-background-clip:text;background-clip:text;color:transparent}
+.snap h2{color:#fff}
+.snap h3{color:#fff}
+.snap p{color:#c9c2e4;font-size:16px;margin-bottom:14px}
+.snap p b{color:#fff}
+.snap ol{margin:0 0 6px 0;list-style:none;counter-reset:sn}
+.snap ol li{counter-increment:sn;position:relative;padding:0 0 12px 36px;color:#d9d2f2;font-size:15.5px}
+.snap ol li::before{content:counter(sn);position:absolute;left:0;top:1px;width:23px;height:23px;border-radius:7px;background:rgba(255,255,255,.13);color:#fff;font-family:var(--head);font-weight:700;font-size:12.5px;display:flex;align-items:center;justify-content:center}
+.rules{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);border-radius:12px;padding:18px 20px;margin:6px 0 22px;font-size:15px;color:#c9c2e4}
+.rules b{color:#fff}
+.fieldline{color:#9a91bd;font-size:14.5px;margin:0 0 12px;font-weight:600}
+.formwrap{background:#fff;border-radius:16px;padding:10px;overflow:hidden}
+.formwrap iframe{display:block;width:100%;height:760px;border:none;border-radius:10px}
+.snap .fineprint{color:#9a91bd;font-size:14px;margin:14px 0 0}
+.tail{color:var(--muted);margin-top:38px;font-size:16px}
+footer{border-top:1px solid var(--line);padding:28px 24px 48px;text-align:center;color:var(--muted2);font-size:13.5px}
 footer a{color:var(--ind);text-decoration:none;font-weight:600}
-@media(min-width:700px){main{padding:52px 20px 88px}.deliver{padding:30px 28px}.capture{padding:32px 30px}}
+
+/* MOBILE */
+@media(max-width:760px){
+  .nav-in{padding:12px 20px}
+  main{padding:36px 20px 72px}
+  h1{font-size:clamp(28px,7vw,38px)}
+  h2{font-size:clamp(22px,5.5vw,25px)}
+  .card{padding:24px 20px}
+  .snap{padding:26px 20px}
+  .formwrap iframe{height:900px}
+}
 </style>
 </head>
 <body>
 <nav><div class="nav-in"><span class="wordmark">Smarter<b>Flow</b></span></div></nav>
 <main>
-<span class="pill">Payment received · You're in</span>
-<h1>You're in. Here's your Super Agent Builder.</h1>
-<p class="sub">Thank you for the trust. The agent is ready below, and we're also sending it to your email so you never lose it. Paste it into Claude or ChatGPT and send. That's the whole setup.</p>
+<span class="pill">Payment received</span>
+<h1>You're in. Two steps and you're set.</h1>
+<p class="sub">Step 1 gets the builder into your hands. Step 2 is optional, and it is worth USD $297.</p>
 
-<div class="deliver">
-<h2 style="margin-top:0">Your Super Agent Builder</h2>
-<p style="color:var(--muted)">Copy the agent below, open Claude (claude.ai, our recommendation) or ChatGPT, paste it as your first message and send. It will ask you 8 quick questions, then hand you the three Super Agents your business should build first, with the descriptions written out ready to paste into HighLevel. Most people have their first agent live in under 20 minutes.</p>
-<a class="btn" id="copyBtn" onclick="copyPrompt()">Copy the agent</a>
-<a class="btn ghost" href="#promptTarget">Read it first</a>
-<div class="callout"><b>Tip:</b> in Claude, create a dedicated Project or chat called "Super Agents" and paste it there, so the agent keeps its memory of your business as you build more.</div>
-<h2>The agent</h2>
-<pre class="promptbox" id="promptTarget">You are **The Super Agent Builder**, built by Smarter Flow, a HighLevel consulting agency.
-
-Your job: interview a business, work out **which HighLevel Super Agents they actually need**, then write the **exact plain-English descriptions** they paste into HighLevel's Agent Studio to build them.
-
-Most people know how to build a Super Agent. Almost nobody knows *which ones their business needs, in what order.* That is the problem you solve.
-
-## HOW YOU RUN
-
-**Ask the 8 questions ONE AT A TIME.** Never dump all eight at once. Wait for each answer. Keep each question to 1-2 lines. If an answer is vague, ask one short follow-up, then move on. The whole interview should take about 3 minutes.
-
-Open with exactly this:
-
-> I'm going to ask you 8 quick questions about your business, then hand you the exact HighLevel Super Agents you should build first, with the descriptions written out, ready to paste.
->
-> Takes about 3 minutes. First one:
-
-### THE 8 QUESTIONS
-
-1. **What's your business, and who are your customers?** *(sets the vertical, tone, and knowledge base)*
-2. **Where do your leads come from, and roughly how many a week?** *(&lt;10 / 10-50 / 50+)*
-3. **Which channels do you actually use to talk to leads?** *(website chat / SMS / email / social DMs / phone)*
-4. **What's the #1 thing falling through the cracks right now?** *(slow replies / no-shows / no follow-up / answering the same questions over and over / dead leads going cold / not enough reviews)* - **this is the bottleneck question; it picks their first agent.**
-5. **Do people book appointments with you, and is that calendar inside HighLevel?**
-6. **Are your prices, services, FAQs and policies written down anywhere?** *(yes / scattered / no)*
-7. **Who handles it when a real human needs to step in, and how should the agent hand off?**
-8. **Two quick setup checks: is SMS A2P-registered on your account, and is pay-per-use AI billing turned on?** *("not sure" is a fine answer, I'll route around it.)*
-
-## THE ROUTING LOGIC
-
-Map their bottleneck (Q4) to their **first** agent, then layer:
-
-| Their answer | First agent |
-|---|---|
-| Slow replies | Speed-to-Lead Responder |
-| Same questions repeatedly | FAQ / Knowledge Agent |
-| No-shows | Reminder + Confirmation Agent |
-| No follow-up | Lead Nurture Agent |
-| Dead leads | Database Reactivation Agent |
-| Not enough reviews | Review Request Agent |
-| Too many leads to handle | Lead Qualifier + Router |
-
-**Gating rules, apply these strictly, they protect the buyer from a broken build:**
-- **SMS agents require A2P 10DLC registration.** Since 2025, US carriers block unregistered A2P SMS outright and it fails silently. If Q8 is "no" or "not sure", route their first agents to **chat and email**, and label SMS ones "after A2P clears."
-- **Booking / reminder / rescheduling agents require a HighLevel calendar.** If Q5 is no, recommend a qualifier that tags intent instead, and defer booking.
-- **Knowledge-grounded agents require a Knowledge Base.** If Q6 is "scattered" or "no", your FIRST deliverable is a starter KB outline built from their answers, do that before the agent.
-- **Voice AI is a separate paid HighLevel product, not a Super Agent.** Never imply a Super Agent answers the phone.
-- **Pay-per-use AI billing must be on** or nothing runs. Flag it if Q8 says otherwise.
-- **Max 10 tools per agent.** Keep every description lean; don't request tools they don't need.
-
-**Always recommend exactly 3 agents to start**, ordered, with the reason each one is on the list. More than 3 is overwhelm and they'll build none. Default first-buy on a cheap account with no A2P and no calendar: **Speed-to-Lead + FAQ Agent + Escalation/Handoff**. All three run today.
-
-## THE AGENT LIBRARY
-
-**Tier A, run on a cheap account, chat/email, no A2P, no calendar:**
-Speed-to-Lead Responder · FAQ / Knowledge Agent · Lead Qualifier + Router · Lead Nurture / Follow-Up · Database Reactivation · Review Request Agent · Content / Social Assistant · Escalation / Human-Handoff Agent
-
-**Tier B, needs a HighLevel calendar:**
-Appointment Booking Agent · No-Show Reminder + Confirmation · Rescheduling / Cancellation Handler
-
-**Tier C, real prerequisites, recommend last and say why:**
-SMS Speed-to-Lead *(A2P)* · SMS Appointment Reminder *(A2P + calendar)* · Voice AI Receptionist *(separate paid product)* · Estimate / Quote Intake Agent · Onboarding Concierge
-
-## HOW YOU WRITE EACH DESCRIPTION, THE 7-PART SKELETON
-
-This is the part that makes an agent actually work. A vague description makes HighLevel guess, and it guesses wrong. Every description you output uses all seven parts, written as flowing plain English (not a bulleted form), specific to THEIR business, with `[bracketed placeholders]` wherever they need to drop in a real tag, calendar or workflow name:
-
-1. **Role + goal**, one sentence, ONE outcome. Never combine sales, support and social into one agent.
-2. **Channel + trigger**, where it lives, what starts it.
-3. **Knowledge**, name the KB, and always include: *answer only from it; if the answer isn't there, say a human will follow up, never invent an answer.*
-4. **Actions**, an explicit whitelist of what it may do, plus a short "may NOT" list. Vague permission is how agents take destructive actions.
-5. **Conversation rules**, one question at a time, a length cap, and their tone.
-6. **Handoff rules**, the most-skipped piece. Anger, a request for a human, refunds, cancellations, or genuine uncertainty, stop, tag, trigger the handoff workflow, tell them a person will reply.
-7. **Stop conditions**, when to end, and a frequency cap so it never messages three times without a reply.
-
-## YOUR OUTPUT
-
-Deliver in this order:
-
-1. **Their bottleneck, named in one line**, what's actually costing them money.
-2. **Their 3 agents**, ordered, one line each on why.
-3. **Any prerequisite they must fix first**, stated plainly and without drama.
-4. **The 3 full descriptions**, each in its own copy block, ready to paste into Agent Studio.
-5. **A 20-minute build order**, which to paste first, what to test, how to know it worked.
-6. **What to build next**, once these three are live.
-
-Then close with exactly this:
-
-> Build the first one and send it a test message, you'll know inside 20 minutes whether it's working.
->
-> If this saved you time, a quick honest review means a lot to us, it's how a small agency like ours gets found. Tell them what you build with it, and which niche you're in, because that's what actually helps the next person: **directory.gohighlevel.com** then search **Smarter Flow**.
-
-## RULES
-
-- Be direct and specific. No fluff, no hype, no emoji.
-- Never invent HighLevel features. If unsure whether something is supported, say so and give a workaround.
-- Never recommend an agent whose prerequisite they don't have, recommend the reachable one and name the prerequisite.
-- Their outcome must be reachable in under 20 minutes.
-
----
-
-*Built by Smarter Flow, HighLevel funnels, automations and AI systems.
-Instant project estimate: https://ai.gosmarterflow.com*</pre>
+<div class="card">
+<div class="stepnum">Step 1</div>
+<h2>Open your email.</h2>
+<p>Your Managed Agent Builder is in your inbox right now: subject <b><em>Your Managed Agent Builder is ready</em></b> from <b>jonathan@gosmarterflow.com</b>. Open it, click the link, paste the builder into Claude, and it starts interviewing your business.</p>
+<p style="margin-top:14px">Not there yet? Give it two minutes, check Promotions and Spam, search "Smarter Flow", then drag it to Primary so every update lands.</p>
+<div class="fallback"><b>Still nothing after 10 minutes?</b> Email jonathan@gosmarterflow.com with the subject "Resend" and we'll send it again.</div>
 </div>
 
-<div class="capture">
-<h2>Two quick things, so we can help you properly</h2>
-<p>These take five seconds and help us point you the right way as you build.</p>
-<form id="captureForm" method="POST" action="">
-<label for="niche">What kind of business are you running?</label>
-<input type="text" id="niche" name="niche" placeholder="e.g. HVAC company, dental practice, marketing agency" autocomplete="off">
-<label for="first_build">Which agent are you building first?</label>
-<input type="text" id="first_build" name="first_build" placeholder="e.g. Speed-to-Lead, FAQ agent, Review Request" autocomplete="off">
-<button type="submit" class="btn">Save</button>
-<p class="done" id="captureDone">Saved. We'll check in once you've had a chance to build it.</p>
-</form>
+<div class="snap" id="snapshot">
+<div class="stepnum">Step 2, optional</div>
+<h2>Get our Main Snapshot (USD $297) free for a 3-minute review.</h2>
+<p>Here is the honest why. We're a small agency on the HighLevel Certified Directory, and reviews are how we get found. One honest review from you is worth more to us than a dollar, so we trade something real for it.</p>
+
+<h3>What the Main Snapshot is</h3>
+<p>It is the snapshot we deploy into every client account: pipelines, workflows, calendars, forms, funnels, the lot. You import it into your sub-account and start from a working system instead of a blank one.</p>
+
+<h3>How it works</h3>
+<ol>
+<li>Fill in the short form below.</li>
+<li>We send you the official review request from the directory within one business day.</li>
+<li>Write an honest review. Say what you built and which niche you are in, because that is what helps the next person.</li>
+<li>The snapshot link lands in your inbox within one business day of the review going live.</li>
+</ol>
+
+<div class="rules">
+<b>Two things the directory is strict about, so read these before you type.</b><br>
+<b>Business-domain email only.</b> Gmail, Yahoo, Hotmail, Outlook and iCloud addresses are rejected by the directory. If you do not have one, borrow a friend's business address.<br>
+<b>A full https website.</b> If you do not have a site, use the next best site connected to your business.
 </div>
 
-<p style="color:var(--muted);margin-top:36px">Stuck on anything? Just reply to your access email and we'll point you the right way. The two things that trip people up are SMS (needs A2P registration before anything sends) and booking agents (need a calendar set up inside HighLevel first).</p>
+<p class="fieldline">Fields: business email, website, your niche, the agent you are building first.</p>
+<div class="formwrap">
+<iframe
+  src="https://api.leadconnectorhq.com/widget/form/sce6Wh1hP3hNkMinIDoM"
+  style="width:100%;height:100%;border:none;border-radius:4px"
+  id="inline-sce6Wh1hP3hNkMinIDoM"
+  data-layout="{'id':'INLINE'}"
+  data-trigger-type="alwaysShow"
+  data-trigger-value=""
+  data-activation-type="alwaysActivated"
+  data-activation-value=""
+  data-deactivation-type="neverDeactivate"
+  data-deactivation-value=""
+  data-form-name="Managed Agent Builder Review Request"
+  data-height="760"
+  data-layout-iframe-id="inline-sce6Wh1hP3hNkMinIDoM"
+  data-form-id="sce6Wh1hP3hNkMinIDoM"
+  title="Managed Agent Builder Review Request">
+</iframe>
+</div>
+<p class="fineprint">No pressure either way. The builder in your email is yours regardless.</p>
+</div>
+
+<p class="tail">Stuck on anything? Just reply to your access email and we'll point you the right way. The two things that trip people up are SMS (needs A2P registration before anything sends) and booking agents (need a calendar set up inside HighLevel first).</p>
 </main>
-<footer>&copy; Smarter Flow · <a href="https://www.gosmarterflow.com">gosmarterflow.com</a> · Questions? jonathan@gosmarterflow.com</footer>
-
-<script>
-// Copy the agent prompt (source of truth: module1-super-agent-builder/AGENT.md; keep in sync on deploy).
-function copyPrompt(){
-  const t=document.getElementById('promptTarget').textContent;
-  navigator.clipboard.writeText(t);
-  const b=document.getElementById('copyBtn');
-  b.textContent='Copied! Now paste it into Claude';
-  setTimeout(()=>b.textContent='Copy the agent',2400);
-}
-// Capture form: wire action to the HighLevel form/webhook endpoint (writes custom fields sab_niche + sab_first_build,
-// tags m1-sab-delivered) via set-capture.sh at go-live. Until wired, save gracefully client-side so the page never errors.
-const CAPTURE_ACTION = "";
-const f=document.getElementById('captureForm');
-f.addEventListener('submit',function(e){
-  if(!CAPTURE_ACTION){
-    e.preventDefault();
-    document.getElementById('captureDone').style.display='block';
-    f.querySelector('button').style.display='none';
-  } else {
-    f.action=CAPTURE_ACTION;
-  }
-});
-</script>
+<footer>&copy; Smarter Flow &middot; <a href="https://www.gosmarterflow.com">gosmarterflow.com</a> &middot; Questions? jonathan@gosmarterflow.com</footer>
+<script src="https://link.msgsndr.com/js/form_embed.js"></script>
 </body>
 </html>

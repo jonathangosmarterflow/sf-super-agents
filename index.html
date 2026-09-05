@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>The Super Agent Builder - Which HighLevel Super Agents Your Business Needs | Smarter Flow</title>
-<meta name="description" content="An AI that tells you which HighLevel Super Agents to build first and writes them for you, ready to paste. $1.">
+<title>The Managed Agent Builder - Which HighLevel Managed Agents Your Business Needs | Smarter Flow</title>
+<meta name="description" content="An AI that tells you which HighLevel Managed Agents to build first, builds your knowledge base, and writes every agent ready to paste. $1.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* Mobile-first: base styles target ~390px. Desktop enhances via min-width queries. */
+/* Desktop-first: base styles target a ~1040px container. Mobile collapses via max-width queries. */
 :root{
   --vio:#7c3aed; --ind:#4f46e5; --pk:#db2777; --pk-soft:#c4489f;
-  --ink:#191627; --muted:#5f5a75;
-  --bg:#ffffff; --bg-soft:#faf8ff; --line:#eae6f6;
+  --ink:#191627; --muted:#5f5a75; --muted2:#7d7793;
+  --bg:#ffffff; --bg-soft:#faf8ff; --soft:#faf8ff; --line:#eae6f6;
   --ground:radial-gradient(1100px 680px at 74% -14%,#f3edff 0%,#ffffff 60%);
   --grad:linear-gradient(100deg,var(--ind),var(--vio) 60%,var(--pk-soft));
   --head:'Sora',system-ui,sans-serif; --body:'Plus Jakarta Sans',system-ui,sans-serif;
@@ -21,86 +21,176 @@
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{font-family:var(--body);color:var(--ink);background:var(--bg);background-image:var(--ground);background-attachment:fixed;line-height:1.6;font-size:17px}
-.wrap{max-width:620px;margin:0 auto;padding:0 20px}
-.wordmark{font-family:var(--head);font-weight:800;letter-spacing:-.03em;color:var(--ink);text-decoration:none;font-size:20px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+.wordmark{font-family:var(--head);font-weight:800;letter-spacing:-.03em;color:var(--ink);text-decoration:none;font-size:22px}
 .wordmark b{background:linear-gradient(100deg,var(--ind),var(--pk));-webkit-background-clip:text;background-clip:text;color:transparent}
 nav{position:sticky;top:0;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);z-index:50}
-.nav-in{max-width:620px;margin:0 auto;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px}
-/* CTA: full-width, big tap target on mobile */
-.btn{display:block;width:100%;background:var(--grad);color:#fff;font-family:var(--head);font-weight:700;font-size:18px;border:0;border-radius:14px;padding:18px 24px;min-height:56px;cursor:pointer;text-decoration:none;text-align:center;box-shadow:0 10px 26px rgba(124,58,237,.24)}
+.nav-in{max-width:1040px;margin:0 auto;padding:14px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.btn{display:inline-block;background:var(--grad);color:#fff;font-family:var(--head);font-weight:700;font-size:18px;border:0;border-radius:14px;padding:18px 38px;min-height:56px;cursor:pointer;text-decoration:none;text-align:center;box-shadow:0 10px 26px rgba(124,58,237,.24)}
 .btn:active{transform:translateY(1px)}
-.btn.sm{display:inline-block;width:auto;font-size:14px;padding:11px 18px;min-height:0;border-radius:11px;box-shadow:none}
-.btn-note{display:block;margin-top:12px;font-size:14px;color:var(--muted);text-align:center}
+.btn.sm{font-size:14px;padding:11px 18px;min-height:0;border-radius:11px;box-shadow:none}
+.btn-note{display:block;margin-top:14px;font-size:14px;color:var(--muted)}
 .pill{display:inline-block;background:var(--grad);color:#fff;font-family:var(--head);font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:6px 14px;margin-bottom:18px}
-.hero{padding:40px 0 44px}
-h1{font-family:var(--head);font-weight:800;letter-spacing:-.03em;font-size:clamp(30px,8vw,50px);line-height:1.1;margin-bottom:16px}
+h1{font-family:var(--head);font-weight:800;letter-spacing:-.03em;font-size:48px;line-height:1.08;margin-bottom:18px}
 h1 .hl{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero .sub{font-size:18px;color:var(--muted);margin-bottom:26px}
-h2{font-family:var(--head);font-weight:800;letter-spacing:-.02em;font-size:clamp(24px,6vw,32px);line-height:1.15;margin-bottom:14px}
-.sec{padding:44px 0;border-top:1px solid var(--line)}
+h2{font-family:var(--head);font-weight:800;letter-spacing:-.02em;font-size:32px;line-height:1.15;margin-bottom:14px}
+h3{font-family:var(--head);font-weight:700;letter-spacing:-.02em;font-size:19px;margin-bottom:8px}
+.sec{padding:64px 0;border-top:1px solid var(--line)}
 .sec.soft{background:var(--bg-soft)}
-.lead{font-size:17px;color:var(--muted);margin-bottom:20px}
-.points{list-style:none;margin:0}
-.points li{position:relative;padding:0 0 14px 30px;font-size:16.5px}
-.points li::before{content:"\2713";position:absolute;left:0;top:0;color:var(--vio);font-weight:800;font-size:18px}
-.points b{font-weight:700;color:var(--ink)}
-.straight{background:var(--bg-soft);border:1px solid var(--line);border-left:4px solid var(--vio);border-radius:12px;padding:18px 20px;font-size:15.5px;color:var(--muted)}
+.lead{font-size:17px;color:var(--muted);margin-bottom:26px;max-width:720px}
+.center{text-align:center}
+.center .lead{margin-left:auto;margin-right:auto}
+
+/* HERO: two columns, copy left, product preview right */
+.hero{padding:76px 0 68px}
+.hero-grid{display:grid;grid-template-columns:1.04fr .96fr;gap:56px;align-items:center}
+.hero .sub{font-size:19px;color:var(--muted);margin-bottom:14px}
+.rename{font-size:14.5px;color:var(--muted2);margin-bottom:26px}
+
+/* Product preview card (dark stage, the one hero moment) */
+.preview{background:linear-gradient(160deg,#191430,#221a45 68%,#2b1f56);border-radius:22px;padding:6px;box-shadow:0 30px 70px rgba(25,20,48,.34)}
+.pv-top{display:flex;align-items:center;gap:9px;padding:14px 18px 12px;color:#fff;font-family:var(--head);font-weight:700;font-size:14px;letter-spacing:-.01em}
+.pv-top .dot{width:8px;height:8px;border-radius:50%;background:#2fe39a;box-shadow:0 0 0 4px rgba(47,227,154,.16)}
+.pv-tag{margin-left:auto;font-family:var(--body);font-weight:600;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#9a91bd}
+.pv-body{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.11);border-radius:18px;padding:22px 22px 20px}
+.pv-label{font-family:var(--head);font-weight:700;font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;background:linear-gradient(90deg,#8b7bff,#f0abfc);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:6px}
+.pv-line{color:#d9d2f2;font-size:15.5px;margin-bottom:20px}
+.pv-list{list-style:none;counter-reset:pv;margin-bottom:20px}
+.pv-list li{counter-increment:pv;position:relative;padding:0 0 12px 30px;color:#fff;font-size:15px}
+.pv-list li::before{content:counter(pv);position:absolute;left:0;top:1px;width:20px;height:20px;border-radius:6px;background:rgba(255,255,255,.12);color:#c9c2e4;font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.pv-list li b{font-weight:700}
+.pv-list li span{display:block;color:#9a91bd;font-size:13px;font-weight:500}
+.pv-checks{display:grid;gap:9px;border-top:1px solid rgba(255,255,255,.11);padding-top:16px}
+.pv-checks div{color:#d9d2f2;font-size:14.5px;display:flex;align-items:center;gap:9px}
+.pv-checks .tick{color:#2fe39a;font-weight:800}
+
+/* CARDS */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:start}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px 24px;box-shadow:0 16px 44px rgba(124,58,237,.07)}
+.card .step{font-family:var(--head);font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px}
+.card ul{list-style:none}
+.card li{position:relative;padding:0 0 11px 26px;font-size:15.5px;color:var(--muted)}
+.card li::before{content:"\2713";position:absolute;left:0;top:0;color:var(--vio);font-weight:800}
+.card li b{color:var(--ink);font-weight:700}
+.straight{background:#fff;border:1px solid var(--line);border-left:4px solid var(--vio);border-radius:12px;padding:20px 24px;font-size:15.5px;color:var(--muted);margin-top:28px}
 .straight b{color:var(--ink)}
-/* testimonials: open quotes, single column */
-.quote{padding:20px 0;border-bottom:1px solid var(--line)}
-.quote:last-child{border-bottom:0}
-.stars{color:#f5a623;font-size:16px;letter-spacing:2px;margin-bottom:8px}
-.quote p{font-size:16.5px;margin-bottom:8px}
+
+/* TESTIMONIALS: 3 across */
+.quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:start}
+.quote{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px 22px;box-shadow:0 16px 44px rgba(124,58,237,.07)}
+.stars{color:#f5a623;font-size:15px;letter-spacing:2px;margin-bottom:10px}
+.quote p{font-size:15.5px;margin-bottom:12px;color:var(--ink)}
 .quote .who{font-family:var(--head);font-weight:700;font-size:14px;color:var(--muted)}
-/* price box */
-.price-box{background:#fff;border:2px solid var(--vio);border-radius:20px;padding:32px 24px;text-align:center;box-shadow:0 20px 56px rgba(124,58,237,.14)}
-.price-box .now{font-family:var(--head);font-weight:800;font-size:52px;letter-spacing:-.03em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1}
-.price-box ul{list-style:none;text-align:left;margin:20px 0 24px}
+
+/* PRICE */
+.price-box{background:#fff;border:2px solid var(--vio);border-radius:22px;padding:38px 34px;text-align:center;box-shadow:0 24px 64px rgba(124,58,237,.16);max-width:540px;margin:0 auto}
+.price-box .now{font-family:var(--head);font-weight:800;font-size:58px;letter-spacing:-.03em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1}
+.price-box ul{list-style:none;text-align:left;margin:22px 0 26px}
 .price-box li{position:relative;padding:0 0 10px 28px;font-size:16px}
 .price-box li::before{content:"\2713";position:absolute;left:0;color:var(--vio);font-weight:800}
-footer{border-top:1px solid var(--line);padding:28px 20px 44px;text-align:center;color:var(--muted);font-size:13.5px}
+.price-box .btn{width:100%}
+.why{text-align:center;margin:26px auto 0;color:var(--muted);font-size:15px;max-width:640px}
+.why b{color:var(--ink)}
+footer{border-top:1px solid var(--line);padding:32px 24px 52px;text-align:center;color:var(--muted2);font-size:13.5px}
 footer a{color:var(--ind);text-decoration:none;font-weight:600}
-@media(min-width:700px){
-  .hero{padding:64px 0 56px}
-  .sec{padding:60px 0}
-  .btn{display:inline-block;width:auto;padding:18px 40px}
-  .hero .btn,.price-box .btn{width:100%}
+
+/* MOBILE: collapse to one column */
+@media(max-width:900px){
+  body{font-size:17px}
+  .wrap{padding:0 20px}
+  .nav-in{padding:12px 20px}
+  .hero{padding:40px 0 44px}
+  .hero-grid{grid-template-columns:1fr;gap:34px}
+  h1{font-size:clamp(30px,8vw,44px)}
+  h2{font-size:clamp(24px,6vw,30px)}
+  .sec{padding:44px 0}
+  .cards,.quotes{grid-template-columns:1fr}
+  .btn{display:block;width:100%;padding:18px 24px;font-size:18px}
+  .btn.sm{display:inline-block;width:auto;font-size:13px;padding:10px 14px}
+  .btn-note{text-align:center}
+  .price-box{padding:30px 22px}
+  .preview{padding:5px}
+  .pv-body{padding:18px}
 }
 </style>
 </head>
 <body>
-<nav><div class="nav-in"><span class="wordmark">Smarter<b>Flow</b></span><a class="btn sm cta" href="#get">Get it for $1</a></div></nav>
+<nav><div class="nav-in"><span class="wordmark">Smarter<b>Flow</b></span><a class="btn sm cta" href="#get">Get the builder for $1</a></div></nav>
 
-<header class="hero"><div class="wrap">
-<span class="pill">The Super Agent Builder · $1</span>
-<h1>Which HighLevel <span class="hl">Super Agents</span> does your business actually need?</h1>
-<p class="sub">Everyone shows you how to build one. Nobody tells you which ones to build first. This AI interviews your business, names your top 3, and writes them out ready to paste into HighLevel. For a dollar.</p>
+<header class="hero"><div class="wrap"><div class="hero-grid">
+<div>
+<span class="pill">The Managed Agent Builder &middot; $1</span>
+<h1>Which HighLevel <span class="hl">Managed Agents</span> does your business actually need?</h1>
+<p class="sub">Everyone shows you how to build one. Nobody tells you which ones to build first. This AI interviews your business, names your top 3, builds your knowledge base, and writes every agent ready to paste into HighLevel. For a dollar.</p>
+<p class="rename">Formerly the Super Agent Builder. HighLevel renamed the feature to Managed Agents in September 2026.</p>
 <a class="btn cta" href="#get">Get the builder for $1</a>
-<span class="btn-note">Runs in Claude or ChatGPT · No affiliate signup, no upsell wall</span>
-</div></header>
+<span class="btn-note">Runs in Claude or ChatGPT. No affiliate signup, no upsell wall.</span>
+</div>
+<div class="preview" aria-label="Sample output from the Managed Agent Builder">
+  <div class="pv-top"><span class="dot"></span> The Managed Agent Builder <span class="pv-tag">Sample output</span></div>
+  <div class="pv-body">
+    <div class="pv-label">Your bottleneck</div>
+    <p class="pv-line">New leads wait about four hours for a first reply, so the faster competitor answers them first.</p>
+    <div class="pv-label">Your 3 agents</div>
+    <ol class="pv-list">
+      <li><b>Speed-to-Lead Responder</b><span>web chat and email, live today</span></li>
+      <li><b>FAQ / Knowledge Agent</b><span>grounded in your knowledge base</span></li>
+      <li><b>Escalation and Handoff</b><span>tags needs-human, notifies the owner</span></li>
+    </ol>
+    <div class="pv-checks">
+      <div><span class="tick">&#10003;</span> Knowledge base: built</div>
+      <div><span class="tick">&#10003;</span> Test script: passed</div>
+    </div>
+  </div>
+</div>
+</div></div></header>
 
 <section class="sec"><div class="wrap">
 <h2>Building the wrong agent is worse than building none.</h2>
-<p class="lead">There are a hundred tutorials on how to build a Super Agent. A business owner doesn't need another one. They need to know which three to build first, and which ones will quietly break before they waste the afternoon.</p>
-<p style="font-size:16.5px"><b>The Super Agent Builder tells you.</b> It finds your bottleneck, recommends only agents you can run today, and hands you the exact words to paste in.</p>
+<p class="lead">There are a hundred tutorials on how to build a Managed Agent. A business owner does not need another one. They need to know which three to build first, and which ones will quietly break before they waste the afternoon.</p>
+<p style="font-size:17px;max-width:720px"><b>The Managed Agent Builder tells you.</b> It finds your bottleneck, recommends only agents your account can run today, and hands you the exact words to paste in.</p>
 </div></section>
 
 <section class="sec soft"><div class="wrap">
-<h2>What you get for $1</h2>
-<ul class="points">
-<li><b>An 8-question diagnostic</b> that finds your real bottleneck: slow replies, no-shows, no follow-up, repeat questions, dead leads or reviews.</li>
-<li><b>Your top 3 agents, ordered,</b> with paste-ready descriptions built on a proven structure (role, channel, knowledge, guardrails, handoff).</li>
-<li><b>Honest prerequisite screening</b> so nothing you build fails silently, with a 20-minute build order for your first win.</li>
-</ul>
+<h2 class="center">What you get for $1</h2>
+<p class="lead center">One guided flow, seven steps, one question at a time. Skip any step you do not need.</p>
+<div class="cards">
+  <div class="card">
+    <div class="step">Steps 1 and 2</div>
+    <h3>Diagnose, then check what your account can run</h3>
+    <ul>
+      <li><b>An 8-question diagnostic</b> that names your real bottleneck: slow replies, no-shows, no follow-up, repeat questions, dead leads or reviews.</li>
+      <li><b>A prerequisite check</b> with the exact HighLevel click paths: pay-per-use AI billing, Managed Agents, A2P status, calendar.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="step">Steps 3 and 4</div>
+    <h3>Your knowledge base and your three agents, written</h3>
+    <ul>
+      <li><b>A knowledge base built for you</b> from your website or your pasted services and prices. Already have one? Skip the step.</li>
+      <li><b>Your top 3 agents, ordered,</b> as full paste-ready descriptions plus the human handoff spec each one references.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="step">Steps 5, 6 and 7</div>
+    <h3>Test it, price it, know what is next</h3>
+    <ul>
+      <li><b>A test script per agent:</b> what to type, what a correct reply looks like, the likely misfires and the one-line fix.</li>
+      <li><b>What it actually costs</b> per run and per month, with four cost-control rules, then what to build after these three.</li>
+    </ul>
+  </div>
+</div>
 <div class="straight"><b>Straight talk:</b> it runs in Claude or ChatGPT. Most first agents are live in under 20 minutes once pay-per-use AI billing is on. SMS needs A2P registration and booking needs a calendar, and the builder tells you that before you build, not after.</div>
 </div></section>
 
 <section class="sec"><div class="wrap">
-<h2>What clients say about working with us</h2>
-<p class="lead">The builder is a dollar. Here's the team behind it.</p>
+<h2 class="center">What clients say about working with us</h2>
+<p class="lead center">The builder is a dollar. Here is the team behind it.</p>
+<div class="quotes">
 <div class="quote"><div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p>"We'd worked with two other techs who left projects half-done. Jonathan's team was the complete opposite: organized, reliable, and truly committed to results. If you want a team that actually follows through, we recommend Smarter Flow."</p><div class="who">Hunnie Moh</div></div>
 <div class="quote"><div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p>"They understood exactly what we needed and built it right. The whole process was smooth and professional, and the end result works perfectly for our team."</p><div class="who">Darren Petty</div></div>
 <div class="quote"><div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p>"What stood out most was how hands-on they were. They made sure everything was properly structured and actually usable for our business. Solid team, very responsive, and they know what they're doing."</p><div class="who">David Giraldo</div></div>
+</div>
 </div></section>
 
 <section class="sec soft" id="get"><div class="wrap">
@@ -109,22 +199,23 @@ footer a{color:var(--ind);text-decoration:none;font-weight:600}
 <div style="margin:8px 0 2px"><span class="now">$1</span></div>
 <p style="color:var(--muted);font-size:15px">One dollar. Seriously.</p>
 <ul>
-<li>The full Super Agent Builder (Claude or ChatGPT)</li>
-<li>The 8-question business diagnostic</li>
+<li>The full Managed Agent Builder (Claude or ChatGPT)</li>
+<li>The 8-question diagnostic and your prerequisite check</li>
+<li>Your knowledge base built for you, or skipped</li>
 <li>Paste-ready descriptions for your top 3 agents</li>
-<li>Honest prerequisite screening + 20-minute build order</li>
+<li>A test script per agent, the real cost, and what to build next</li>
 </ul>
-<a class="btn cta" href="#get">Get it now for $1</a>
+<a class="btn cta" href="#get">Get the builder for $1</a>
 <span class="btn-note" id="ctaNote">Secure checkout</span>
 </div>
-<p style="text-align:center;margin:24px auto 0;color:var(--muted);font-size:15px"><b style="color:var(--ink)">Why $1?</b> We're Smarter Flow, ranked top 3 on the HighLevel Certified Directory. This is how we say hello. If it helps, tell other HighLevel users what you thought.</p>
+<p class="why"><b>Why $1?</b> We're Smarter Flow, ranked top 3 on the HighLevel Certified Directory. This is how we say hello. If it helps, tell other HighLevel users what you thought.</p>
 </div></section>
 
-<footer>&copy; Smarter Flow · <a href="https://www.gosmarterflow.com">gosmarterflow.com</a> · jonathan@gosmarterflow.com</footer>
+<footer>&copy; Smarter Flow &middot; <a href="https://www.gosmarterflow.com">gosmarterflow.com</a> &middot; jonathan@gosmarterflow.com</footer>
 
 <script>
 // CHECKOUT_URL: set to the live HighLevel order form URL to activate all CTAs (one-line swap via set-checkout.sh).
-const CHECKOUT_URL = "";
+const CHECKOUT_URL = "https://gosmarterflow.com/super-agent-builder-checkout";
 document.querySelectorAll('.cta').forEach(a=>{
   if(CHECKOUT_URL){a.href=CHECKOUT_URL;}
   else if(a.closest('#get')){
