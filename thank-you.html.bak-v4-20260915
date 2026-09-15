@@ -76,7 +76,7 @@ footer a{color:var(--ind);text-decoration:none;font-weight:600}
 <main>
 <span class="pill">Payment received</span>
 <h1>You're in. Two steps and you're set.</h1>
-<p class="sub">Step 1 gets the builder into your hands. Step 2 is optional and takes twenty seconds.</p>
+<p class="sub">Step 1 gets the builder into your hands. Step 2 is optional, and it is the most valuable thing we give away.</p>
 
 <div class="card">
 <div class="stepnum">Step 1</div>
@@ -86,15 +86,27 @@ footer a{color:var(--ind);text-decoration:none;font-weight:600}
 <div class="fallback"><b>Still nothing after 10 minutes?</b> Email jonathan@gosmarterflow.com with the subject "Resend" and we'll send it again.</div>
 </div>
 
-<div class="snap" id="review">
-<span id="snapshot"></span>
+<div class="snap" id="snapshot">
 <div class="stepnum">Step 2, optional</div>
-<h2>Later, we'll ask you for an honest review.</h2>
-<p>We're a small agency, and reviews on the HighLevel Certified Directory are how we get found. Once you've built something, we'll ask you for an honest review, good or bad. If you already know you're up for it, leave your details now and the directory's official request lands once you've built.</p>
+<h2>Our Main Snapshot, free, as a thank-you for an honest review.</h2>
+<p>Good or bad, three minutes, in your own words. The snapshot goes out whatever you write.</p>
+<p>Here is the honest why. We're a small agency on the HighLevel Certified Directory, and reviews are how we get found. One honest review from you is worth more to us than a dollar, so we trade something real for it.</p>
+
+<h3>What the Main Snapshot is</h3>
+<p>It is the snapshot we deploy into every client account: pipelines, workflows, calendars, forms, funnels, the lot. You import it into your sub-account and start from a working system instead of a blank one.</p>
+
+<h3>How it works</h3>
+<ol>
+<li>Fill in the short form below.</li>
+<li>We send you the official review request from the directory usually within one business day.</li>
+<li>Write an honest review in your own words: what you built with the builder, and your niche.</li>
+<li>The snapshot link lands in your inbox usually within one business day of the review going live.</li>
+<li>Feel free to mention the snapshot in your review. Entirely up to you.</li>
+</ol>
 
 <div class="rules">
 <b>Two things the directory is strict about, so read these before you type.</b><br>
-<b>A business-domain email is required by the directory.</b> Gmail, Yahoo, Hotmail, Outlook and iCloud addresses are rejected. No business email? One through your business, a family member or a friend works, and the directory sends its link to the address you enter, so use one you can open.<br>
+<b>Business-domain email only.</b> Gmail, Yahoo, Hotmail, Outlook and iCloud addresses are rejected by the directory. If you do not have one, borrow a friend's business address. The directory sends its review link to the email you enter, so use one you can open, or ask the person whose address you borrow to forward it.<br>
 <b>A full https website.</b> If you do not have a site, use the next best site connected to your business.
 </div>
 
@@ -118,7 +130,6 @@ footer a{color:var(--ind);text-decoration:none;font-weight:600}
   title="Managed Agent Builder Review Request">
 </iframe>
 </div>
-<p class="fineprint">We use this only to send you the directory's official review request.</p>
 <p class="fineprint">No pressure either way. The builder in your email is yours regardless.</p>
 </div>
 

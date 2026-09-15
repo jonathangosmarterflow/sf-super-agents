@@ -1,3 +1,4 @@
 User-agent: *
 Disallow: /thank-you.html
 Disallow: /get-mab-x7k2/
+Disallow: /thank-you.html.bak-v4-20260915

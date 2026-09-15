@@ -1,0 +1,99 @@
+<!doctype html>
+<!--
+HOW AI ADDS A CARD: copy the <article class="card"> block inside the CARD TEMPLATE comment below, paste it inside <div class="grid">, and fill three things: the video embed src, the buyer's first name, and the business type.
+NEVER edit or remove the <p class="disclosure"> line in a card. It is locked compliance text (FTC 16 CFR 255.5) and every card must carry it, word for word, alongside the disclosure burned into the video file itself.
+WHEN THE FIRST CARD GOES LIVE: delete the <div class="empty"> block, delete the noindex meta tag on the line marked NOINDEX, then commit and push to main (repo jonathangosmarterflow/sf-super-agents).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><!-- NOINDEX: remove this line once the first video is live -->
+<title>What people built with Smarter Flow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --vio:#7c3aed; --ind:#4f46e5; --pk:#db2777; --pk-soft:#c4489f;
+  --ink:#191627; --muted:#5f5a75; --muted2:#7d7793;
+  --bg:#ffffff; --bg-soft:#faf8ff; --soft:#faf8ff; --line:#eae6f6;
+  --ground:radial-gradient(1100px 680px at 74% -14%,#f3edff 0%,#ffffff 60%);
+  --grad:linear-gradient(100deg,var(--ind),var(--vio) 60%,var(--pk-soft));
+  --head:'Sora',system-ui,sans-serif; --body:'Plus Jakarta Sans',system-ui,sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--body);color:var(--ink);background:var(--bg);background-image:var(--ground);background-attachment:fixed;line-height:1.6;font-size:17px}
+img{max-width:100%}
+.wordmark{font-family:var(--head);font-weight:800;letter-spacing:-.03em;color:var(--ink);text-decoration:none;font-size:22px}
+.wordmark b{background:linear-gradient(100deg,var(--ind),var(--pk));-webkit-background-clip:text;background-clip:text;color:transparent}
+nav{border-bottom:1px solid var(--line);background:rgba(255,255,255,.92)}
+.nav-in{max-width:1080px;margin:0 auto;padding:14px 24px}
+main{max-width:1080px;margin:0 auto;padding:52px 24px 88px}
+.pill{display:inline-block;background:var(--grad);color:#fff;font-family:var(--head);font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:6px 14px;margin-bottom:18px}
+h1{font-family:var(--head);font-weight:800;letter-spacing:-.03em;font-size:42px;line-height:1.1;margin-bottom:14px}
+.sub{color:var(--muted);font-size:17.5px;max-width:680px;margin-bottom:40px}
+h2{font-family:var(--head);font-weight:700;letter-spacing:-.02em;font-size:24px;margin:0 0 14px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px}
+.card{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 16px 50px rgba(124,58,237,.08);display:flex;flex-direction:column}
+.vid{position:relative;width:100%;aspect-ratio:16/9;max-width:100%;background:linear-gradient(150deg,#191430,#2c2154 55%,#3b2a68)}
+.vid iframe,.vid video{position:absolute;inset:0;width:100%;height:100%;border:none;display:block}
+.slot{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#9a91bd;font-family:var(--head);font-weight:700;font-size:12.5px;letter-spacing:.09em;text-transform:uppercase;text-align:center;padding:16px}
+.card-body{padding:20px 22px 22px}
+.who{font-family:var(--head);font-weight:700;letter-spacing:-.02em;font-size:17.5px;color:var(--ink);margin-bottom:4px}
+.what{color:var(--muted);font-size:15.5px;margin-bottom:14px}
+.disclosure{color:var(--muted2);font-size:13.5px;line-height:1.5;border-top:1px solid var(--line);padding-top:12px}
+
+.empty{background:var(--bg-soft);border:1px solid var(--line);border-left:4px solid var(--vio);border-radius:14px;padding:22px 24px;color:var(--muted);font-size:16px}
+.empty b{color:var(--ink)}
+
+.note{color:var(--muted);font-size:15.5px;margin-top:44px;border-top:1px solid var(--line);padding-top:22px;max-width:760px}
+footer{border-top:1px solid var(--line);padding:28px 24px 48px;text-align:center;color:var(--muted2);font-size:13.5px}
+footer a{color:var(--ind);text-decoration:none;font-weight:600}
+
+@media(max-width:760px){
+  .nav-in{padding:12px 20px}
+  main{padding:36px 20px 72px}
+  h1{font-size:clamp(28px,7vw,38px)}
+  h2{font-size:clamp(21px,5.5vw,24px)}
+  .grid{grid-template-columns:1fr;gap:20px}
+}
+</style>
+</head>
+<body>
+<nav><div class="nav-in"><span class="wordmark">Smarter<b>Flow</b></span></div></nav>
+<main>
+<span class="pill">Testimonials</span>
+<h1>What people built with Smarter Flow</h1>
+<p class="sub">Short, unscripted videos from people who bought the $1 Managed Agent Builder and put it to work. Good days and bad days both. We publish what they send, we do not write it, edit it, or pre-approve it.</p>
+
+<div class="grid">
+
+<!-- CARD TEMPLATE. Copy everything between the two template markers, paste it above this comment, and fill in the three <<PLACEHOLDERS>>.
+=== TEMPLATE START ===
+<article class="card">
+  <div class="vid">
+    <iframe src="<<VIDEO_EMBED_URL>>" title="<<FIRST_NAME>>, <<BUSINESS_TYPE>>" loading="lazy" allowfullscreen></iframe>
+  </div>
+  <div class="card-body">
+    <p class="who"><<FIRST_NAME>></p>
+    <p class="what"><<BUSINESS_TYPE>></p>
+    <p class="disclosure">Received a free snapshot for this testimonial. Bought the $1 Managed Agent Builder.</p>
+  </div>
+</article>
+=== TEMPLATE END ===
+-->
+
+</div>
+
+<div class="empty">
+<b>No videos here yet.</b> The first ones land as soon as buyers send them. Every video on this page carries its disclosure burned into the video itself and written under the card, so you always know what the person received and what they paid.
+</div>
+
+<p class="note">These are all $1 Managed Agent Builder buyers. Stories from Smarter Flow consulting clients, when we add them, appear in their own clearly labelled section on this page and are never mixed in with the videos above.</p>
+</main>
+<footer>&copy; Smarter Flow &middot; <a href="https://www.gosmarterflow.com">gosmarterflow.com</a> &middot; Questions? jonathan@gosmarterflow.com</footer>
+</body>
+</html>
