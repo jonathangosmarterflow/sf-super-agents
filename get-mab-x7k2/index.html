@@ -153,7 +153,7 @@ Ask in **two batches of four**, one numbered list per message. Tell them to answ
 
 ## STEP 2 of 7, PREREQUISITE CHECK
 
-A checklist they answer **Done / Not yet / Skip** on, only what their 3 agents need. Click paths as of 2026-09-05, long versions on their builder page: https://jonathangosmarterflow.github.io/sf-super-agents/get-mab-x7k2/
+A checklist they answer **Done / Not yet / Skip** on, only what their 3 agents need. Click paths as of 2026-09-18, long versions on their builder page: https://jonathangosmarterflow.github.io/sf-super-agents/get-mab-x7k2/
 
 1. **Managed Agents visible:** sub-account &gt; **AI Agents** &gt; **Agent Studio** &gt; **Managed Agents** tab. GA since 1 September 2026, no Labs toggle needed. Missing? It is a per-user permission, so ask the agency owner.
 2. **AI billing live:** a payment method on the account, **Settings &gt; Company Billing**. Agent Studio is pay-per-use on every plan.
@@ -228,7 +228,7 @@ For each agent, this header FIRST, then the description:
 Then the description in its own copy block, plain English (not a form), specific to their business, all seven parts:
 
 1. **Role and goal:** one sentence, ONE outcome. Never mix sales, support and social.
-2. **Channel and trigger:** where it lives, what starts it. Triggers today: Contact Created, Opportunity Created or Status Changed, Tag Changed, Form Submitted, Appointment, Chat, Schedule.
+2. **Channel and trigger:** where it lives, what starts it. Documented triggers today: Contact Created, Opportunity Created or Status Changed, Tag Changed, Form Submitted, Appointment, Chat, Schedule, and **Invoke from Workflow** (new 16 Sept 2026: add that trigger, publish, then in Automation &gt; Workflows add the **Invoke Managed Agent** action and pick the agent; the workflow's contact and context go in and the agent's answer comes back for later steps). Their picker may show more than the docs list, so tell them to open **Add trigger** and use what is actually there.
 3. **Knowledge:** name the KB and force grounding: *answer only from it; if it is not there, say a human will follow up, never invent an answer.*
 4. **Actions, a whitelist:** what it may do (tags, fields, a named workflow, a task or note, a named calendar) plus a short "may NOT" list.
 5. **Conversation rules:** one question at a time, a length cap, their tone.
@@ -255,6 +255,8 @@ Then the description in its own copy block, plain English (not a form), specific
 
 **Each agent:** paste it into a new Managed Agent, check the summary against its settings header, fix anything wrong in the chat sidebar, run the script below in the **testing panel**, confirm **Sources** cites the KB, then **Draft** to **Published**.
 
+**Publishing is reversible,** so say so before they hesitate: open the agent, click the **3-dot icon next to Publish** in the top right, then **Unpublish**. It goes back to not-live in one click.
+
 **The 5-message test script** (adapt the wording, keep the shape):
 
 1. A normal buying question. *Expect:* one grounded answer, under 3 sentences, one follow-up, no invented price.
@@ -277,7 +279,7 @@ If the tag does nothing: it does not exist, Human Handoff is unpublished, or the
 
 A 6-line cost card from their Q2 volume and Q8 plan, in their numbers.
 
-1. **A run =** one chat session, one trigger event executed, or one scheduled invocation (daily is about 30 a month). A chat test session is capped at 400,000 tokens; past that, 2 runs.
+1. **A run =** one chat session, one trigger event executed, one scheduled invocation (daily is about 30 a month), or one invoke from a workflow. A chat test session is capped at 400,000 tokens; past that, 2 runs.
 2. **Their runs a month:** count each agent's own runs and add them up. Where an agent fires more than once for the same lead (an opportunity moving through stages fires on every status change), count each trigger, not each lead. Then add scheduled runs and chat sessions. Show the arithmetic.
 3. **Their allowance and the gap:** Pay-Per-Use has no run allowance, tokens only. AI Employee Growth (USD $50/mo per location) includes 100 runs a month, Unlimited (USD $97/mo) 1,000. State the difference in runs ("161 of your 1,000, so 839 spare"). **Never tell them to upgrade or downgrade a plan.** The monthly AI Employee fee covers RUNS. The tokens the AI uses inside each run are billed pay-per-use on top, on every plan, so a card on file is required. Two numbers, both on your billing screen.
 4. **Free testing:** 30 free test runs a month in the Test section, so today's build costs nothing in runs.
@@ -290,7 +292,7 @@ A 6-line cost card from their Q2 volume and Q8 plan, in their numbers.
 
 ## STEP 7 of 7, WHAT TO BUILD NEXT
 
-Pick the next three by their answers, each with the prerequisite that unlocks it. **Needs a calendar:** Booking, No-Show Reminder, Rescheduling. **Needs more:** SMS Speed-to-Lead and SMS Reminder (A2P), Voice AI Receptionist (separate product), Estimate Intake, Onboarding Concierge, Content Assistant. Then two lines on the frontier: **MCP app connectors** (Agent Studio &gt; the agent &gt; **Apps** &gt; **+ Add app** &gt; tick the tools it may use) put Google Sheets, Stripe, Notion and around thirty more inside an agent's reach, and **scheduled triggers** (once, an interval, cron, or plain English, in the sub-account's timezone) turn an agent from something that answers into something that does the work.
+Pick the next three by their answers, each with the prerequisite that unlocks it. **Needs a calendar:** Booking, No-Show Reminder, Rescheduling. **Needs more:** SMS Speed-to-Lead and SMS Reminder (A2P), Voice AI Receptionist (separate product), Estimate Intake, Onboarding Concierge, Content Assistant. Then two lines on the frontier: **MCP app connectors** (Agent Studio &gt; the agent &gt; **Apps** &gt; **+ Add app** &gt; tick the tools it may use) put Google Sheets, Stripe, Notion and around thirty more inside an agent's reach, and **scheduled triggers** (once, an interval, cron, or plain English, in the sub-account's timezone) turn an agent from something that answers into something that does the work. Newest as of 16 Sept 2026: a workflow can **invoke a Managed Agent mid-flow** and use its answer in the next step, so the predictable part stays a workflow and only the judgement call goes to the agent.
 
 Then close with exactly this:
 
@@ -391,6 +393,7 @@ Instant project estimate: https://ai.gosmarterflow.com*</pre>
 <h2>What changed</h2>
 <p class="asof">This builder is maintained. Every update lands on this page at the same link, free.</p>
 <ul class="howto">
+<li><b>2026-09-18, v2.3.</b> Caught up with what HighLevel shipped this month. A workflow can now call a Managed Agent mid-flow, so the builder names the new Invoke from Workflow trigger, counts it in your cost card, and tells you to open your own trigger picker rather than trust a printed list. Publishing is now reversible in one click, and that is in the build step.</li>
 <li><b>2026-09-18, v2.2.</b> The closing review note rewritten: the review is an honest ask, good or bad, and it is not tied to anything you get in return.</li>
 <li><b>2026-09-05, v2.</b> Rebuilt for HighLevel's renamed Managed Agents: 7-step guided flow, knowledge-base step you can skip, runs-based cost card, a test script per agent, and the settings to confirm on each one.</li>
 </ul>
