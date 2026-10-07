@@ -17,6 +17,11 @@ sed -i '' -E "s|const CHECKOUT_URL = \"[^\"]*\";|const CHECKOUT_URL = \"${URL//|
 grep -q "const CHECKOUT_URL = \"$URL\";" index.html || { echo "FAILED to set CHECKOUT_URL"; exit 1; }
 echo "CHECKOUT_URL set -> $URL"
 
+# Brand rule 2026-10-07: every Smarter Flow page carries the SF favicon (~/.claude/brand/assets/favicon).
+MISSING_ICON="$(git ls-files '*.html' | xargs grep -L 'rel="icon"' || true)"
+[ -f favicon.svg ] && [ -f favicon.png ] || { echo "refusing: favicon.svg or favicon.png missing from site/"; exit 1; }
+[ -z "$MISSING_ICON" ] || { echo "refusing: no favicon link in: $MISSING_ICON"; exit 1; }
+
 git add index.html
 git commit -m "Activate \$1 checkout (CHECKOUT_URL live)" >/dev/null
 git push origin main

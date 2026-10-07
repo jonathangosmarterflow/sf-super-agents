@@ -56,6 +56,9 @@ if not stamp_re.search(page):
     sys.exit("sync-agent: lastUpdated stamp not found in " + page_path)
 page = stamp_re.sub(lambda m: m.group(1) + "Last updated: " + today + m.group(2), page, count=1)
 
+if 'rel="icon"' not in page:
+    sys.exit("sync-agent: no favicon link in " + page_path + " (brand rule 2026-10-07: every Smarter Flow page carries brand/assets/favicon)")
+
 if EMDASH in page:
     sys.exit("sync-agent: an em dash survived the sync, refusing to write")
 
