@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Joe's Heating and Air (demo): your AI shop map, HVAC Foundry</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --vio:#7c3aed; --ind:#4f46e5; --pk:#db2777; --pk-soft:#c4489f;
+  --ink:#191627; --muted:#5f5a75; --muted2:#7d7793;
+  --head:'Sora',system-ui,sans-serif; --body:'Plus Jakarta Sans',system-ui,sans-serif;
+  /* dark stage */
+  --stage:linear-gradient(160deg,#191430,#221a45 68%,#2b1f56);
+  --txt:#ffffff; --txt2:#c9c2e4; --txt3:#8e86ad;
+  --acc1:#8b9bff; --acc2:#ff8fd2; --acc3:#f0abfc; --acc4:#8b7bff;
+  --live:#2fe39a; --warn:#ffc857; --assist:#5cc8ff;
+  --glass:rgba(25,20,48,.72); --glass2:rgba(255,255,255,.06); --hair:rgba(255,255,255,.12);
+  --panel-w:380px; --bar-h:60px;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{font-family:var(--body);color:var(--txt);background:#191430;overflow:hidden;-webkit-font-smoothing:antialiased}
+button,input{font-family:inherit}
+b,strong{font-weight:700}
+
+/* stage layers (parallax) */
+#app{position:fixed;inset:0;display:flex;flex-direction:column}
+#stage{position:relative;flex:1;min-height:0;overflow:hidden;background:var(--stage)}
+.bg{position:absolute;inset:-12%;pointer-events:none;will-change:transform}
+.bg.glow{background:
+  radial-gradient(900px 620px at 50% 48%,rgba(124,58,237,.40),transparent 62%),
+  radial-gradient(700px 500px at 18% 20%,rgba(79,70,229,.30),transparent 60%),
+  radial-gradient(760px 520px at 84% 80%,rgba(219,39,119,.22),transparent 60%)}
+.bg.grid{background-image:radial-gradient(rgba(255,255,255,.11) 1px,transparent 1.2px);background-size:22px 22px;opacity:.55;
+  -webkit-mask-image:radial-gradient(70% 70% at 50% 50%,#000 30%,transparent 100%);mask-image:radial-gradient(70% 70% at 50% 50%,#000 30%,transparent 100%)}
+.bg.stars{background-image:
+  radial-gradient(rgba(255,255,255,.55) .8px,transparent 1.2px),
+  radial-gradient(rgba(240,171,252,.45) .8px,transparent 1.2px);
+  background-size:230px 190px,310px 260px;background-position:30px 40px,120px 90px;opacity:.5}
+#tilt{position:absolute;inset:0;transform-style:preserve-3d;perspective:1900px}
+#tilt svg{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab;transform:rotateX(4deg);transform-origin:50% 60%}
+#tilt svg.grabbing{cursor:grabbing}
+
+/* SVG world */
+text{font-family:var(--body);user-select:none;pointer-events:none}
+.fence{fill:none;stroke:rgba(255,255,255,.22);stroke-width:1.2;stroke-dasharray:3 9;stroke-linecap:round}
+.fence-lbl{font-size:13px;letter-spacing:.14em;text-transform:uppercase;fill:rgba(255,255,255,.42);font-weight:600}
+.edge{fill:none;stroke:rgba(255,255,255,.14);stroke-width:1.1;transition:stroke .25s,stroke-width .25s,opacity .3s}
+.edge.twig{stroke:rgba(255,255,255,.17);stroke-width:1}
+.edge.hub{stroke:rgba(139,155,255,.22);stroke-width:1.4}
+.edge.spine{stroke:rgba(255,255,255,.10);stroke-width:2;stroke-dasharray:1 7;stroke-linecap:round}
+.edge.on{stroke:var(--acc2);stroke-width:2.2;opacity:1}
+.edge.on.two{stroke:var(--acc1)}
+.focus .edge:not(.on){opacity:.22}
+.node{cursor:pointer;transition:opacity .35s}
+.focus .node:not(.on):not(.hub-g):not(.brain-g){opacity:.28}
+.node .halo{opacity:0;transition:opacity .3s}
+.node.st-live .halo{opacity:.9}
+.node.on .halo,.node:hover .halo{opacity:1}
+.node .core{stroke-width:1.5;transition:r .2s,stroke .2s}
+.st-live .core{fill:url(#gLive);stroke:rgba(255,255,255,.75);filter:url(#softShadow)}
+.st-available .core{fill:rgba(255,255,255,.08);stroke:rgba(139,155,255,.6);stroke-width:1.6}
+.st-coming .core{fill:rgba(201,194,228,.22);stroke:rgba(255,255,255,.55);stroke-width:1;stroke-dasharray:2.5 2.5}
+.node.on .core,.node:hover .core{stroke:#fff}
+.st-coming{opacity:.9}
+.st-coming .dotc{fill:rgba(255,255,255,.9)}
+.st-coming .lbl{fill:var(--txt2);font-size:12.5px;font-weight:500}
+.lbl{fill:var(--txt);font-size:13.5px;font-weight:600;paint-order:stroke;stroke:rgba(25,20,48,.75);stroke-width:4px;stroke-linejoin:round}
+.st-available .lbl{fill:var(--txt2)}
+.tag{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;fill:var(--acc1)}
+.tagbox{fill:rgba(139,155,255,.12);stroke:rgba(139,155,255,.45);stroke-width:1}
+.chip{stroke:rgba(25,20,48,.9);stroke-width:1.5}
+.chip.runs{fill:var(--live)}.chip.drafts{fill:var(--warn)}.chip.assists{fill:var(--assist)}
+.pulse{fill:none;stroke:var(--live);stroke-width:1.5;opacity:0;transform-box:fill-box;transform-origin:center}
+.st-live .pulse{animation:pulse 3.2s ease-out infinite}
+@keyframes pulse{0%{transform:scale(.6);opacity:.75}70%{transform:scale(1.9);opacity:0}100%{opacity:0}}
+.hub-g .ring{fill:rgba(25,20,48,.7);stroke-width:2;filter:url(#softShadow)}
+.hub-g .ring2{fill:none;stroke:rgba(255,255,255,.18);stroke-width:1;stroke-dasharray:2 6}
+.hub-g .hl{fill:#fff;font-family:var(--head);font-weight:700;font-size:17.5px;letter-spacing:-.01em;paint-order:stroke;stroke:rgba(25,20,48,.8);stroke-width:5px;stroke-linejoin:round}
+.hub-g .hs{fill:var(--txt2);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;paint-order:stroke;stroke:rgba(25,20,48,.8);stroke-width:4px;stroke-linejoin:round}
+.hub-g .cnt{fill:var(--txt3);font-size:11px;text-anchor:middle;font-weight:600}
+.hub-g .livecnt{fill:var(--live);font-size:11.5px;font-weight:700;letter-spacing:.06em}
+.tag{dominant-baseline:central}
+.brain-g .bcore{fill:url(#gBrain);stroke:rgba(255,255,255,.85);stroke-width:2;filter:url(#softShadow)}
+.brain-g .bring{fill:none;stroke:rgba(255,255,255,.25);stroke-width:1}
+.brain-g .bl{fill:#fff;font-family:var(--head);font-weight:800;font-size:24px;text-anchor:middle;letter-spacing:-.02em}
+.brain-g .bs{fill:var(--txt2);font-size:11px;text-anchor:middle;font-weight:500;transition:opacity .4s}
+.brain-g .spin{transform-box:fill-box;transform-origin:center;animation:spin 70s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.stage-h{fill:#fff;font-family:var(--head);font-weight:700;font-size:15px;text-anchor:middle;letter-spacing:-.01em}
+.stage-s{fill:var(--txt3);font-size:9.5px;text-anchor:middle;font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+.stage-n{fill:var(--acc1);font-size:10px;text-anchor:middle;font-weight:700;letter-spacing:.1em}
+.branch-h{fill:var(--txt2);font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;text-anchor:end}
+.jrn{transition:opacity .5s}
+.lblg{transform-box:view-box;transform-origin:0 0}
+.lod1 .st-coming .lblg{opacity:0}
+.lod1 .st-coming:hover .lblg,.lod1 .st-coming.on .lblg{opacity:1}
+.lod2 .st-available .lblg,.lod2 .st-coming .lblg{opacity:0}
+.lod2 .st-available:hover .lblg,.lod2 .st-available.on .lblg{opacity:1}
+.lblg,.node .lblg{transition:opacity .25s}
+
+/* top bar */
+#bar{height:var(--bar-h);display:flex;align-items:center;gap:14px;padding:0 18px;background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--hair);z-index:5;position:relative}
+.tenant{font-family:var(--head);font-weight:700;font-size:16px;letter-spacing:-.01em;white-space:nowrap;display:flex;align-items:center;gap:9px}
+.tenant .dot{width:8px;height:8px;border-radius:50%;background:var(--live);box-shadow:0 0 0 4px rgba(47,227,154,.18)}
+.tenant small{font-weight:600;color:var(--txt3);font-size:12px;letter-spacing:.06em;text-transform:uppercase;font-family:var(--body)}
+.seg{display:flex;background:rgba(255,255,255,.07);border:1px solid var(--hair);border-radius:999px;padding:3px}
+.seg button{border:0;background:transparent;color:var(--txt2);padding:7px 14px;border-radius:999px;font-weight:600;font-size:13.5px;cursor:pointer;transition:background .2s,color .2s}
+.seg button[aria-pressed="true"]{background:linear-gradient(100deg,var(--ind),var(--vio) 60%,var(--pk-soft));color:#fff;box-shadow:0 4px 16px rgba(124,58,237,.35)}
+#search{position:relative;flex:1;max-width:420px;margin-left:auto}
+#search input{width:100%;background:rgba(255,255,255,.07);border:1px solid var(--hair);color:#fff;border-radius:999px;padding:9px 14px 9px 38px;font-size:14px;outline:none;transition:border .2s,background .2s}
+#search input::placeholder{color:var(--txt3)}
+#search input:focus{border-color:rgba(139,155,255,.7);background:rgba(255,255,255,.1)}
+#search .ico{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:16px;height:16px;opacity:.6}
+#hits{position:absolute;top:calc(100% + 8px);left:0;right:0;background:rgba(25,20,48,.96);border:1px solid var(--hair);border-radius:14px;overflow:hidden;display:none;box-shadow:0 20px 50px rgba(0,0,0,.45)}
+#hits.show{display:block}
+#hits button{display:flex;width:100%;text-align:left;border:0;background:transparent;color:#fff;padding:10px 14px;cursor:pointer;gap:10px;align-items:center;font-size:13.5px}
+#hits button:hover,#hits button.k{background:rgba(255,255,255,.08)}
+#hits .fc{color:var(--acc3);font-weight:600}
+#hits .d{color:var(--txt3);margin-left:auto;font-size:12px;white-space:nowrap}
+.product{font-family:var(--head);font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt2);white-space:nowrap;display:flex;align-items:center;gap:8px}
+.product i{display:inline-block;width:18px;height:18px;border-radius:5px;background:linear-gradient(135deg,var(--ind),var(--vio) 55%,var(--pk))}
+
+/* main */
+#main{flex:1;display:flex;min-height:0}
+#panel{width:var(--panel-w);flex:none;background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-left:1px solid var(--hair);transform:translateX(100%);transition:transform .38s cubic-bezier(.2,.8,.2,1);overflow:auto;display:flex;flex-direction:column;z-index:4;margin-right:calc(var(--panel-w) * -1)}
+#panel.open{transform:none;margin-right:0}
+.ph{padding:18px 20px 12px;border-bottom:1px solid var(--hair);position:sticky;top:0;background:rgba(25,20,48,.85);backdrop-filter:blur(10px);z-index:1}
+.ph .crumb{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--txt3);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.ph .crumb .dp{width:8px;height:8px;border-radius:50%}
+.ph h2{font-family:var(--head);font-size:21px;margin:8px 0 4px;letter-spacing:-.02em;line-height:1.2}
+.ph .fc{color:var(--acc3);font-weight:600;font-size:14px}
+.ph .fc:before{content:'“'}.ph .fc:after{content:'”'}
+.x{position:absolute;right:12px;top:12px;width:34px;height:34px;border-radius:50%;border:1px solid var(--hair);background:rgba(255,255,255,.06);color:#fff;cursor:pointer;font-size:18px;line-height:1}
+.x:hover{background:rgba(255,255,255,.14)}
+.pb{padding:16px 20px 28px;display:flex;flex-direction:column;gap:14px}
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill{display:inline-flex;align-items:center;gap:7px;padding:5px 11px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid var(--hair);background:rgba(255,255,255,.06);color:var(--txt2)}
+.pill i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.pill.live{border-color:rgba(47,227,154,.5);color:var(--live)}
+.pill.available{border-color:rgba(139,155,255,.55);color:var(--acc1)}
+.pill.coming{border-style:dashed;color:var(--txt3)}
+.pill.demo{background:rgba(255,200,87,.1);border-color:rgba(255,200,87,.45);color:var(--warn)}
+.job{font-size:15px;line-height:1.5;color:#fff}
+.pain{border-left:3px solid var(--acc2);padding:8px 12px;color:var(--txt2);font-size:14px;line-height:1.5;background:rgba(255,143,210,.06);border-radius:0 10px 10px 0;font-style:italic}
+.tabs{display:flex;gap:4px;background:rgba(255,255,255,.06);padding:4px;border-radius:12px;border:1px solid var(--hair)}
+.tabs button{flex:1;border:0;background:transparent;color:var(--txt2);padding:8px 6px;border-radius:9px;font-weight:600;font-size:13px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:rgba(255,255,255,.12);color:#fff}
+.card{background:rgba(255,255,255,.05);border:1px solid var(--hair);border-radius:14px;padding:14px}
+.kv{display:grid;grid-template-columns:1fr auto;gap:8px 14px;font-size:13.5px}
+.kv dt{color:var(--txt3)}.kv dd{margin:0;color:#fff;font-weight:600;text-align:right}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:rgba(255,255,255,.05);border:1px solid var(--hair);border-radius:12px;padding:12px 10px;text-align:center}
+.stat b{display:block;font-family:var(--head);font-size:22px;letter-spacing:-.02em;background:linear-gradient(90deg,var(--acc1),var(--acc2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat span{font-size:11px;color:var(--txt3);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.spark{display:flex;align-items:flex-end;gap:4px;height:46px;margin-top:8px}
+.spark i{flex:1;background:linear-gradient(180deg,var(--acc4),rgba(139,123,255,.25));border-radius:3px 3px 0 0;min-height:4px}
+.acts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.acts li{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.07);font-size:13.5px;line-height:1.4}
+.acts li:last-child{border:0}
+.acts time{color:var(--txt3);font-size:12px;white-space:nowrap;min-width:58px;padding-top:2px;font-variant-numeric:tabular-nums}
+.acts .ok{width:8px;height:8px;border-radius:50%;background:var(--live);flex:none;margin-top:6px}
+.acts .wait{background:var(--warn)}
+.video{aspect-ratio:16/9;border-radius:14px;background:linear-gradient(150deg,rgba(79,70,229,.45),rgba(219,39,119,.35)),rgba(255,255,255,.04);border:1px solid var(--hair);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:#fff;position:relative;overflow:hidden}
+.video:after{content:'';position:absolute;inset:0;background:radial-gradient(60% 60% at 50% 50%,rgba(255,255,255,.08),transparent)}
+.video .play{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.4);display:grid;place-items:center}
+.video .play:before{content:'';border-left:18px solid #fff;border-top:11px solid transparent;border-bottom:11px solid transparent;margin-left:4px}
+.video small{font-size:12px;color:var(--txt2);font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.btns{display:flex;gap:10px}
+.btn{flex:1;border:0;border-radius:12px;padding:13px 14px;font-weight:700;font-size:14px;cursor:pointer;text-align:center;text-decoration:none;color:#fff;display:block}
+.btn.p{background:linear-gradient(100deg,var(--ind),var(--vio) 60%,var(--pk-soft));box-shadow:0 8px 24px rgba(124,58,237,.35)}
+.btn.s{background:rgba(255,255,255,.08);border:1px solid var(--hair)}
+.note{font-size:12.5px;color:var(--txt3);line-height:1.5;text-align:center}
+.grade-l{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--txt2)}
+.grade-l i{width:10px;height:10px;border-radius:50%}
+.dlist{display:flex;flex-direction:column;gap:6px}
+.dlist button{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid var(--hair);border-radius:10px;padding:9px 12px;color:#fff;cursor:pointer;font-size:13.5px;text-align:left}
+.dlist button:hover{background:rgba(255,255,255,.1)}
+.dlist .st{width:9px;height:9px;border-radius:50%;flex:none}
+.dlist .st.live{background:var(--live);box-shadow:0 0 0 3px rgba(47,227,154,.2)}
+.dlist .st.available{background:transparent;border:1.5px solid var(--acc1)}
+.dlist .st.coming{background:transparent;border:1px dashed var(--txt3)}
+.dlist .g{margin-left:auto;font-size:11px;color:var(--txt3);font-weight:600}
+
+/* overlays */
+.ov{position:absolute;z-index:3;pointer-events:none}
+#legend{right:18px;bottom:18px;background:var(--glass);border:1px solid var(--hair);border-radius:14px;padding:12px 14px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);display:grid;grid-template-columns:auto auto;gap:7px 22px;font-size:12.5px;color:var(--txt2);pointer-events:auto}
+#legend h4{grid-column:1/-1;margin:0 0 2px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt3);font-weight:700}
+#legend .l{display:flex;align-items:center;gap:9px;white-space:nowrap}
+#legend .sw{width:14px;height:14px;border-radius:50%;flex:none}
+#legend .sw.live{background:radial-gradient(circle at 40% 35%,#fff,var(--acc1) 35%,var(--vio));box-shadow:0 0 0 3px rgba(139,155,255,.25),0 0 14px rgba(124,58,237,.8)}
+#legend .sw.available{border:1.5px solid var(--acc1);background:rgba(255,255,255,.08)}
+#legend .sw.coming{border:1px dashed var(--txt3)}
+#legend .sw.runs{background:var(--live);width:10px;height:10px;margin:0 2px}
+#legend .sw.drafts{background:var(--warn);width:10px;height:10px;margin:0 2px}
+#legend .sw.assists{background:var(--assist);width:10px;height:10px;margin:0 2px}
+#ctl{right:18px;bottom:148px;display:flex;flex-direction:column;gap:6px;pointer-events:auto}
+#ctl button{width:36px;height:36px;border-radius:10px;border:1px solid var(--hair);background:var(--glass);color:#fff;cursor:pointer;font-size:17px;backdrop-filter:blur(10px)}
+#ctl button:hover{background:rgba(255,255,255,.14)}
+#wm{left:18px;bottom:18px;display:flex;align-items:center;gap:10px}
+.wordmark{font-family:var(--head);font-weight:800;letter-spacing:-.03em;font-size:17px;color:#fff}
+.wordmark b{background:linear-gradient(90deg,#8b7bff,#f0abfc);-webkit-background-clip:text;background-clip:text;color:transparent}
+#wm small{font-size:11px;color:var(--txt3);font-weight:600;letter-spacing:.08em;text-transform:uppercase;border-left:1px solid var(--hair);padding-left:10px}
+#hint{left:18px;top:14px;font-size:12.5px;color:var(--txt3);font-weight:500;background:rgba(25,20,48,.5);padding:6px 10px;border-radius:8px;border:1px solid rgba(255,255,255,.06);transition:opacity .6s}
+#hint.off{opacity:0}
+#demo{left:50%;top:14px;transform:translateX(-50%);font-size:11px;color:var(--warn);font-weight:700;letter-spacing:.12em;text-transform:uppercase;background:rgba(255,200,87,.09);border:1px solid rgba(255,200,87,.35);padding:5px 12px;border-radius:999px}
+
+/* phone */
+@media (max-width:760px){
+  :root{--bar-h:auto}
+  #bar{flex-wrap:wrap;padding:10px 12px;gap:10px}
+  .tenant{font-size:14px;flex:1}
+  .tenant small{display:none}
+  .product{display:none}
+  .seg{order:3}
+  .seg button{padding:6px 11px;font-size:12.5px}
+  #search{order:4;flex:1;max-width:none;margin-left:0}
+  #main{flex-direction:column}
+  #panel{width:100%;margin-right:0;transform:none;height:0;overflow:hidden;border-left:0;border-top:1px solid var(--hair);transition:height .38s cubic-bezier(.2,.8,.2,1);flex:none}
+  #panel.open{height:46%;overflow:auto}
+  #stage{min-height:0}
+  #legend{right:10px;bottom:10px;padding:8px 10px;gap:5px 12px;font-size:11px}
+  #legend h4{display:none}
+  .panel-open #legend{display:none}
+  #ctl{display:none}
+  #wm{left:10px;bottom:10px}
+  #wm small{display:none}
+  #hint{display:none}
+  #demo{top:8px}
+  #tilt svg{transform:none}
+  .hub-g .hl{font-size:14px}.hub-g .hs{font-size:9.5px}.lbl{font-size:12px}
+  .stats{grid-template-columns:repeat(3,1fr)}
+}
+@media (prefers-reduced-motion:reduce){
+  .st-live .pulse,.brain-g .spin{animation:none}
+  .st-live .pulse{opacity:.35;transform:scale(1.3)}
+  #panel,.edge,.node{transition:none}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="bar">
+    <div class="tenant"><span class="dot"></span><span id="tenantName">Joe's Heating and Air</span><small>demo</small></div>
+    <div class="seg" role="tablist" aria-label="View">
+      <button id="vDept" aria-pressed="true">Departments</button>
+      <button id="vJrn" aria-pressed="false">Lead journey</button>
+    </div>
+    <div id="search">
+      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Find a piece: after-hours, review ask, scoreboard" autocomplete="off" aria-label="Find a node">
+      <div id="hits"></div>
+    </div>
+    <div class="product"><i></i>HVAC Foundry</div>
+  </header>
+  <div id="main">
+    <div id="stage">
+      <div class="bg glow" id="bgGlow"></div>
+      <div class="bg stars" id="bgStars"></div>
+      <div class="bg grid" id="bgGrid"></div>
+      <div id="tilt">
+        <svg id="svg" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="gLive" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#ffffff"/><stop offset=".28" stop-color="#8b9bff"/><stop offset=".72" stop-color="#7c3aed"/><stop offset="1" stop-color="#4f46e5"/></radialGradient>
+            <radialGradient id="gBrain" cx="40%" cy="35%" r="80%"><stop offset="0" stop-color="#ffffff"/><stop offset=".2" stop-color="#f0abfc"/><stop offset=".6" stop-color="#7c3aed"/><stop offset="1" stop-color="#2b1f56"/></radialGradient>
+            <radialGradient id="gHalo"><stop offset="0" stop-color="#8b7bff" stop-opacity=".55"/><stop offset=".45" stop-color="#7c3aed" stop-opacity=".22"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></radialGradient>
+            <radialGradient id="gHaloPk"><stop offset="0" stop-color="#ff8fd2" stop-opacity=".5"/><stop offset=".5" stop-color="#db2777" stop-opacity=".16"/><stop offset="1" stop-color="#db2777" stop-opacity="0"/></radialGradient>
+            <radialGradient id="gBrainHalo"><stop offset="0" stop-color="#f0abfc" stop-opacity=".55"/><stop offset=".35" stop-color="#7c3aed" stop-opacity=".30"/><stop offset="1" stop-color="#7c3aed" stop-opacity="0"/></radialGradient>
+            <filter id="softShadow" x="-60%" y="-60%" width="220%" height="220%"><feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#06030f" flood-opacity=".55"/></filter>
+          </defs>
+          <g id="world">
+            <g id="lFence"></g>
+            <g id="lEdges"></g>
+            <g id="lHubs"></g>
+            <g id="lNodes"></g>
+            <g id="lBrain"></g>
+            <g id="lJrn" class="jrn"></g>
+          </g>
+        </svg>
+      </div>
+      <div class="ov" id="hint">Drag to pan, scroll to zoom, click any piece</div>
+      <div class="ov" id="demo">Demo shop, demo data</div>
+      <div class="ov" id="ctl"><button id="zIn" title="Zoom in">+</button><button id="zOut" title="Zoom out">&minus;</button><button id="zFit" title="Fit">&#8982;</button></div>
+      <div class="ov" id="legend">
+        <h4>What you see</h4>
+        <div class="l"><span class="sw live"></span>Live in your shop</div>
+        <div class="l"><span class="sw runs"></span>Runs itself</div>
+        <div class="l"><span class="sw available"></span>Add this</div>
+        <div class="l"><span class="sw drafts"></span>Drafts, you approve</div>
+        <div class="l"><span class="sw coming"></span>On the build list</div>
+        <div class="l"><span class="sw assists"></span>Assists you</div>
+      </div>
+      <div class="ov" id="wm"><span class="wordmark">Smarter<b>Flow</b></span><small>AI shop map</small></div>
+    </div>
+    <aside id="panel" aria-live="polite"></aside>
+  </div>
+</div>
+<script>
+'use strict';
+const MAP = {"version":"1.0","generated":"2026-10-31","tenant":{"name":"Joe's Heating and Air","demo":true,"note":"the front desk demo shop; pure demo data"},"product":"HVAC Foundry","brain":{"id":"brain","name":"Shop Brain","subtitle":"your numbers, your scripts, your rules, one source of truth"},"fence":{"label":"Compliance fence","items":["consent","A2P and TCPA","recording rules","licensing"]},"states":{"live":"Live in your shop","available":"Add this","coming":"On the build list"},"grades":{"runs":"Runs itself","drafts":"Drafts, you approve","assists":"Assists you"},"departments":[{"id":"D1","name":"Front Desk and Customer Service","label":"The Phones","plain":"Every call, chat and lead answered fast, day or night."},{"id":"D2","name":"Marketing and Lead Generation","label":"Getting Calls","plain":"Ads, Google listing and offers that make the phone ring."},{"id":"D3","name":"Sales and Estimates","label":"Closing Jobs","plain":"Quotes, follow-up and the in-home sale."},{"id":"D4","name":"Reactivation and Memberships","label":"Your Customer List","plain":"Past customers, memberships and old systems worth money."},{"id":"D5","name":"Reviews and Reputation","label":"Your Reputation","plain":"Reviews asked, answered and shown off."},{"id":"D6","name":"Dispatch and Scheduling","label":"The Board","plain":"Tomorrow's schedule, texts to the homeowner, filled gaps."},{"id":"D7","name":"Field Service and Technician Quality","label":"In the Home","plain":"Tech quality on the job, checklists and callbacks."},{"id":"D8","name":"People: Hiring and Training","label":"Your People","plain":"Hiring and training the people who do the work."},{"id":"D9","name":"Billing and Collections","label":"Getting Paid","plain":"Invoices paid, deposits in, plans that do not lapse."},{"id":"D10","name":"Owner Office: Scoreboard and Finance","label":"Owner's Office","plain":"Your numbers, your inbox, your AI helpers."}],"nodes":[{"id":"a1","agent_id":1,"slug":"dead-estimate-finder","name":"Dead Estimate Finder","label":"Dead Estimate Finder","dept":"D4","state":"available","grade":"assists","job":"Finds unsold estimates and aging systems and puts a dollar figure on them","pain":"I have no idea how much I quoted and never closed","fastcontext":"the dead estimate report","list_rows":[46],"input":"CSV export, names and phones stripped in browser","output":"ranked list plus USD left on the table"},{"id":"a2","agent_id":2,"slug":"estimate-followup-sequencer","name":"Estimate Follow-Up Sequencer","label":"Estimate Follow-Up","dept":"D3","state":"available","grade":"drafts","job":"Works unsold estimates, email first, text only with consent","pain":"I send 30 quotes a month and never hear back","fastcontext":"the day-3 estimate email","list_rows":[47],"input":"estimate list","output":"conversational follow-up that books the visit"},{"id":"a3","agent_id":3,"slug":"speed-to-lead","name":"Speed-to-Lead Responder","label":"Speed-to-Lead Reply","dept":"D1","state":"live","grade":"runs","job":"Answers a new web or ad lead inside 60 seconds","pain":"I call leads back an hour later and they already booked","fastcontext":"the 60-second reply","list_rows":[28],"input":"form or ad lead","output":"reply plus booking link"},{"id":"a4","agent_id":4,"slug":"missed-call-textback","name":"Missed-Call Text-Back","label":"Missed-Call Text-Back","dept":"D1","state":"live","grade":"runs","job":"Texts back every missed call","pain":"I miss calls while I'm under a house","fastcontext":"the missed-call text","list_rows":[29],"input":"missed call","output":"text plus booking"},{"id":"a5","agent_id":5,"slug":"post-job-review-ask","name":"Post-Job Review Ask","label":"Post-Job Review Ask","dept":"D5","state":"live","grade":"runs","job":"Asks happy customers for a Google review after the job","pain":"My techs never ask for reviews","fastcontext":"the review ask text","list_rows":[63],"input":"job-complete trigger","output":"review request"},{"id":"a6","agent_id":6,"slug":"review-reply-writer","name":"Review Reply Writer","label":"Review Reply Writer","dept":"D5","state":"available","grade":"drafts","job":"Drafts a reply to every Google review in the owner's voice","pain":"I never answer my reviews","fastcontext":"the review replies","list_rows":[64],"input":"new review","output":"draft reply for one-tap approval"},{"id":"a7","agent_id":7,"slug":"unpaid-invoice-chaser","name":"Unpaid Invoice Chaser","label":"Unpaid Invoice Chaser","dept":"D9","state":"available","grade":"drafts","job":"Chases overdue invoices, offers financing or a payment link","pain":"I'm owed money and hate chasing it","fastcontext":"the overdue reminder","list_rows":[69],"input":"AR list","output":"reminder sequence"},{"id":"a8","agent_id":8,"slug":"aging-equipment-list","name":"Aging Equipment Replacement List","label":"Aging Equipment List","dept":"D4","state":"available","grade":"assists","job":"Flags systems over 12 to 15 years old","pain":"I don't know who is about to need a new system","fastcontext":"the old-systems list","list_rows":[54],"input":"equipment list","output":"replacement-candidate list plus offer"},{"id":"a9","agent_id":9,"slug":"web-chat-booker","name":"AI Web Chat Booker","label":"Web Chat Booker","dept":"D1","state":"live","grade":"runs","job":"Answers site visitors and books service","pain":"Visitors leave my site at 9pm and call someone else","fastcontext":"the website chat","list_rows":[26],"input":"chat","output":"booked slot"},{"id":"a10","agent_id":10,"slug":"meet-your-tech","name":"Meet-Your-Tech Message","label":"Meet-Your-Tech Text","dept":"D6","state":"available","grade":"runs","job":"Sends the homeowner the tech's photo, name and arrival window","pain":"Homeowners don't open the door to a stranger","fastcontext":"the meet-your-tech text","list_rows":[35],"input":"dispatch event","output":"message"},{"id":"a11","agent_id":11,"slug":"instant-quote-page","name":"Instant Quote Page","label":"Instant Quote Page","dept":"D3","state":"available","grade":"drafts","job":"Good/better/best page the homeowner can ask questions on","pain":"My quote is a PDF nobody reads","fastcontext":"the good-better-best page","list_rows":[48],"input":"visit notes","output":"quote page, ranges or human approval"},{"id":"a12","agent_id":12,"slug":"membership-renewal-save","name":"Membership Renewal and Save","label":"Renewal and Save","dept":"D4","state":"available","grade":"drafts","job":"Renews agreements and saves cancellations","pain":"Plans lapse and nobody calls","fastcontext":"the renewal sequence","list_rows":[57],"input":"agreement list","output":"renewal and save sequence"},{"id":"a13","agent_id":13,"slug":"gbp-booster","name":"Google Business Profile Booster","label":"Google Profile Booster","dept":"D2","state":"available","grade":"drafts","job":"Posts, answers Q&A, keeps the listing fresh","pain":"My Maps listing is dead","fastcontext":"the Google listing posts","list_rows":[17],"input":"jobs and photos","output":"GBP posts"},{"id":"a14","agent_id":14,"slug":"owner-scoreboard","name":"Weekly Owner Scoreboard","label":"Owner Scoreboard","dept":"D10","state":"live","grade":"runs","job":"Booked jobs, close rate, revenue per tech, binding constraint","pain":"I run the shop on gut feel","fastcontext":"the Monday scoreboard","list_rows":[73],"input":"field-software export","output":"weekly scoreboard"},{"id":"a15","agent_id":15,"slug":"applicant-screener","name":"Applicant Fast-Response and Screener","label":"Applicant Screener","dept":"D8","state":"available","grade":"runs","job":"Replies to applicants in minutes, short knowledge check","pain":"Good techs take the first offer, I call back two days later","fastcontext":"the applicant reply","list_rows":[2,5],"input":"application","output":"screened shortlist"},{"id":"a16","agent_id":16,"slug":"csr-call-grader","name":"CSR Call Grader","label":"CSR Call Grader","dept":"D1","state":"live","grade":"assists","job":"Scores booked vs lost calls against the script","pain":"I don't know why calls don't book","fastcontext":"the call grades","list_rows":[33],"input":"call recording (consent gated)","output":"score plus coaching note"},{"id":"a17","agent_id":17,"slug":"daily-capacity-brief","name":"Daily Capacity Brief","label":"Daily Capacity Brief","dept":"D6","state":"available","grade":"assists","job":"Morning read of tomorrow's board, advisory only","pain":"I find the holes in tomorrow's board at 7am","fastcontext":"tomorrow's board brief","list_rows":[38],"input":"board export","output":"one brief"},{"id":"a18","agent_id":18,"slug":"after-hours-voice","name":"After-Hours Voice Answer and Triage","label":"After-Hours Voice","dept":"D1","state":"live","grade":"runs","job":"After-hours and overflow calls, emergency failsafe to on-call human","pain":"Nobody answers after 6pm, and that call was a USD $10K replacement","fastcontext":"the after-hours greeting","list_rows":[27],"input":"call","output":"logged ticket plus tentative slot"},{"id":"a19","agent_id":19,"slug":"office-inbox-triage","name":"Office Inbox Triage","label":"Office Inbox Triage","dept":"D10","state":"available","grade":"drafts","job":"Sorts the shared service inbox and drafts replies","pain":"The shared inbox is a mess","fastcontext":"the office inbox","list_rows":[34],"input":"inbox","output":"triaged queue plus drafts"},{"id":"a20","agent_id":20,"slug":"tech-training-quiz","name":"Technician Training Quiz","label":"Tech Training Quiz","dept":"D8","state":"available","grade":"runs","job":"Role quizzes and roleplay","pain":"Everything lives in my head","fastcontext":"the tech quiz","list_rows":[12],"input":"role","output":"quiz plus score"},{"id":"a21","agent_id":21,"slug":"ask-ai-widget","name":"Ask-AI Support Widget","label":"Ask-AI Widget","dept":"D10","state":"available","grade":"drafts","job":"Answers questions about the owner's own system and applies whitelisted L1 changes with preview and undo","pain":"I have to call somebody to change one sentence","fastcontext":"the Ask-AI box","list_rows":[86],"input":"chat in the dashboard","output":"answer, or a previewed change the owner confirms"},{"id":"a23","agent_id":23,"slug":"sales-call-scorer","name":"Sales Call Scorer (phone)","label":"Sales Call Scorer","dept":"D3","state":"available","grade":"assists","job":"Scores recorded sales and CSR calls against a sourced rubric, said vs should have said, one-call vs two-call tag","pain":"I don't know why my guys lose the sale on the phone","fastcontext":"the sales call scores","list_rows":[82],"input":"call recording (consent gated)","output":"score, three quoted moments, coaching note, rep trend"},{"id":"a24","agent_id":24,"slug":"context-capture-pipeline","name":"Company Context Capture","label":"Company Context Capture","dept":"D10","state":"available","grade":"drafts","job":"Turns consented internal business calls and texts into proposed CRM, FAQ, onboarding and script updates","pain":"Everything my guys say on the phone to each other is lost, and the office never hears it","fastcontext":"the company notebook","list_rows":[81],"input":"HighLevel business-line recordings and texts (consent gated)","output":"proposed updates for one-tap approval, private talk dropped"},{"id":"a25","agent_id":25,"slug":"onsite-visit-audio-coach","name":"On-Site Visit Audio Coach","label":"On-Site Visit Coach","dept":"D3","state":"available","grade":"assists","job":"Scores the in-home sales visit on menu close, options and financing","pain":"My comfort advisor closes 20% and I have no idea what he says in the living room","fastcontext":"the in-home visit scores","list_rows":[83],"input":"on-site audio (two-touch consent, visible device)","output":"score plus coaching note per visit"},{"id":"a27","agent_id":27,"slug":"technical-fulfillment-coach","name":"Technical Fulfillment Coach","label":"Tech Fulfillment Coach","dept":"D7","state":"available","grade":"assists","job":"Scores tech voice memos and consented job audio against the install and repair checklist","pain":"Callbacks, and I can't be on every job to train the new guys","fastcontext":"the job checklist scores","list_rows":[84],"input":"voice memo or job audio (consent gated)","output":"scored checklist plus one coaching note"},{"id":"r1","list_row":1,"name":"Tech hiring funnel","label":"Tech hiring funnel","dept":"D8","state":"coming","grade":null,"job":"Tech hiring funnel: mobile form, ranked applicant sheet, careers page","pain":"I can't find techs, and the good ones never fill out my long application","fastcontext":null},{"id":"r3","list_row":3,"name":"Job post writer","label":"Job post writer","dept":"D8","state":"coming","grade":null,"job":"Job post writer for tech, installer and CSR","pain":"My ad reads like every other shop's ad","fastcontext":null},{"id":"r4","list_row":4,"name":"60-second video intro","label":"60-second video intro","dept":"D8","state":"coming","grade":null,"job":"60-second video intro instead of a first interview","pain":"I lose hours on interviews with no-shows","fastcontext":null},{"id":"r6","list_row":6,"name":"Paid working interview","label":"Paid working interview","dept":"D8","state":"coming","grade":null,"job":"Paid working interview scheduler and scorecard","pain":"One interview tells me nothing","fastcontext":null},{"id":"r7","list_row":7,"name":"Reference check by text","label":"Reference check by text","dept":"D8","state":"coming","grade":null,"job":"Reference check by text","pain":"I never call references, no time","fastcontext":null},{"id":"r8","list_row":8,"name":"Always-on recruiting ad","label":"Always-on recruiting ad","dept":"D8","state":"coming","grade":null,"job":"Always-on recruiting ad and tech talent list","pain":"I only post an ad when somebody quits","fastcontext":null},{"id":"r9","list_row":9,"name":"Offer letter and onboarding pack","label":"Offer letter and onboarding pack","dept":"D8","state":"coming","grade":null,"job":"Offer letter and first-week onboarding pack","pain":"The new guy shows up and nobody knows what to do with him","fastcontext":null},{"id":"r10","list_row":10,"name":"CSR call practice gym","label":"CSR call practice gym","dept":"D8","state":"coming","grade":null,"job":"CSR call practice gym (AI plays the no-heat homeowner)","pain":"My new CSR loses calls I would have booked","fastcontext":null},{"id":"r11","list_row":11,"name":"Comfort advisor roleplay","label":"Comfort advisor roleplay","dept":"D8","state":"coming","grade":null,"job":"Comfort advisor roleplay for replacement objections","pain":"My sellers fold at 'I need to think about it'","fastcontext":null},{"id":"r13","list_row":13,"name":"30-day new-hire tracker","label":"30-day new-hire tracker","dept":"D8","state":"coming","grade":null,"job":"30-day new-hire ramp tracker","pain":"I can't tell if the new guy is working out","fastcontext":null},{"id":"r14","list_row":14,"name":"One-page ad landing page","label":"One-page ad landing page","dept":"D2","state":"coming","grade":null,"job":"One-page ad landing page with the offer above the fold","pain":"My ads go to my home page and nobody calls","fastcontext":null},{"id":"r15","list_row":15,"name":"System budget range tool","label":"System budget range tool","dept":"D2","state":"coming","grade":null,"job":"System budget range (pending site inspection) in 60 seconds","pain":"People want a price before they call, so they bounce","fastcontext":null},{"id":"r16","list_row":16,"name":"40 Facebook ad creatives","label":"40 Facebook ad creatives","dept":"D2","state":"coming","grade":null,"job":"40 Facebook ad creatives, city headline, offer first","pain":"I don't know what ad to run","fastcontext":null},{"id":"r18","list_row":18,"name":"Seasonal campaign kit","label":"Seasonal campaign kit","dept":"D2","state":"coming","grade":null,"job":"Seasonal campaign kit (spring and fall tune-up, heat wave, cold snap)","pain":"My board is empty in spring and fall","fastcontext":null},{"id":"r19","list_row":19,"name":"Lead source tracker","label":"Lead source tracker","dept":"D2","state":"coming","grade":null,"job":"Lead source tracker: where every booked job came from","pain":"I don't know which ads work","fastcontext":null},{"id":"r20","list_row":20,"name":"Local Services Ads logger","label":"Local Services Ads logger","dept":"D2","state":"coming","grade":null,"job":"Local Services Ads lead logger and follow-up (LSA lead access and export ⚠️ UNVERIFIED)","pain":"I pay for LSA leads and half never get a callback","fastcontext":null},{"id":"r21","list_row":21,"name":"Website booking-path audit","label":"Website booking-path audit","dept":"D2","state":"coming","grade":null,"job":"Website booking-path audit (URL in, score out)","pain":"I don't know how many clicks it takes to book me","fastcontext":null},{"id":"r22","list_row":22,"name":"Neighbor mailer","label":"Neighbor mailer","dept":"D2","state":"coming","grade":null,"job":"Neighbor mailer after every install (mail vendor to pick)","pain":"I never market the street I just worked on","fastcontext":null},{"id":"r23","list_row":23,"name":"Partner referral program","label":"Partner referral program","dept":"D2","state":"coming","grade":null,"job":"Partner referral program (realtors, inspectors, plumbers)","pain":"Referrals everybody promises, nobody delivers","fastcontext":null},{"id":"r24","list_row":24,"name":"Retargeting audiences","label":"Retargeting audiences","dept":"D2","state":"coming","grade":null,"job":"Retargeting audiences from the customer list","pain":"People visit and never come back","fastcontext":null},{"id":"r25","list_row":25,"name":"Cost-per-lead calculator","label":"Cost-per-lead calculator","dept":"D2","state":"coming","grade":null,"job":"\"What can I afford per lead\" calculator","pain":"I don't know what a lead is worth to me","fastcontext":null},{"id":"r30","list_row":30,"name":"Emergency failsafe","label":"Emergency failsafe","dept":"D1","state":"coming","grade":null,"job":"Emergency failsafe","pain":"I'm scared an AI mishandles an emergency","fastcontext":null},{"id":"r31","list_row":31,"name":"Facebook and Instagram DM drafts","label":"Facebook and Instagram DM drafts","dept":"D1","state":"coming","grade":null,"job":"Facebook and Instagram message drafts in the owner's voice","pain":"I answer DMs at midnight or never","fastcontext":null},{"id":"r32","list_row":32,"name":"Teach the bot by talking","label":"Teach the bot by talking","dept":"D1","state":"coming","grade":null,"job":"Teach the bot by talking (answer bank)","pain":"The bot doesn't know my service area or hours","fastcontext":null},{"id":"r36","list_row":36,"name":"On-my-way texts","label":"On-my-way texts","dept":"D6","state":"coming","grade":null,"job":"On-my-way and running-late texts","pain":"The customer calls the office asking where we are","fastcontext":null},{"id":"r37","list_row":37,"name":"Cancellation fill-in","label":"Cancellation fill-in","dept":"D6","state":"coming","grade":null,"job":"Cancellation fill-in from a waitlist","pain":"An 8am cancel is a dead truck all morning","fastcontext":null},{"id":"r39","list_row":39,"name":"Priority lane switch","label":"Priority lane switch","dept":"D6","state":"coming","grade":null,"job":"Priority lane switch (+20% for tomorrow, off at peak)","pain":"I leave money on the table when there is slack","fastcontext":null},{"id":"r40","list_row":40,"name":"Arrival video in the booking text","label":"Arrival video in the booking text","dept":"D6","state":"coming","grade":null,"job":"60-second arrival video in the booking text","pain":"Customers aren't ready when the tech arrives","fastcontext":null},{"id":"r41","list_row":41,"name":"Data-plate photo to system age","label":"Data-plate photo to system age","dept":"D7","state":"coming","grade":null,"job":"Data-plate photo to equipment age in the customer record","pain":"I don't know how old my customers' systems are","fastcontext":null},{"id":"r42","list_row":42,"name":"Visit report from a voice memo","label":"Visit report from a voice memo","dept":"D7","state":"coming","grade":null,"job":"Visit report from the tech's voice memo","pain":"Customers don't know what we did and dispute the bill","fastcontext":null},{"id":"r43","list_row":43,"name":"Install checklist with photos","label":"Install checklist with photos","dept":"D7","state":"coming","grade":null,"job":"Install checklist with photo proof","pain":"Callbacks from installs we rushed","fastcontext":null},{"id":"r44","list_row":44,"name":"Callback tracker per tech","label":"Callback tracker per tech","dept":"D7","state":"coming","grade":null,"job":"Callback tracker per tech","pain":"I don't know which tech causes callbacks","fastcontext":null},{"id":"r45","list_row":45,"name":"Tech manual lookup","label":"Tech manual lookup","dept":"D7","state":"coming","grade":null,"job":"Tech manual lookup with cited answers","pain":"Techs call me from the job with questions","fastcontext":null},{"id":"r49","list_row":49,"name":"Not-needed-today invoice","label":"Not-needed-today invoice","dept":"D3","state":"coming","grade":null,"job":"\"Not needed today\" invoice template (the menu close)","pain":"Homeowners think my techs upsell them","fastcontext":null},{"id":"r50","list_row":50,"name":"5-things-your-system-needs video","label":"5-things-your-system-needs video","dept":"D3","state":"coming","grade":null,"job":"Post-visit \"5 things your system needs\" video plus office task","pain":"Open items die after the tech leaves","fastcontext":null},{"id":"r51","list_row":51,"name":"Monthly payment option block","label":"Monthly payment option block","dept":"D3","state":"coming","grade":null,"job":"Monthly payment option block (the shop's own finance partner, never a rate)","pain":"Replacements stall at the price","fastcontext":null},{"id":"r52","list_row":52,"name":"Visit recap to follow-up email","label":"Visit recap to follow-up email","dept":"D3","state":"coming","grade":null,"job":"Sales visit recap to a follow-up email draft","pain":"My comfort advisor never follows up in writing","fastcontext":null},{"id":"r53","list_row":53,"name":"Fill the Board","label":"Fill the Board","dept":"D4","state":"coming","grade":null,"job":"Fill the Board","pain":"Empty board in spring and fall, 3,000 past customers in my software","fastcontext":null},{"id":"r55","list_row":55,"name":"Maintenance plan builder","label":"Maintenance plan builder","dept":"D4","state":"coming","grade":null,"job":"Maintenance plan builder: plan page, order form, annual visit auto-booked","pain":"I offer plans, nobody buys them","fastcontext":null},{"id":"r56","list_row":56,"name":"Tune-up auto-booking","label":"Tune-up auto-booking","dept":"D4","state":"coming","grade":null,"job":"Tune-up auto-booking for members, twice a year","pain":"Members forget their tune-up and cancel","fastcontext":null},{"id":"r58","list_row":58,"name":"Never-offered-a-plan list","label":"Never-offered-a-plan list","dept":"D4","state":"coming","grade":null,"job":"Never-offered-an-agreement list and offer","pain":"Half my customers were never offered a plan","fastcontext":null},{"id":"r59","list_row":59,"name":"Seasonal mini-campaigns","label":"Seasonal mini-campaigns","dept":"D4","state":"coming","grade":null,"job":"Seasonal mini-campaigns (the IOU, the savings story, the seasonal pain)","pain":"My emails don't book anything","fastcontext":null},{"id":"r60","list_row":60,"name":"Six-month check-in list","label":"Six-month check-in list","dept":"D4","state":"coming","grade":null,"job":"Six-month check-in list with notes","pain":"I only talk to customers when something breaks","fastcontext":null},{"id":"r61","list_row":61,"name":"Recurring revenue calculator","label":"Recurring revenue calculator","dept":"D4","state":"coming","grade":null,"job":"Recurring revenue calculator (members x price x renewal)","pain":"I don't know what my plan book is worth to me","fastcontext":null},{"id":"r62","list_row":62,"name":"Membership credit balance","label":"Membership credit balance","dept":"D4","state":"coming","grade":null,"job":"Membership credit balance","pain":"Members ask what credit they have left","fastcontext":null},{"id":"r65","list_row":65,"name":"Unhappy-customer alert","label":"Unhappy-customer alert","dept":"D5","state":"coming","grade":null,"job":"Unhappy-customer alert (every customer still gets the same review link)","pain":"I find out about a bad job from a 1-star review","fastcontext":null},{"id":"r66","list_row":66,"name":"30-second customer video ask","label":"30-second customer video ask","dept":"D5","state":"coming","grade":null,"job":"30-second customer video ask","pain":"I have no proof videos","fastcontext":null},{"id":"r67","list_row":67,"name":"5-star review becomes a post","label":"5-star review becomes a post","dept":"D5","state":"coming","grade":null,"job":"Every 5-star review becomes a post","pain":"Great reviews nobody sees","fastcontext":null},{"id":"r68","list_row":68,"name":"Reputation scoreboard","label":"Reputation scoreboard","dept":"D5","state":"coming","grade":null,"job":"Reputation scoreboard vs 3 local competitors","pain":"I don't know where I stand on Google","fastcontext":null},{"id":"r70","list_row":70,"name":"Failed plan payment recovery","label":"Failed plan payment recovery","dept":"D9","state":"coming","grade":null,"job":"Failed plan payment recovery","pain":"Plans quietly lapse on a dead card","fastcontext":null},{"id":"r71","list_row":71,"name":"Deposit reminder","label":"Deposit reminder","dept":"D9","state":"coming","grade":null,"job":"Deposit reminder for approved replacements","pain":"Approved jobs stall waiting on the deposit","fastcontext":null},{"id":"r72","list_row":72,"name":"Warranty registration reminder","label":"Warranty registration reminder","dept":"D9","state":"coming","grade":null,"job":"Manufacturer warranty registration reminder (terms vary by maker)","pain":"We lose parts warranties because nobody registered them","fastcontext":null},{"id":"r74","list_row":74,"name":"Bottleneck test stage card","label":"Bottleneck test stage card","dept":"D10","state":"coming","grade":null,"job":"Bottleneck test stage card (the Scaling Roadmap diagnostic)","pain":"I don't know what to fix first","fastcontext":null},{"id":"r75","list_row":75,"name":"What-breaks-first check","label":"What-breaks-first check","dept":"D10","state":"coming","grade":null,"job":"\"What breaks first if leads double\" check","pain":"More leads would bury my guys","fastcontext":null},{"id":"r76","list_row":76,"name":"Owner AI status board","label":"Owner AI status board","dept":"D10","state":"coming","grade":null,"job":"Owner AI status board (every AI system, one line each)","pain":"I don't know what the AI is doing","fastcontext":null},{"id":"r77","list_row":77,"name":"Owner morning brief","label":"Owner morning brief","dept":"D10","state":"coming","grade":null,"job":"Owner morning brief (what came in, what is stuck)","pain":"I spend my morning finding fires","fastcontext":null},{"id":"r78","list_row":78,"name":"Owner AI workbench kit","label":"Owner AI workbench kit","dept":"D10","state":"coming","grade":null,"job":"Owner AI workbench starter kit","pain":"I want to use AI myself, I don't know where to start","fastcontext":null},{"id":"r79","list_row":79,"name":"Price-room check","label":"Price-room check","dept":"D10","state":"coming","grade":null,"job":"Price-room check from close rate","pain":"Am I too cheap?","fastcontext":null},{"id":"r80","list_row":80,"name":"When-to-hire trigger","label":"When-to-hire trigger","dept":"D10","state":"coming","grade":null,"job":"When-to-hire trigger (revenue per tech vs capacity)","pain":"When do I add a truck?","fastcontext":null}],"edges":[{"src":"a13","dst":"a3","kind":"handoff"},{"src":"a3","dst":"a9","kind":"handoff"},{"src":"a3","dst":"a11","kind":"handoff"},{"src":"a4","dst":"a10","kind":"handoff"},{"src":"a18","dst":"a10","kind":"handoff"},{"src":"a9","dst":"a10","kind":"handoff"},{"src":"a11","dst":"a2","kind":"handoff"},{"src":"a2","dst":"a25","kind":"handoff"},{"src":"a10","dst":"a25","kind":"handoff"},{"src":"a25","dst":"a5","kind":"handoff"},{"src":"a5","dst":"a6","kind":"handoff"},{"src":"a5","dst":"a7","kind":"handoff"},{"src":"a7","dst":"a12","kind":"handoff"},{"src":"a12","dst":"a1","kind":"handoff"},{"src":"a1","dst":"a8","kind":"handoff"},{"src":"a15","dst":"a20","kind":"handoff"},{"src":"a20","dst":"a27","kind":"handoff"},{"src":"a3","dst":"a16","kind":"handoff"},{"src":"a18","dst":"a16","kind":"handoff"},{"src":"a24","dst":"brain","kind":"handoff"},{"src":"a21","dst":"brain","kind":"two-way"},{"src":"a17","dst":"a10","kind":"handoff"}],"journey":[{"stage":1,"name":"Awareness","sub":"ads and Google","agents":[13]},{"stage":2,"name":"Inquiry","sub":"chat, form, call","agents":[3,4,9,18,16]},{"stage":3,"name":"Booking","sub":"a slot on the board","agents":[17]},{"stage":4,"name":"Pre-visit","sub":"meet your tech","agents":[10]},{"stage":5,"name":"In the home","sub":"options, financing","agents":[11,25]},{"stage":6,"name":"Follow-up","sub":"unsold estimates","agents":[2,1,23]},{"stage":7,"name":"The job","sub":"done right","agents":[27]},{"stage":8,"name":"Invoice","sub":"getting paid","agents":[7]},{"stage":9,"name":"Review","sub":"and referral","agents":[5,6]},{"stage":10,"name":"Membership","sub":"and reactivation","agents":[12,8]},{"stage":11,"name":"Owner","sub":"the scoreboard","agents":[14,19,24,21]}],"side_branch":{"dept":"D8","label":"Capacity","agents":[15,20]},"hidden_agents":[22,26,28],"folded_rows":{"2":15,"5":15,"12":20,"17":13,"26":9,"27":18,"28":3,"29":4,"33":16,"34":19,"35":10,"38":17,"46":1,"47":2,"48":11,"54":8,"57":12,"63":5,"64":6,"69":7,"73":14,"81":24,"82":23,"83":25,"84":27,"85":28,"86":21,"87":22,"88":26}};
+if (!MAP) { document.body.innerHTML = '<p style="padding:40px;font-family:sans-serif">Build this page with build.py (map.json was not inlined).</p>'; throw new Error('no map'); }
+
+/* ---------- helpers ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const NS = 'http://www.w3.org/2000/svg';
+const el = (t, a = {}, p) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; };
+const html = (t, a = {}, p) => { const e = document.createElement(t); for (const k in a) { if (k === 'text') e.textContent = a[k]; else if (k === 'html') e.innerHTML = a[k]; else e.setAttribute(k, a[k]); } if (p) p.appendChild(e); return e; };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const lerp = (a, b, t) => a + (b - a) * t;
+const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+const STATICS = []; // {g, x, y}: groups whose content is in screen px, pinned at a world point
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const PHONE = () => innerWidth <= 760;
+function seeded(s) { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return () => { h += 0x6D2B79F5; let t = h; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const hex2 = h => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
+function mix(a, b, t) { const A = hex2(a), B = hex2(b); return 'rgb(' + A.map((v, i) => Math.round(lerp(v, B[i], t))).join(',') + ')'; }
+// department hue: indigo to violet to pink across D1..D10 (brand family only)
+function deptColor(i) { const t = i / 9; return t < .5 ? mix('#8b9bff', '#a78bfa', t * 2) : mix('#a78bfa', '#ff8fd2', (t - .5) * 2); }
+
+/* ---------- model ---------- */
+const D = MAP.departments.map((d, i) => Object.assign({}, d, { idx: i, color: deptColor(i), nodes: [] }));
+const DI = Object.fromEntries(D.map(d => [d.id, d]));
+const N = MAP.nodes.map(n => Object.assign({}, n, { x: 0, y: 0, tx: 0, ty: 0, fx: 0, fy: 0, op: 1, top: 1 }));
+const NI = Object.fromEntries(N.map(n => [n.id, n]));
+N.forEach(n => DI[n.dept].nodes.push(n));
+const byAgent = Object.fromEntries(N.filter(n => n.agent_id).map(n => [n.agent_id, n]));
+const BRAIN = { id: 'brain', x: 0, y: 0, tx: 0, ty: 0, fx: 0, fy: 0 };
+const HUBS = D.map(d => ({ id: d.id, d, x: 0, y: 0, tx: 0, ty: 0, fx: 0, fy: 0, op: 1, top: 1 }));
+const HI = Object.fromEntries(HUBS.map(h => [h.id, h]));
+const P = id => id === 'brain' ? BRAIN : (NI[id] || HI[id]);
+const EDGES = [];
+MAP.edges.forEach(e => EDGES.push({ a: e.src, b: e.dst, kind: e.kind === 'two-way' ? 'two' : 'hand', views: 'both' }));
+HUBS.forEach(h => EDGES.push({ a: h.id, b: 'brain', kind: 'hub', views: 'dept' }));
+const nbr = {}; const addN = (a, b) => { (nbr[a] = nbr[a] || new Set()).add(b); };
+EDGES.forEach(e => { addN(e.a, e.b); addN(e.b, e.a); });
+
+/* ---------- layouts ---------- */
+const R = { live: 17, available: 14, coming: 6.5 };
+function layoutDept() {
+  // hubs on an ellipse, angular wedge proportional to node count, D1 at the top
+  const RX = 660, RY = 350;
+  const weight = d => d.nodes.reduce((a, n) => a + (n.state === 'coming' ? 1 : 3), 0);
+  const total = D.reduce((a, d) => a + weight(d), 0);
+  let ang = -Math.PI / 2 - (weight(DI.D1) / total) * Math.PI; // start so D1 is centred on top
+  D.forEach(d => {
+    const w = (weight(d) / total) * 2 * Math.PI;
+    const a = ang + w / 2; ang += w;
+    const h = HI[d.id]; h.tx = Math.cos(a) * RX; h.ty = Math.sin(a) * RY; h.ang = a; h.top = 1; h.ex = 0;
+    // squash fans toward the ellipse normal so top/bottom fans stay inside the screen
+    const nx = Math.cos(a) * RY, ny = Math.sin(a) * RX, nl = Math.hypot(nx, ny);
+    const ux = nx / nl, uy = ny / nl; const out = Math.atan2(uy, ux);
+    const t1 = d.nodes.filter(n => n.state !== 'coming'), t2 = d.nodes.filter(n => n.state === 'coming');
+    const rnd = seeded(d.id);
+    const vsq = 1 - .22 * Math.abs(Math.sin(out)); // shorter fans at the top and bottom
+    h.lth = Math.sin(out) > .9 ? out : out + Math.PI; // bottom hubs label downward, the rest point at the brain
+    const fan = (list, dist, gapWorld, base, rings, maxSpread) => {
+      const k = list.length; if (!k) return;
+      const sp = Math.min(maxSpread, (k - 1) * gapWorld / dist);
+      list.forEach((n, i) => {
+        const f = k === 1 ? 0 : (i / (k - 1) - .5);
+        const th = out + f * sp + (rnd() - .5) * .03;
+        const r = (dist + (rnd() - .5) * 14 + (i % rings) * base) * vsq;
+        n.tx = h.tx + Math.cos(th) * r; n.ty = h.ty + Math.sin(th) * r; n.top = 1; n.th = th; n.lth = th; n.dist = r;
+      });
+    };
+    fan(t1, 185, 108, 78, 2, 2.1);
+    fan(t2, 318, 68, 60, 3, 2.3);
+    // twig parent: each coming node hangs off its nearest tier-1 node (or the hub)
+    t2.forEach(n => { let best = h, bd = Infinity; t1.forEach(m => { const dd = Math.hypot(m.tx - n.tx, m.ty - n.ty); if (dd < bd) { bd = dd; best = m; } }); n.parent = best.id; });
+    t1.forEach(n => n.parent = h.id);
+  });
+  BRAIN.tx = 0; BRAIN.ty = 0;
+}
+function layoutJourney() {
+  const COL = 222, Y0 = 90, GAP = 112;
+  const stages = MAP.journey; const x0 = -((stages.length - 1) * COL) / 2 - 60;
+  stages.forEach((s, i) => {
+    const x = x0 + i * COL; s.x = x;
+    const list = s.agents.map(a => byAgent[a]);
+    list.forEach((n, j) => { n.tx = x; n.ty = Y0 + (j - (list.length - 1) / 2) * GAP; n.top = 1; n.lth = Math.PI / 2; });
+  });
+  const sb = MAP.side_branch; const sx = stages[2].x; sb.x = sx; sb.y = Y0 + 340;
+  sb.agents.forEach((a, j) => { const n = byAgent[a]; n.tx = sx + (j - (sb.agents.length - 1) / 2) * 200; n.ty = sb.y + 30; n.top = 1; n.lth = Math.PI / 2; });
+  N.filter(n => n.state === 'coming').forEach(n => { const h = HI[n.dept]; n.tx = h.tx * .6; n.ty = h.ty * .6 + 40; n.top = 0; });
+  BRAIN.tx = x0 + stages.length * COL + 40; BRAIN.ty = Y0;
+  HUBS.forEach(h => { h.top = 0; });
+}
+
+/* ---------- draw static structure ---------- */
+const svg = $('#svg'), world = $('#world');
+const L = { fence: $('#lFence'), edges: $('#lEdges'), hubs: $('#lHubs'), nodes: $('#lNodes'), brain: $('#lBrain'), jrn: $('#lJrn') };
+const fence = el('ellipse', { class: 'fence' }, L.fence);
+const fenceG = el('g', {}, L.fence); const fenceS = { g: fenceG, x: 0, y: 0 }; STATICS.push(fenceS);
+const fenceLbl = el('text', { class: 'fence-lbl', 'text-anchor': 'middle' }, fenceG);
+fenceLbl.textContent = MAP.fence.label + ': ' + MAP.fence.items.join(', ');
+
+const edgeEls = EDGES.map(e => { const p = el('path', { class: 'edge ' + (e.kind === 'hub' ? 'hub' : e.kind === 'two' ? 'two' : '') }, L.edges); e.el = p; return p; });
+const twigEls = {};
+N.forEach(n => { twigEls[n.id] = el('path', { class: 'edge twig' }, L.edges); });
+const spine = el('path', { class: 'edge spine' }, L.edges);
+
+function wrap(text, max) { if (text.length <= max) return [text]; const w = text.split(' '); if (w.length < 2) return [text]; let best = 1, bd = Infinity; for (let i = 1; i < w.length; i++) { const a = w.slice(0, i).join(' ').length, b = w.slice(i).join(' ').length; const d = Math.abs(a - b); if (d < bd) { bd = d; best = i; } } return [w.slice(0, best).join(' '), w.slice(best).join(' ')]; }
+// A label block: lines of {text, cls, lh} in SCREEN pixels, placed radially around its node by placeLabel().
+function labelBlock(g, lines) {
+  const lg = el('g', { class: 'lblg' }, g); const t = el('text', {}, lg); let h = 0;
+  lines.forEach((ln, i) => { const ts = el('tspan', { x: 0, dy: i ? ln.lh : 0, class: ln.cls }, t); ts.textContent = ln.text; h += ln.lh; });
+  return { lg, t, h, first: lines[0].lh, tag: null };
+}
+function placeLabel(p, lk) {
+  const L = p.lab; if (!L) return;
+  const r = p.r, pad = p.pad || 9, th = p.lth === undefined ? Math.PI / 2 : p.lth;
+  const dx = Math.cos(th), dy = Math.sin(th);
+  const vt = p.vt || .35;
+  const anchor = dx > .35 ? 'start' : dx < -.35 ? 'end' : 'middle';
+  const v = dy < -vt ? 'top' : dy > vt ? 'bottom' : 'mid';
+  const ox = dx * (r * lk + pad) / lk, oy = dy * (r * lk + pad) / lk;
+  L.lg.setAttribute('transform', `translate(${ox.toFixed(2)} ${oy.toFixed(2)}) scale(${(1 / lk).toFixed(4)})`);
+  L.t.setAttribute('text-anchor', anchor);
+  // text y is the FIRST baseline; block spans [top, bottom] in screen px
+  let top, bottom;
+  if (v === 'bottom') { top = 0; bottom = L.h; L.t.setAttribute('y', L.first * .8); }
+  else if (v === 'top') { top = -L.h; bottom = 0; L.t.setAttribute('y', -L.h + L.first * .8); }
+  else { top = -L.h / 2; bottom = L.h / 2; L.t.setAttribute('y', -L.h / 2 + L.first * .8); }
+  if (L.tag) { const ty = v === 'top' ? top - 21 : bottom + 5; const tx = anchor === 'start' ? 0 : anchor === 'end' ? -62 : -31; L.tag.rect.setAttribute('x', tx); L.tag.rect.setAttribute('y', ty); L.tag.text.setAttribute('x', tx + 31); L.tag.text.setAttribute('y', ty + 8.5); }
+}
+function placeAll(lk) { [...N, ...HUBS].forEach(p => placeLabel(p, lk)); STATICS.forEach(o => o.g.setAttribute('transform', `translate(${o.x} ${o.y}) scale(${(1 / lk).toFixed(4)})`)); }
+function rewrap(maxChars) {
+  N.forEach(n => { const L = n.lab; const lh = n.state === 'coming' ? 15 : 16; const lines = wrap(n.label, n.state === 'coming' ? 20 : maxChars); L.t.textContent = ''; L.h = 0; lines.forEach((ln, i) => { const ts = el('tspan', { x: 0, dy: i ? lh : 0, class: 'lbl' }, L.t); ts.textContent = ln; L.h += lh; }); L.first = lh; });
+}
+
+N.forEach(n => {
+  const g = el('g', { class: 'node st-' + n.state + (n.grade ? ' g-' + n.grade : ''), 'data-id': n.id }, L.nodes);
+  const r = R[n.state];
+  if (n.state !== 'coming') el('circle', { class: 'halo', r: r * 3.2, fill: n.state === 'live' ? 'url(#gHalo)' : 'url(#gHaloPk)' }, g);
+  if (n.state === 'live') el('circle', { class: 'pulse', r: r + 3 }, g);
+  el('circle', { class: 'core', r }, g);
+  if (n.state === 'coming') el('circle', { class: 'dotc', r: 1.6 }, g);
+  if (n.grade) el('circle', { class: 'chip ' + n.grade, r: 4.4, cx: r * .76, cy: -r * .76 }, g);
+  n.r = r; n.pad = n.state === 'coming' ? 7 : 9;
+  const lh = n.state === 'coming' ? 15 : 16;
+  n.lab = labelBlock(g, wrap(n.label, n.state === 'coming' ? 20 : 17).map(x => ({ text: x, cls: 'lbl', lh })));
+  if (n.state === 'available') {
+    const rect = el('rect', { class: 'tagbox', width: 62, height: 16, rx: 8 }, n.lab.lg);
+    const t = el('text', { class: 'tag', 'text-anchor': 'middle' }, n.lab.lg); t.textContent = MAP.states.available;
+    n.lab.tag = { rect, text: t };
+  }
+  n.el = g;
+  g.addEventListener('pointerenter', () => hover(n.id, true));
+  g.addEventListener('pointerleave', () => hover(n.id, false));
+  g.addEventListener('click', ev => { ev.stopPropagation(); select(n.id); });
+});
+HUBS.forEach(h => {
+  const g = el('g', { class: 'node hub-g', 'data-id': h.id }, L.hubs);
+  el('circle', { class: 'halo', r: 92, fill: 'url(#gHalo)' }, g);
+  el('circle', { class: 'ring2', r: 44 }, g);
+  el('circle', { class: 'ring', r: 36, stroke: h.d.color }, g);
+  const ic = el('text', { class: 'cnt', y: 5, fill: h.d.color, style: 'font-family:var(--head);font-size:14px;font-weight:800;fill:' + h.d.color }, g); ic.textContent = h.id;
+  const live = h.d.nodes.filter(n => n.state === 'live').length;
+  h.r = 36; h.pad = 16; h.vt = .5;
+  const lines = wrap(h.d.label, 18).map(x => ({ text: x, cls: 'hl', lh: 20 })); lines.push({ text: h.d.name, cls: 'hs', lh: 16 });
+  if (live) lines.push({ text: live + ' live', cls: 'livecnt', lh: 16 });
+  h.lab = labelBlock(g, lines);
+  h.el = g;
+  g.addEventListener('pointerenter', () => hover(h.id, true));
+  g.addEventListener('pointerleave', () => hover(h.id, false));
+  g.addEventListener('click', ev => { ev.stopPropagation(); select(h.id); });
+});
+{
+  const g = el('g', { class: 'node brain-g', 'data-id': 'brain' }, L.brain);
+  el('circle', { r: 190, fill: 'url(#gBrainHalo)' }, g);
+  const sp = el('g', { class: 'spin' }, g);
+  el('circle', { class: 'bring', r: 96, 'stroke-dasharray': '2 10' }, sp);
+  el('circle', { class: 'bring', r: 78, 'stroke-dasharray': '30 14', 'stroke-opacity': '.5' }, sp);
+  el('circle', { class: 'bcore', r: 58 }, g);
+  const t = el('text', { class: 'bl', y: -2 }, g); t.textContent = 'Shop';
+  const t2 = el('text', { class: 'bl', y: 22 }, g); t2.textContent = 'Brain';
+  const sg = el('g', {}, g); STATICS.push({ g: sg, x: 0, y: 108 });
+  const s = el('text', { class: 'bs', y: 10 }, sg); const sub = wrap(MAP.brain.subtitle, 34); sub.forEach((ln, i) => { const ts = el('tspan', { x: 0, dy: i ? 14 : 0 }, s); ts.textContent = ln; }); BRAIN.sub = s;
+  BRAIN.el = g;
+  g.addEventListener('click', ev => { ev.stopPropagation(); select('brain'); });
+  g.addEventListener('pointerenter', () => hover('brain', true));
+  g.addEventListener('pointerleave', () => hover('brain', false));
+}
+// journey headers
+const jrnEls = [];
+MAP.journey.forEach(s => {
+  const g = el('g', {}, L.jrn); const st = { g, x: 0, y: -170 }; STATICS.push(st);
+  const n = el('text', { class: 'stage-n', y: -40 }, g); n.textContent = 'STAGE ' + s.stage;
+  const h = el('text', { class: 'stage-h', y: -20 }, g); h.textContent = s.name;
+  const u = el('text', { class: 'stage-s', y: -4 }, g); u.textContent = s.sub;
+  jrnEls.push({ s, g, st });
+});
+const branchG = el('g', {}, L.jrn); const branchS = { g: branchG, x: 0, y: 0 }; STATICS.push(branchS);
+const branchLbl = el('text', { class: 'branch-h' }, branchG);
+branchLbl.textContent = MAP.side_branch.label + ': ' + DI[MAP.side_branch.dept].label + ' feed every stage';
+L.jrn.style.opacity = 0;
+
+/* ---------- camera ---------- */
+let cam = { x: 0, y: 0, k: 1 }, view = 'dept';
+function applyCam() {
+  world.setAttribute('transform', `translate(${cam.x} ${cam.y}) scale(${cam.k})`);
+  $('#bgGlow').style.transform = `translate(${cam.x * .04}px,${cam.y * .04}px)`;
+  $('#bgStars').style.transform = `translate(${cam.x * .08}px,${cam.y * .08}px)`;
+  $('#bgGrid').style.transform = `translate(${cam.x * .12}px,${cam.y * .12}px) scale(${.9 + cam.k * .1})`;
+  const lk = Math.max(.45, Math.min(1.6, cam.k));
+  svg.style.setProperty('--lk', lk);
+  svg.classList.toggle('lod1', cam.k < 1.1);
+  svg.classList.toggle('lod2', cam.k < .5);
+  if (lk !== lastLk) { lastLk = lk; placeAll(lk); }
+}
+let lastLk = null;
+function bounds(items) { let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity; items.forEach(p => { x0 = Math.min(x0, p.tx); y0 = Math.min(y0, p.ty); x1 = Math.max(x1, p.tx); y1 = Math.max(y1, p.ty); }); return { x0, y0, x1, y1 }; }
+function fit(items, pad, animate = true) {
+  const b = bounds(items); const W = svg.clientWidth, H = svg.clientHeight;
+  const bw = (b.x1 - b.x0) + pad * 2, bh = (b.y1 - b.y0) + pad * 2;
+  const k = Math.min(W / bw, H / bh, 2.2);
+  const cx = (b.x0 + b.x1) / 2, cy = (b.y0 + b.y1) / 2;
+  goCam({ k, x: W / 2 - cx * k, y: H / 2 - cy * k }, animate);
+}
+let camAnim = null;
+function goCam(to, animate = true) {
+  if (!animate || REDUCED) { cam = to; applyCam(); return; }
+  const from = Object.assign({}, cam), t0 = performance.now();
+  camAnim = () => { const t = Math.min(1, (performance.now() - t0) / 650), e = ease(t); cam = { x: lerp(from.x, to.x, e), y: lerp(from.y, to.y, e), k: lerp(from.k, to.k, e) }; applyCam(); if (t >= 1) camAnim = null; };
+}
+function fitAll(animate) {
+  let items;
+  if (view === 'dept') items = PHONE() ? [...HUBS, BRAIN, ...N.filter(n => n.state === 'live')] : [...N, ...HUBS, BRAIN, { tx: 0, ty: +fence.getAttribute('cy') + +fence.getAttribute('ry') + 40 }];
+  else items = [...N.filter(n => n.state !== 'coming'), BRAIN, { tx: BRAIN.tx + 130, ty: 0 }, ...MAP.journey.map(s => ({ tx: s.x, ty: -215 }))];
+  fit(items, PHONE() ? 60 : 70, animate);
+}
+// pan + zoom (pointer events; pinch via two pointers)
+const ptrs = new Map(); let dragging = false, moved = false, pinch0 = null;
+svg.addEventListener('pointerdown', e => { ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY }); svg.setPointerCapture(e.pointerId); dragging = true; moved = false; if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; pinch0 = { d: Math.hypot(a.x - b.x, a.y - b.y), k: cam.k, cx: (a.x + b.x) / 2, cy: (a.y + b.y) / 2, x: cam.x, y: cam.y }; } });
+svg.addEventListener('pointermove', e => {
+  if (!ptrs.has(e.pointerId)) return; const p = ptrs.get(e.pointerId);
+  if (ptrs.size === 2 && pinch0) { ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY }); const [a, b] = [...ptrs.values()]; const d = Math.hypot(a.x - b.x, a.y - b.y); const k = Math.max(.25, Math.min(4, pinch0.k * d / pinch0.d)); const r = svg.getBoundingClientRect(); const cx = (a.x + b.x) / 2 - r.left, cy = (a.y + b.y) / 2 - r.top; cam = { k, x: cx - (pinch0.cx - r.left - pinch0.x) * k / pinch0.k, y: cy - (pinch0.cy - r.top - pinch0.y) * k / pinch0.k }; applyCam(); moved = true; return; }
+  if (!dragging) return; const dx = e.clientX - p.x, dy = e.clientY - p.y; if (Math.abs(dx) + Math.abs(dy) > 2) moved = true; cam.x += dx; cam.y += dy; p.x = e.clientX; p.y = e.clientY; svg.classList.add('grabbing'); applyCam(); $('#hint').classList.add('off');
+});
+const endPtr = e => { ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch0 = null; if (!ptrs.size) { dragging = false; svg.classList.remove('grabbing'); } };
+svg.addEventListener('pointerup', endPtr); svg.addEventListener('pointercancel', endPtr);
+svg.addEventListener('click', () => { if (!moved) deselect(); });
+svg.addEventListener('wheel', e => { e.preventDefault(); const r = svg.getBoundingClientRect(); const mx = e.clientX - r.left, my = e.clientY - r.top; const f = Math.exp(-e.deltaY * (e.ctrlKey ? .01 : .0016)); const k = Math.max(.25, Math.min(4, cam.k * f)); cam = { k, x: mx - (mx - cam.x) * k / cam.k, y: my - (my - cam.y) * k / cam.k }; applyCam(); $('#hint').classList.add('off'); }, { passive: false });
+const zoomBy = f => { const W = svg.clientWidth / 2, H = svg.clientHeight / 2; const k = Math.max(.25, Math.min(4, cam.k * f)); goCam({ k, x: W - (W - cam.x) * k / cam.k, y: H - (H - cam.y) * k / cam.k }); };
+$('#zIn').onclick = () => zoomBy(1.35); $('#zOut').onclick = () => zoomBy(1 / 1.35); $('#zFit').onclick = () => fitAll(true);
+
+/* ---------- animation loop ---------- */
+let morph = null; // {t0, dur}
+function startMorph() { [...N, ...HUBS, BRAIN].forEach(p => { p.fx = p.x; p.fy = p.y; p.fop = p.op === undefined ? 1 : p.op; }); morph = { t0: performance.now(), dur: REDUCED ? 0 : 850 }; }
+const t00 = performance.now();
+function frame(now) {
+  if (camAnim) camAnim();
+  let mt = 1; if (morph) { mt = morph.dur ? Math.min(1, (now - morph.t0) / morph.dur) : 1; if (mt >= 1) morph = null; }
+  const e = ease(mt), T = (now - t00) / 1000;
+  const items = [...N, ...HUBS, BRAIN];
+  items.forEach(p => {
+    const bx = morph ? lerp(p.fx, p.tx, e) : p.tx, by = morph ? lerp(p.fy, p.ty, e) : p.ty;
+    let dx = 0, dy = 0;
+    if (!REDUCED && p.state === 'coming' && p.top) { const ph = (p.list_row || 0) * .7; dx = Math.sin(T * .35 + ph) * 3.2; dy = Math.cos(T * .28 + ph * 1.3) * 3.2; }
+    p.x = bx + dx; p.y = by + dy;
+    if (p.el) { p.el.setAttribute('transform', `translate(${p.x.toFixed(2)} ${p.y.toFixed(2)})`); const op = morph ? lerp(p.fop, p.top, e) : p.top; if (op !== p.op) { p.op = op; p.el.style.opacity = op; p.el.style.pointerEvents = op < .05 ? 'none' : ''; } }
+  });
+  EDGES.forEach(ed => { const a = P(ed.a), b = P(ed.b); const vis = (ed.views === 'both' || ed.views === view) && (a.op === undefined || a.op > .05) && (b.op === undefined || b.op > .05); ed.el.style.opacity = vis ? '' : 0; if (vis) ed.el.setAttribute('d', curve(a, b)); });
+  N.forEach(n => { const t = twigEls[n.id]; if (view !== 'dept' || !n.parent) { t.style.opacity = 0; return; } const a = P(n.parent); t.style.opacity = morph ? lerp(n.fop, 1, e) : ''; t.setAttribute('d', `M${a.x} ${a.y}L${n.x} ${n.y}`); });
+  if (view === 'jrn') { const xs = MAP.journey.map(s => s.x); spine.style.opacity = ''; spine.setAttribute('d', `M${xs[0] - 40} 90 L${BRAIN.x - 70} 90`); } else spine.style.opacity = 0;
+  requestAnimationFrame(frame);
+}
+function curve(a, b) { const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2; const dx = b.x - a.x, dy = b.y - a.y; const l = Math.hypot(dx, dy) || 1; const bend = Math.min(40, l * .12); return `M${a.x} ${a.y}Q${mx - dy / l * bend} ${my + dx / l * bend} ${b.x} ${b.y}`; }
+
+/* ---------- fence ---------- */
+function placeFence() {
+  if (view === 'dept') { const b = bounds([...N, ...HUBS]); const cx = (b.x0 + b.x1) / 2, cy = (b.y0 + b.y1) / 2; const rx = (b.x1 - b.x0) / 2 + 150, ry = (b.y1 - b.y0) / 2 + 80; fence.setAttribute('cx', cx); fence.setAttribute('cy', cy); fence.setAttribute('rx', rx); fence.setAttribute('ry', ry); fenceS.x = cx; fenceS.y = cy + ry + 30; }
+  else { const items = [...N.filter(n => n.state !== 'coming'), BRAIN]; const b = bounds(items); const cx = (b.x0 + b.x1) / 2, cy = (b.y0 + b.y1) / 2 - 60; fence.setAttribute('cx', cx); fence.setAttribute('cy', cy); fence.setAttribute('rx', (b.x1 - b.x0) / 2 + 160); fence.setAttribute('ry', (b.y1 - b.y0) / 2 + 150); fenceS.x = cx; fenceS.y = cy + (b.y1 - b.y0) / 2 + 150 + 30; }
+}
+
+/* ---------- views ---------- */
+function setView(v, animate = true) {
+  view = v; $('#vDept').setAttribute('aria-pressed', v === 'dept'); $('#vJrn').setAttribute('aria-pressed', v === 'jrn');
+  if (v === 'dept') layoutDept(); else layoutJourney();
+  rewrap(v === 'dept' ? 14 : 13);
+  if (animate) startMorph(); else { [...N, ...HUBS, BRAIN].forEach(p => { p.x = p.tx; p.y = p.ty; p.op = undefined; }); }
+  placeFence(); lastLk = null;
+  L.jrn.style.opacity = v === 'jrn' ? 1 : 0; BRAIN.sub.style.opacity = v === 'jrn' ? 0 : 1;
+  if (v === 'jrn') { jrnEls.forEach(j => { j.st.x = j.s.x; }); branchS.x = MAP.side_branch.x - 190; branchS.y = MAP.side_branch.y + 34; }
+  if (sel && NI[sel] && NI[sel].state === 'coming' && v === 'jrn') deselect();
+  fitAll(animate);
+}
+$('#vDept').onclick = () => view !== 'dept' && setView('dept');
+$('#vJrn').onclick = () => view !== 'jrn' && setView('jrn');
+
+/* ---------- hover + select ---------- */
+let sel = null;
+function lightUp(id, on) {
+  svg.classList.toggle('focus', on);
+  [...N, ...HUBS].forEach(p => p.el.classList.toggle('on', !!(on && (p.id === id || (nbr[id] && nbr[id].has(p.id))))));
+  BRAIN.el.classList.toggle('on', !!(on && (id === 'brain' || (nbr[id] && nbr[id].has('brain')))));
+  EDGES.forEach(e => e.el.classList.toggle('on', !!(on && (e.a === id || e.b === id))));
+  if (on && NI[id] && NI[id].parent) twigEls[id].classList.add('on'); else N.forEach(n => twigEls[n.id].classList.remove('on'));
+  if (on && HI[id]) HI[id].d.nodes.forEach(n => { n.el.classList.add('on'); if (n.parent) twigEls[n.id].classList.add('on'); });
+}
+function hover(id, on) { if (sel) return; lightUp(id, on); }
+function select(id) { sel = id; lightUp(id, true); renderPanel(id); $('#panel').classList.add('open'); document.body.classList.add('panel-open'); if (HI[id]) fit([HI[id], ...HI[id].d.nodes], PHONE() ? 60 : 120); else { if (PHONE()) centerOn(P(id)); } }
+function deselect() { sel = null; lightUp(null, false); $('#panel').classList.remove('open'); document.body.classList.remove('panel-open'); }
+function centerOn(p, zoom) { const W = svg.clientWidth, H = PHONE() ? $('#main').clientHeight * .54 : svg.clientHeight; const k = zoom || Math.max(cam.k, PHONE() ? 1.1 : 1.25); goCam({ k, x: W / 2 - p.tx * k, y: H / 2 - p.ty * k }); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { deselect(); $('#hits').classList.remove('show'); } });
+
+/* ---------- panel ---------- */
+const panel = $('#panel');
+const GR = { runs: ['var(--live)', MAP.grades.runs, 'It runs on its own inside the rules you set. You see every action in the log.'], drafts: ['var(--warn)', MAP.grades.drafts, 'It prepares the work and waits for your one-tap approval before anything goes out.'], assists: ['var(--assist)', MAP.grades.assists, 'It reads, scores and briefs you. It never acts on its own.'] };
+function renderPanel(id) {
+  panel.innerHTML = '';
+  if (id === 'brain') return renderBrain();
+  if (HI[id]) return renderDept(HI[id].d);
+  const n = NI[id], d = DI[n.dept];
+  const head = html('div', { class: 'ph' }, panel);
+  html('div', { class: 'crumb', html: `<span class="dp" style="background:${d.color}"></span>${esc(d.label)} <span style="opacity:.5">${esc(d.name)}</span>` }, head);
+  html('h2', { text: n.name }, head);
+  if (n.fastcontext) html('div', { class: 'fc', text: n.fastcontext }, head);
+  html('button', { class: 'x', 'aria-label': 'Close', text: '×' }, head).onclick = deselect;
+  const body = html('div', { class: 'pb' }, panel);
+  const pills = html('div', { class: 'pills' }, body);
+  const stName = { live: MAP.states.live, available: 'Available to add', coming: MAP.states.coming }[n.state];
+  html('span', { class: 'pill ' + n.state, html: `<i style="background:${n.state === 'live' ? 'var(--live)' : n.state === 'available' ? 'var(--acc1)' : 'var(--txt3)'}"></i>${esc(stName)}` }, pills);
+  if (n.grade) html('span', { class: 'pill', html: `<i style="background:${GR[n.grade][0]}"></i>${esc(GR[n.grade][1])}` }, pills);
+  if (n.job && n.job !== n.name) html('p', { class: 'job', text: n.job }, body);
+  if (n.state === 'live') renderLive(n, body); else if (n.state === 'available') renderAvailable(n, body); else renderComing(n, body);
+}
+function renderLive(n, body) {
+  html('span', { class: 'pill demo', text: 'Demo data, not a real shop' }, body);
+  const tabs = html('div', { class: 'tabs', role: 'tablist' }, body);
+  const pane = html('div', {}, body);
+  const views = { Settings: () => liveSettings(n), Data: () => liveData(n), 'Last 10 actions': () => liveActions(n) };
+  Object.keys(views).forEach((k, i) => { const b = html('button', { role: 'tab', 'aria-selected': i === 0, text: k }, tabs); b.onclick = () => { [...tabs.children].forEach(x => x.setAttribute('aria-selected', x === b)); pane.innerHTML = ''; pane.appendChild(views[k]()); }; });
+  pane.appendChild(views.Settings());
+  if (n.grade) { const g = html('div', { class: 'grade-l' }, body); g.innerHTML = `<i style="background:${GR[n.grade][0]}"></i><span><b>${esc(GR[n.grade][1])}.</b> ${esc(GR[n.grade][2])}</span>`; }
+}
+const SETTINGS = {
+  3: [['Reply within', '60 seconds'], ['Channels', 'Email and call alert (text after carrier approval)'], ['Booking link', 'Joe’s service calendar'], ['Office hours', '7:30 to 5:30, Mon to Sat'], ['Hand to a human when', 'the lead asks a price question']],
+  4: [['Text-back delay', '45 seconds'], ['Message', '“Sorry we missed you, this is Joe’s Heating and Air. Want us to call back or book here?”'], ['Quiet hours', '9pm to 7am (no texts)'], ['Consent', 'per workflow, carrier approved']],
+  9: [['Lives on', 'joesheatingandair.com (demo)'], ['Books into', 'Service calendar, 2-hour windows'], ['Never says', 'a price, a diagnosis'], ['Hands off when', 'no heat with a baby in the house, gas smell, 3 unclear turns'], ['Service area', 'Charlotte and 25 miles']],
+  16: [['Grades against', 'the 7-step booking script'], ['Source calls', 'recorded with consent'], ['Coaching note to', 'the office lead, Mondays'], ['Passing score', '80 of 100']],
+  18: [['Answers', 'after 5:30pm, weekends, overflow'], ['First thing callers hear', 'the recorded safety message, then the AI disclosure'], ['Emergency path', 'gas or CO: safety script, then on-call human'], ['On-call tonight', 'Mike (demo)'], ['Tentative slots', 'next-morning 8 to 10 or 10 to 12']],
+  5: [['Sent after', 'the invoice is marked paid'], ['From', 'the tech’s name'], ['Review link', 'the same Google link for every customer'], ['Skip if', 'the job had a complaint flag']],
+  14: [['Arrives', 'Monday 6:30am, email'], ['Shows', 'booked jobs, close rate, revenue per tech, the one constraint'], ['Source', 'field software export (demo)'], ['Compared to', 'the last 4 weeks']]
+};
+function liveSettings(n) { const c = html('div', { class: 'card' }); const dl = html('dl', { class: 'kv' }, c); (SETTINGS[n.agent_id] || [['Status', 'on']]).forEach(([k, v]) => { html('dt', { text: k }, dl); html('dd', { text: v }, dl); }); html('p', { class: 'note', text: 'Say “change ' + n.fastcontext + '” in the Ask-AI box to edit with a preview and undo (coming).', style: 'margin:12px 0 0' }, c); return c; }
+const STATS = {
+  3: [['38', 'leads this week'], ['52s', 'median reply'], ['61%', 'booked']], 4: [['27', 'missed calls'], ['25', 'texted back'], ['14', 'booked']], 9: [['112', 'chats'], ['41', 'booked'], ['6', 'handed off']],
+  16: [['44', 'calls graded'], ['81', 'avg score'], ['9', 'coaching notes']], 18: [['19', 'after-hours calls'], ['2', 'emergencies routed'], ['11', 'tentative slots']], 5: [['31', 'asks sent'], ['12', 'new reviews'], ['4.9', 'rating']], 14: [['4', 'scoreboards'], ['7', 'techs tracked'], ['1', 'constraint named']]
+};
+function liveData(n) { const w = html('div'); const s = html('div', { class: 'stats' }, w); (STATS[n.agent_id] || []).forEach(([v, l]) => { const t = html('div', { class: 'stat' }, s); html('b', { text: v }, t); html('span', { text: l }, t); }); const c = html('div', { class: 'card', style: 'margin-top:8px' }, w); html('div', { style: 'font-size:12px;color:var(--txt3);font-weight:600;letter-spacing:.06em;text-transform:uppercase', text: 'Last 14 days' }, c); const sp = html('div', { class: 'spark' }, c); const r = seeded(n.id + 'spark'); for (let i = 0; i < 14; i++) html('i', { style: 'height:' + Math.round(20 + r() * 80) + '%' }, sp); return w; }
+const ACTS = {
+  3: ['Replied to a web lead (furnace not heating) and sent the booking link', 'Called the office line for a lead marked urgent', 'Replied to a Google ad lead about a tune-up', 'Lead booked Thursday 8 to 10', 'Flagged a price question for the office'],
+  4: ['Texted back a missed call from a Matthews number', 'Caller booked a Friday window from the text', 'Held a text (quiet hours), sent at 7:02am', 'Texted back a missed call, no reply yet', 'Caller replied “call me”, office alerted'],
+  9: ['Booked a no-cool visit, Tuesday 1 to 3', 'Answered “do you service Concord” (yes)', 'Handed a gas-smell chat to a human with the safety script', 'Booked a maintenance visit for a member', 'Answered hours and the service fee question'],
+  16: ['Graded a booked call: 88, strong close', 'Graded a lost call: 54, no offer of a time', 'Weekly coaching note sent to the office lead', 'Graded a booked call: 79', 'Flagged a call where the script skipped the address check'],
+  18: ['Answered an after-hours no-heat call, tentative slot 8 to 10', 'Played the safety message and routed a gas-smell caller to Mike', 'Logged a ticket for a thermostat question, no slot', 'Took an overflow call at 4:50pm, booked Monday', 'Caller asked for a price, logged and handed to the office'],
+  5: ['Review ask sent from Carlos after a paid invoice', 'New 5-star review landed, linked to the job', 'Review ask sent from Dana', 'Skipped an ask: complaint flag on the job', 'New 4-star review landed'],
+  14: ['Monday scoreboard emailed to Joe', 'Named the constraint: install capacity on Fridays', 'Close rate moved from 52% to 58%', 'Revenue per tech ranked (demo)', 'Four-week trend updated']
+};
+function liveActions(n) { const ul = html('ul', { class: 'acts' }); const list = ACTS[n.agent_id] || []; const r = seeded(n.id + 'acts'); const now = new Date('2026-10-31T16:30:00'); for (let i = 0; i < 10; i++) { const li = html('li', {}, ul); const dt = new Date(now - (i * 3.1 + r() * 2.5) * 3600e3); const t = html('time', { text: dt.toLocaleString('en-US', { weekday: 'short', hour: 'numeric', minute: '2-digit' }).replace(',', '') }, li); html('span', { class: 'ok' + (i % 4 === 3 ? ' wait' : '') }, li); html('span', { text: list[i % list.length] }, li); } return ul; }
+function renderAvailable(n, body) {
+  if (n.pain) html('div', { class: 'pain', text: n.pain }, body);
+  const v = html('div', { class: 'video' }, body); html('div', { class: 'play' }, v); html('small', { text: 'Video: what this does in your shop' }, v);
+  const b = html('div', { class: 'btns' }, body);
+  html('a', { class: 'btn p', href: '#book', text: 'Book a free call' }, b); html('a', { class: 'btn s', href: 'mailto:team@gosmarterflow.com?subject=' + encodeURIComponent('Add this: ' + n.name), text: 'Email us' }, b);
+  html('p', { class: 'note', text: 'Added to your shop by your consultant after a short setup.' }, body);
+  if (n.grade) { const g = html('div', { class: 'grade-l' }, body); g.innerHTML = `<i style="background:${GR[n.grade][0]}"></i><span><b>${esc(GR[n.grade][1])}.</b> ${esc(GR[n.grade][2])}</span>`; }
+}
+function renderComing(n, body) {
+  html('span', { class: 'pill coming', text: MAP.states.coming + ' (row ' + n.list_row + ')' }, body);
+  if (n.pain) html('div', { class: 'pain', text: n.pain }, body);
+  html('p', { class: 'note', text: 'Planned for ' + DI[n.dept].label + '. Ask your consultant to move it up the list.' }, body);
+}
+function renderDept(d) {
+  const head = html('div', { class: 'ph' }, panel);
+  html('div', { class: 'crumb', html: `<span class="dp" style="background:${d.color}"></span>Department ${esc(d.id)}` }, head);
+  html('h2', { text: d.label }, head); html('div', { class: 'fc', style: 'font-style:normal', text: d.name }, head);
+  html('button', { class: 'x', 'aria-label': 'Close', text: '×' }, head).onclick = deselect;
+  const body = html('div', { class: 'pb' }, panel);
+  html('p', { class: 'job', text: d.plain }, body);
+  const c = { live: 0, available: 0, coming: 0 }; d.nodes.forEach(n => c[n.state]++);
+  const s = html('div', { class: 'stats' }, body); [[c.live, 'live'], [c.available, 'to add'], [c.coming, 'on the list']].forEach(([v, l]) => { const t = html('div', { class: 'stat' }, s); html('b', { text: v }, t); html('span', { text: l }, t); });
+  const list = html('div', { class: 'dlist' }, body);
+  ['live', 'available', 'coming'].forEach(st => d.nodes.filter(n => n.state === st).forEach(n => { const b = html('button', { html: `<span class="st ${st}"></span>${esc(n.label)}${n.grade ? `<span class="g">${esc(GR[n.grade][1])}</span>` : ''}` }, list); b.onclick = () => { select(n.id); centerOn(n); }; }));
+}
+function renderBrain() {
+  const head = html('div', { class: 'ph' }, panel);
+  html('div', { class: 'crumb', text: 'The center of your map' }, head); html('h2', { text: MAP.brain.name }, head); html('div', { class: 'fc', style: 'font-style:normal', text: MAP.brain.subtitle }, head);
+  html('button', { class: 'x', 'aria-label': 'Close', text: '×' }, head).onclick = deselect;
+  const body = html('div', { class: 'pb' }, panel);
+  html('p', { class: 'job', text: 'Every agent reads the same facts: your hours, service area, prices you allow it to say, scripts, on-call rota and the rules it must never break. Change a fact once and every department picks it up.' }, body);
+  const c = html('div', { class: 'card' }, body); const dl = html('dl', { class: 'kv' }, c);
+  [['Shop', MAP.tenant.name + ' (demo)'], ['Departments connected', String(D.length)], ['Agents live', String(N.filter(n => n.state === 'live').length)], ['Available to add', String(N.filter(n => n.state === 'available').length)], ['On the build list', String(N.filter(n => n.state === 'coming').length)], ['Fence', MAP.fence.items.join(', ')]].forEach(([k, v]) => { html('dt', { text: k }, dl); html('dd', { text: v }, dl); });
+}
+
+/* ---------- search ---------- */
+const q = $('#q'), hits = $('#hits'); let hitIdx = 0;
+const searchable = [...N.map(n => ({ id: n.id, label: n.label, fc: n.fastcontext || '', dept: DI[n.dept].label, hay: (n.label + ' ' + (n.fastcontext || '') + ' ' + n.name + ' ' + (n.slug || '')).toLowerCase() })), ...HUBS.map(h => ({ id: h.id, label: h.d.label, fc: h.d.name, dept: h.id, hay: (h.d.label + ' ' + h.d.name).toLowerCase() })), { id: 'brain', label: MAP.brain.name, fc: MAP.brain.subtitle, dept: '', hay: 'shop brain ' + MAP.brain.subtitle }];
+function doSearch() { const v = q.value.trim().toLowerCase(); hits.innerHTML = ''; if (!v) { hits.classList.remove('show'); return; } const terms = v.split(/\s+/); const m = searchable.filter(s => terms.every(t => s.hay.includes(t))).slice(0, 7); if (!m.length) { hits.classList.remove('show'); return; } hitIdx = 0; m.forEach((s, i) => { const b = html('button', { html: `${esc(s.label)} ${s.fc ? `<span class="fc">${esc(s.fc)}</span>` : ''}<span class="d">${esc(s.dept)}</span>`, class: i === 0 ? 'k' : '' }, hits); b.onclick = () => pick(s.id); }); hits.classList.add('show'); }
+function pick(id) { hits.classList.remove('show'); q.blur(); if (view === 'jrn' && NI[id] && NI[id].state === 'coming') setView('dept', true); select(id); if (!HI[id]) centerOn(P(id), Math.max(cam.k, 1.3)); }
+q.addEventListener('input', doSearch);
+q.addEventListener('keydown', e => { const bs = [...hits.children]; if (!bs.length) return; if (e.key === 'ArrowDown') { hitIdx = (hitIdx + 1) % bs.length; } else if (e.key === 'ArrowUp') { hitIdx = (hitIdx - 1 + bs.length) % bs.length; } else if (e.key === 'Enter') { bs[hitIdx].click(); return; } else return; bs.forEach((b, i) => b.classList.toggle('k', i === hitIdx)); e.preventDefault(); });
+document.addEventListener('click', e => { if (!e.target.closest('#search')) hits.classList.remove('show'); });
+
+/* ---------- boot ---------- */
+$('#tenantName').textContent = MAP.tenant.name;
+setView('dept', false);
+requestAnimationFrame(frame);
+addEventListener('resize', () => fitAll(false));
+setTimeout(() => $('#hint').classList.add('off'), 9000);
+window.__map = { select, setView, fitAll, N, cam: () => cam };
+</script>
+</body>
+</html>
