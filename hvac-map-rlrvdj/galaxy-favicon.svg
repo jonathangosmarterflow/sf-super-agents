@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="HVAC Foundry mark">
+  <title>HVAC Foundry mark</title>
+  <!-- Navy plate with an inset machined edge. The F is built from coil fins: one copper fin (heat), one ice fin (cool). -->
+  <rect x="0" y="0" width="48" height="48" rx="10" fill="#0B2545"/>
+  <rect x="3.5" y="3.5" width="41" height="41" rx="7" fill="none" stroke="#1D5FA8" stroke-width="1.25"/>
+  <rect x="14" y="12" width="6" height="24" rx="1" fill="#DCEBF7"/>
+  <rect x="14" y="12" width="21" height="6" rx="1" fill="#B4541A"/>
+  <rect x="14" y="21.5" width="15" height="5" rx="1" fill="#8EC5E8"/>
+</svg>
