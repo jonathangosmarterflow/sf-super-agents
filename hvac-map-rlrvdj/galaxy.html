@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Joe's Heating and Air (demo): your AI shop galaxy, HVAC Foundry</title>
+<title>HVAC Foundry: The AI Operating System for HVAC shops (Joe's Heating and Air, demo)</title>
 <meta name="robots" content="noindex">
 <link rel="icon" type="image/svg+xml" href="galaxy-favicon.svg">
 <link rel="icon" type="image/png" href="favicon.png">
@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* HVAC Foundry tokens (brand/hvac-foundry/brand.md), dark stage */
+/* HVAC Foundry tokens (brand/hvac-foundry/brand.md), dark stage: navy surfaces, the blueprint grid, hairlines over glows */
 :root{
   --hf-navy:#0B2545; --hf-deep:#071A33; --hf-ink:#0E1B2C;
   --hf-blue:#1D5FA8; --hf-blue-dk:#13477F; --hf-sky:#8EC5E8;
@@ -20,21 +20,30 @@
   --hf-head:'Archivo','Helvetica Neue',Arial,sans-serif;
   --hf-body:'IBM Plex Sans','Helvetica Neue',Arial,sans-serif;
   --hf-mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
-  --space:#040C1A; --glass:rgba(7,26,51,.80); --glass2:rgba(142,197,232,.06); --hair:rgba(142,197,232,.18);
+  --hf-grid:linear-gradient(rgba(142,197,232,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(142,197,232,.07) 1px,transparent 1px);
+  --space:#071A33; --glass:rgba(7,26,51,.86); --glass2:rgba(142,197,232,.06); --hair:rgba(142,197,232,.2);
   --txt:#fff; --txt2:#DCEBF7; --txt3:#A9BCD1;
   --panel-w:400px;
 }
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
 body{background:var(--space);color:var(--txt);font-family:var(--hf-body);overflow:hidden;-webkit-font-smoothing:antialiased}
+/* the stage: a navy-to-deep-navy wash (the one allowed wash) under the signature blueprint grid; the 3D canvas sits on top with a clear background */
+#stage{position:fixed;inset:0;z-index:0;background:linear-gradient(170deg,#0B2545 0%,#071A33 100%)}
+#stage::after{content:"";position:absolute;inset:0;background-image:var(--hf-grid);background-size:32px 32px;mask-image:radial-gradient(ellipse at 50% 50%,#000 30%,transparent 85%);-webkit-mask-image:radial-gradient(ellipse at 50% 50%,#000 30%,transparent 85%)}
 button{font-family:inherit}
-#scene{position:fixed;inset:0}
+#scene{position:fixed;inset:0;z-index:1}
 #scene canvas{display:block;outline:none}
 .mono{font-family:var(--hf-mono);font-weight:500;text-transform:uppercase;letter-spacing:.12em}
 
-/* top left: wordmark + breadcrumb */
+/* top left: the header plate (wordmark, what this is, the owner's words) + breadcrumb */
 #top{position:fixed;left:20px;top:16px;z-index:5;display:flex;flex-direction:column;gap:10px;pointer-events:none;max-width:calc(100vw - 40px)}
 #top > *{pointer-events:auto}
+#plate{display:flex;flex-direction:column;gap:7px;background:var(--glass);border:1px solid var(--hair);border-radius:10px;padding:12px 16px 11px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);width:max-content;max-width:100%;position:relative}
+#plate::before,#plate::after{content:"";position:absolute;width:5px;height:5px;border-radius:50%;background:rgba(142,197,232,.35);top:7px}
+#plate::before{left:7px}#plate::after{right:7px}
+#plate h1{margin:0;font-family:var(--hf-head);font-weight:700;font-size:15px;letter-spacing:-.01em;color:#fff;line-height:1.2}
+#plate .words{margin:0;font-family:var(--hf-mono);font-weight:500;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt3);line-height:1.5}
 .hf-wordmark{display:inline-flex;align-items:center;gap:10px;font-family:var(--hf-head);text-transform:uppercase;letter-spacing:.12em;font-size:15px;color:#fff}
 .hf-wordmark svg{width:30px;height:30px}
 .hf-wordmark span{font-weight:500;color:var(--hf-sky)}
@@ -50,7 +59,8 @@ button{font-family:inherit}
 /* top right chips */
 #chips{position:fixed;right:20px;top:16px;z-index:5;display:flex;gap:8px;align-items:center;transition:right .45s cubic-bezier(.2,.7,.2,1)}
 .chip{font-family:var(--hf-mono);font-weight:500;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--hair);background:var(--glass);color:var(--txt3);padding:7px 10px;border-radius:6px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);text-decoration:none;white-space:nowrap}
-.chip.demo{color:var(--hf-amber);border-color:rgba(224,138,60,.4)}
+.chip.demo{color:var(--txt2);display:inline-flex;align-items:center;gap:8px}
+.chip.demo::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--hf-amber);flex:none}
 a.chip:hover{color:#fff;border-color:rgba(142,197,232,.45)}
 
 /* tooltip */
@@ -65,8 +75,8 @@ a.chip:hover{color:#fff;border-color:rgba(142,197,232,.45)}
 #legend div{display:flex;align-items:center;gap:8px;white-space:nowrap}
 #legend p{grid-column:1/-1;margin:2px 0 0;padding-top:7px;border-top:1px solid var(--hair);font-size:11.5px;line-height:1.45;color:var(--txt3)}
 .lg{width:12px;height:12px;border-radius:50%;flex:none;display:inline-block}
-.lg.live{background:#fff;box-shadow:0 0 0 2px rgba(142,197,232,.35),0 0 10px 3px rgba(142,197,232,.75)}
-.lg.available{background:var(--hf-sky);box-shadow:0 0 6px 1px rgba(142,197,232,.45)}
+.lg.live{background:#fff;box-shadow:0 0 0 2px rgba(142,197,232,.4)}
+.lg.available{background:var(--hf-sky)}
 .lg.coming{background:rgba(142,197,232,.32)}
 .lg.concept{background:transparent;border:1.5px solid rgba(220,235,247,.75)}
 
@@ -112,7 +122,7 @@ body.panel-open #chips,body.panel-open #ctl{right:calc(var(--panel-w) + 20px)}
 .state i{width:7px;height:7px;border-radius:50%;display:inline-block}
 .state.ok{border-color:rgba(142,197,232,.5);color:var(--hf-sky)}.state.ok i{background:var(--hf-sky)}
 .state.wait{border-color:rgba(224,138,60,.5);color:var(--hf-amber)}.state.wait i{background:var(--hf-amber)}
-.state.bad{border-color:rgba(255,140,120,.5);color:#ffb3a3}.state.bad i{background:#ff8a73}
+.state.bad{border-color:rgba(224,138,60,.6);color:var(--txt2)}.state.bad i{background:var(--hf-amber);box-shadow:0 0 0 2px rgba(224,138,60,.3)}
 .state.unk{color:var(--txt2)}.state.unk i{background:var(--txt3)}
 .state.draft{border-style:dashed;color:var(--txt3)}.state.draft i{background:transparent;border:1px dashed var(--txt3)}
 .pb{padding:16px 20px 28px;display:flex;flex-direction:column;gap:14px}
@@ -122,9 +132,10 @@ body.panel-open #chips,body.panel-open #ctl{right:calc(var(--panel-w) + 20px)}
 .pill.live{border-color:rgba(142,197,232,.55);color:#fff}
 .pill.available{border-color:rgba(142,197,232,.45);color:var(--hf-sky)}
 .pill.coming,.pill.concept{border-style:dashed;color:var(--txt3)}
-.pill.demo{background:rgba(224,138,60,.1);border-color:rgba(224,138,60,.45);color:var(--hf-amber)}
+.pill.demo{color:var(--txt2)}
+.pill.demo::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--hf-amber);flex:none}
 .job{font-size:15px;line-height:1.55;color:#fff;margin:0}
-.pain{border-left:3px solid var(--hf-amber);padding:8px 12px;color:var(--txt2);font-size:14px;line-height:1.5;background:rgba(224,138,60,.06);border-radius:0 8px 8px 0;font-style:italic}
+.pain{border-left:3px solid var(--hf-blue);padding:8px 12px;color:var(--txt2);font-size:14px;line-height:1.5;background:rgba(142,197,232,.05);border-radius:0 8px 8px 0;font-style:italic}
 .tabs{display:flex;gap:4px;background:var(--glass2);border:1px solid var(--hair);border-radius:10px;padding:4px}
 .tabs button{flex:1;border:0;background:transparent;color:var(--txt3);padding:8px 4px;border-radius:7px;font-weight:600;font-size:12px;cursor:pointer;white-space:nowrap}
 .tabs button[aria-selected="true"]{background:rgba(142,197,232,.16);color:#fff}
@@ -142,7 +153,7 @@ body.panel-open #chips,body.panel-open #ctl{right:calc(var(--panel-w) + 20px)}
 .rec details{margin-top:14px}
 .rec summary{cursor:pointer;font-family:var(--hf-mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--txt3);list-style:none}
 .rec details p{color:var(--txt2);font-size:12.5px;margin-top:6px}
-.rec .ev{display:inline-block;font-family:var(--hf-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--hf-amber);border:1px dashed rgba(224,138,60,.5);border-radius:6px;padding:3px 8px}
+.rec .ev{display:inline-block;font-family:var(--hf-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--txt3);border:1px dashed rgba(169,188,209,.5);border-radius:6px;padding:3px 8px}
 .card{background:var(--glass2);border:1px solid var(--hair);border-radius:10px;padding:12px 14px}
 .kv{display:grid;grid-template-columns:1fr auto;gap:8px 14px;margin:0;font-size:13px}
 .kv dt{color:var(--txt3)}.kv dd{margin:0;color:#fff;font-weight:600;text-align:right}
@@ -150,13 +161,13 @@ body.panel-open #chips,body.panel-open #ctl{right:calc(var(--panel-w) + 20px)}
 .scope.local{color:var(--hf-sky);border:1px solid rgba(142,197,232,.4)}
 .scope.core{color:var(--txt2);border:1px solid var(--hair)}
 .note{font-size:12.5px;color:var(--txt3);line-height:1.5;margin:0}
-.dtag{display:inline-block;font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--hf-amber);border:1px solid rgba(224,138,60,.4);border-radius:5px;padding:1px 4px;margin-left:6px;vertical-align:middle}
+.dtag{display:inline-block;font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--txt3);border:1px solid rgba(169,188,209,.4);border-radius:5px;padding:1px 4px;margin-left:6px;vertical-align:middle}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .stat{background:var(--glass2);border:1px solid var(--hair);border-radius:10px;padding:10px}
 .stat b{display:block;font-family:var(--hf-head);font-weight:800;font-size:22px;letter-spacing:-.02em;color:var(--hf-sky)}
 .stat span{font-size:10.5px;color:var(--txt3);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
 .spark{display:flex;align-items:flex-end;gap:4px;height:46px;margin-top:8px}
-.spark i{flex:1;background:linear-gradient(0deg,var(--hf-blue),var(--hf-sky));border-radius:2px 2px 0 0;opacity:.85}
+.spark i{flex:1;background:var(--hf-sky);border-radius:2px 2px 0 0;opacity:.75}
 .acts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
 .acts li{display:flex;gap:10px;font-size:13px;line-height:1.45;color:#fff}
 .acts time{color:var(--txt3);font-size:12px;white-space:nowrap;min-width:62px;padding-top:2px;font-variant-numeric:tabular-nums}
@@ -171,7 +182,7 @@ body.panel-open #chips,body.panel-open #ctl{right:calc(var(--panel-w) + 20px)}
 .dlist button{display:flex;align-items:center;gap:10px;background:var(--glass2);border:1px solid var(--hair);border-radius:8px;padding:9px 12px;color:#fff;cursor:pointer;font-size:13.5px;text-align:left}
 .dlist button:hover{border-color:rgba(142,197,232,.45)}
 .dlist .st{width:9px;height:9px;border-radius:50%;flex:none}
-.dlist .st.live{background:#fff;box-shadow:0 0 6px 1px rgba(142,197,232,.8)}
+.dlist .st.live{background:#fff;box-shadow:0 0 0 2px rgba(142,197,232,.4)}
 .dlist .st.available{background:var(--hf-sky)}
 .dlist .st.coming{background:rgba(142,197,232,.32)}
 .dlist .st.concept{border:1.5px solid rgba(220,235,247,.75)}
@@ -199,7 +210,9 @@ body.present #crumb{font-size:13px}
   #legend p{display:none}
   #chips .chip.demo{display:none}
   #hint,#foot{display:none}
-  .hf-wordmark em{display:none}
+  .hf-wordmark em,#plate .words{display:none}
+  #plate{padding:9px 12px 8px;gap:5px}
+  #plate h1{font-size:12.5px}
   #ctl{bottom:18px}
 }
 @media (prefers-reduced-motion: reduce){
@@ -208,10 +221,15 @@ body.present #crumb{font-size:13px}
 </style>
 </head>
 <body>
+<div id="stage" aria-hidden="true"></div>
 <div id="scene" aria-label="3D map of the shop's AI departments, agents and sub-systems"></div>
 
 <header id="top">
-  <span class="hf-wordmark"><svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="10" fill="#0B2545"/><rect x="3.5" y="3.5" width="41" height="41" rx="7" fill="none" stroke="#1D5FA8" stroke-width="1.25"/><rect x="14" y="12" width="6" height="24" rx="1" fill="#DCEBF7"/><rect x="14" y="12" width="21" height="6" rx="1" fill="#B4541A"/><rect x="14" y="21.5" width="15" height="5" rx="1" fill="#8EC5E8"/></svg><span>HVAC</span><b>FOUNDRY</b><em id="tenant"></em></span>
+  <div id="plate">
+    <span class="hf-wordmark"><svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="10" fill="#0B2545"/><rect x="3.5" y="3.5" width="41" height="41" rx="7" fill="none" stroke="#1D5FA8" stroke-width="1.25"/><rect x="14" y="12" width="6" height="24" rx="1" fill="#DCEBF7"/><rect x="14" y="12" width="21" height="6" rx="1" fill="#B4541A"/><rect x="14" y="21.5" width="15" height="5" rx="1" fill="#8EC5E8"/></svg><span>HVAC</span><b>FOUNDRY</b><em id="tenant"></em></span>
+    <h1>The AI Operating System for HVAC shops</h1>
+    <p class="words">Dispatch board / on-call tech / after hours / tune-ups / callbacks / service area</p>
+  </div>
   <nav id="crumb" aria-label="Where you are"></nav>
 </header>
 
@@ -228,7 +246,7 @@ body.present #crumb{font-size:13px}
 </div>
 
 <div id="ctl"><button class="key" id="presentBtn" title="Present mode (P)" aria-pressed="false">P</button><button id="tourBtn" aria-pressed="false">Tour</button></div>
-<div id="hint">Drag to look around. Scroll to zoom. Click a department to fly in. Esc flies out. P presents.</div>
+<div id="hint">Drag to turn. Scroll to zoom. Click a department to open it. Esc steps back. P presents.</div>
 <div id="toast" role="status"></div>
 <div id="tourCap" aria-live="polite"></div>
 <div id="tip" role="tooltip"></div>
@@ -265,8 +283,9 @@ function fail(msg) { const f = $('#fail'); f.innerHTML = ''; html('p', { text: m
 if (!MAP) { document.body.innerHTML = '<p style="padding:40px;font-family:sans-serif;color:#fff">Build this page with build.py (map.json was not inlined).</p>'; throw new Error('no map'); }
 
 /* ---------- data model ---------- */
-// One hue per department, all from the HVAC Foundry family (sky, line blue, ice, mist, amber), cool and warm alternating around the ring.
-const HUES = { D1: '#8EC5E8', D2: '#E08A3C', D3: '#4F93D9', D4: '#DCEBF7', D5: '#E8C27A', D6: '#6FB3C0', D7: '#A9BCD1', D8: '#F2A877', D9: '#7FA6E0', D10: '#F3E3C3' };
+// One color family for every department (brand.md: Line Blue does the work, Sky lights it). Status, not hue, tells the pieces apart.
+const SKY = '#8EC5E8';
+const HUES = Object.fromEntries(['D1', 'D2', 'D3', 'D4', 'D5', 'D6', 'D7', 'D8', 'D9', 'D10'].map(id => [id, SKY]));
 const STATUS_WORDS = { live: MAP.tenant.demo ? 'Live (demo)' : MAP.states.live, available: 'Available to add', coming: MAP.states.coming, concept: 'Concept, not built' };
 const KIND_WORDS = { subsystem: 'Sub-system', skill: 'Skill', data: 'Data source' };
 const D = MAP.departments.map((d, i) => Object.assign({}, d, { color: HUES[d.id] || '#8EC5E8', idx: i, nodes: [] }));
@@ -290,10 +309,10 @@ const PARTNERS = {};
 MAP.edges.forEach(e => { (PARTNERS[e.src] = PARTNERS[e.src] || new Set()).add(e.dst); (PARTNERS[e.dst] = PARTNERS[e.dst] || new Set()).add(e.src); });
 
 /* ---------- static copy ---------- */
-$('#tenant').textContent = 'AI shop galaxy';
+$('#tenant').textContent = MAP.tenant.name + (MAP.tenant.demo ? ' (demo)' : '');
 $('#demoChip').textContent = MAP.demo_chip || 'Demo shop';
 $('#lgLive').textContent = MAP.tenant.demo ? 'Live in the demo shop' : 'Live in your shop';
-$('#lgNote').textContent = (MAP.edge_note || '') + ' Moving dots show how information flows to and from the Shop Brain (illustration).';
+$('#lgNote').textContent = (MAP.edge_note || '') + ' The slow dots on the main lines show information reaching the Shop Brain (illustration).';
 $('#foot').textContent = MAP.tenant.name + (MAP.tenant.demo ? ' (demo)' : '') + ' · map v' + MAP_HASH8;
 
 /* ---------- panel (content model and copy rules of the flat map) ---------- */
@@ -440,7 +459,7 @@ let go = () => {};
   try { await Promise.race([Promise.all([document.fonts.load('700 40px Archivo'), document.fonts.load('600 40px "IBM Plex Sans"'), document.fonts.load('500 20px "IBM Plex Mono"')]), new Promise(r => setTimeout(r, 2500))]); } catch (e) {}
 
   const V = (x = 0, y = 0, z = 0) => new THREE.Vector3(x, y, z);
-  const WHITE = new THREE.Color('#ffffff'), NAVY = new THREE.Color('#0B2545');
+  const WHITE = new THREE.Color('#ffffff'), NAVY = new THREE.Color('#0B2545'), ICE = new THREE.Color('#DCEBF7'), COPPER = new THREE.Color('#B4541A');
 
   /* layout: brain at the center, departments on a gently warped ring, agents orbit their department, sub-systems unfold outward */
   const R1 = 250;
@@ -462,95 +481,100 @@ let go = () => {};
   const tmpV = V();
   GN.forEach(g => { if (g.kind === 'sub') { subPos(g, tmpV); g.x = g.fx = tmpV.x; g.y = g.fy = tmpV.y; g.z = g.fz = tmpV.z; } });
 
-  /* links: every link points TOWARD the brain so the particles flow in; a sparse ghost set flows back out */
+  /* links: the lines run like ductwork and refrigerant lines, straight and muted; every link points TOWARD the brain so the few particles flow in */
   const GL = [];
   const L = (s, t, kind, color) => GL.push({ source: s, target: t, sId: s, tId: t, kind, color });
-  D.forEach(d => L(d.id, 'brain', 'spine', d.color));
-  N.forEach(n => L(n.id, n.dept, 'branch', DI[n.dept].color));
-  Object.keys(SI).forEach(id => L(id, SI[id].parent, 'twig', DI[SI[id].agent.dept].color));
-  MAP.edges.forEach(e => { if (GI[e.src] && GI[e.dst]) L(e.src, e.dst, 'handoff', '#8EC5E8'); });
-  D.forEach(d => L('brain', d.id, 'out', '#E08A3C'));
-  const LBASE = { spine: .42, branch: .2, twig: .3, handoff: .14, out: 0 };
-  const PBASE = { spine: 3, branch: 1, twig: 1, handoff: 1, out: 1 };
-  const PSPEED = { spine: .0032, branch: .0055, twig: .007, handoff: .0028, out: .0024 };
-  const PWIDTH = { spine: 2.4, branch: 1.4, twig: 1.0, handoff: 1.4, out: 2.8 };
+  D.forEach(d => L(d.id, 'brain', 'spine', SKY));
+  N.forEach(n => L(n.id, n.dept, 'branch', SKY));
+  Object.keys(SI).forEach(id => L(id, SI[id].parent, 'twig', SKY));
+  MAP.edges.forEach(e => { if (GI[e.src] && GI[e.dst]) L(e.src, e.dst, 'handoff', '#A9BCD1'); });
+  D.forEach(d => L('brain', d.id, 'out', '#DCEBF7'));
+  const LBASE = { spine: .38, branch: .24, twig: .3, handoff: .1, out: 0 };
+  const PBASE = { spine: 1, branch: 1, twig: 0, handoff: 0, out: 1 };
+  const PSPEED = { spine: .0012, branch: .0022, twig: .003, handoff: .0012, out: .001 };
+  const PWIDTH = { spine: 1.8, branch: 1.1, twig: .9, handoff: 1.1, out: 1.8 };
 
-  /* textures */
+  /* textures: a flat gauge dial (bezel + ticks) for hubs, a thin ring for the selection and concepts, a soft dot for the small pieces */
   function canvasTex(size, draw) { const c = document.createElement('canvas'); c.width = c.height = size; draw(c.getContext('2d'), size); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t; }
   const TEX = {
-    glow: canvasTex(128, (x, s) => { const g = x.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(.18, 'rgba(255,255,255,.55)'); g.addColorStop(.45, 'rgba(255,255,255,.14)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, s, s); }),
-    ring: canvasTex(128, (x, s) => { const g = x.createRadialGradient(s / 2, s / 2, s * .26, s / 2, s / 2, s / 2); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(.35, 'rgba(255,255,255,.95)'); g.addColorStop(.55, 'rgba(255,255,255,.25)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, s, s); }),
-    dot: canvasTex(32, (x, s) => { const g = x.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(.4, 'rgba(255,255,255,.5)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, s, s); })
+    dial: canvasTex(256, (x, s) => { const c = s / 2; x.strokeStyle = 'rgba(255,255,255,.95)'; x.lineWidth = 3; x.beginPath(); x.arc(c, c, s * .47, 0, 6.2832); x.stroke(); x.strokeStyle = 'rgba(255,255,255,.4)'; x.lineWidth = 1.5; x.beginPath(); x.arc(c, c, s * .33, 0, 6.2832); x.stroke(); x.strokeStyle = 'rgba(255,255,255,.9)'; x.lineWidth = 3; x.lineCap = 'round'; for (let i = 0; i < 12; i++) { const a = i / 12 * 6.2832, r0 = s * .47, r1 = s * (i % 3 === 0 ? .40 : .43); x.beginPath(); x.moveTo(c + Math.cos(a) * r0, c + Math.sin(a) * r0); x.lineTo(c + Math.cos(a) * r1, c + Math.sin(a) * r1); x.stroke(); } }),
+    ring: canvasTex(128, (x, s) => { const g = x.createRadialGradient(s / 2, s / 2, s * .36, s / 2, s / 2, s / 2); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(.42, 'rgba(255,255,255,.95)'); g.addColorStop(.62, 'rgba(255,255,255,.9)'); g.addColorStop(.72, 'rgba(255,255,255,0)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, s, s); }),
+    sel: canvasTex(256, (x, s) => { x.strokeStyle = 'rgba(255,255,255,1)'; x.lineWidth = s * .055; x.beginPath(); x.arc(s / 2, s / 2, s * .44, 0, 6.2832); x.stroke(); }),
+    soft: canvasTex(64, (x, s) => { const g = x.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2); g.addColorStop(0, 'rgba(255,255,255,.9)'); g.addColorStop(.35, 'rgba(255,255,255,.35)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, s, s); })
   };
-  const GEO = { 0: new THREE.SphereGeometry(10, 32, 24), 1: new THREE.SphereGeometry(6.2, 24, 16), 2: new THREE.SphereGeometry(2.6, 16, 12), 3: new THREE.SphereGeometry(1.5, 12, 8), 4: new THREE.SphereGeometry(1, 10, 8) };
+  const GEO = { 0: new THREE.SphereGeometry(9, 32, 24), 1: new THREE.SphereGeometry(5.6, 24, 16), 2: new THREE.SphereGeometry(2.6, 16, 12), 3: new THREE.SphereGeometry(1.5, 12, 8), 4: new THREE.SphereGeometry(1, 10, 8) };
   const RAD = { 0: 10, 1: 6.2, 2: 2.6, 3: 1.5, 4: 1 };
   const HITGEO = { 0: new THREE.SphereGeometry(13, 8, 6), 1: new THREE.SphereGeometry(10, 8, 6), 2: new THREE.SphereGeometry(5.2, 8, 6), 3: new THREE.SphereGeometry(3.4, 8, 6), 4: new THREE.SphereGeometry(2.4, 8, 6) };
   const HITMAT = new THREE.MeshBasicMaterial({ visible: false });
-  const GLOWMUL = { 0: 8, 1: 7.5, 2: 6.8, 3: 6, 4: 6 };
-  const BASEGLOW = { live: 1, dept: .95, available: .62, coming: .3, concept: .8 };
+  const GLOWMUL = { 0: 5.6, 1: 4.8, 2: 2.8, 3: 2.6, 4: 2.6 };
+  const BASEGLOW = { live: .5, dept: .9, available: .22, coming: .1, concept: .7 };
   const LABEL_H = { 0: 7.2, 1: 7.4, 2: 3.4, 3: 2.3, 4: 1.8 };
   const LABEL_PX = { 0: [15, 26], 1: [13, 26], 2: [11, 16], 3: [10, 14], 4: [9, 12] }; // first-line height on screen, min and max px
 
+  // hub labels are drawn as spec plates (a navy plate with a hairline edge and four rivets), the smaller pieces as plain text
   function makeLabel(g) {
     let lines;
     if (g.layer === 0) lines = [['SHOP BRAIN', '800 64px Archivo', '#ffffff', .22], ['ONE SOURCE OF TRUTH', '500 32px "IBM Plex Mono"', '#8EC5E8', .2]];
-    else if (g.layer === 1) lines = [[g.name.toUpperCase(), '800 60px Archivo', '#ffffff', .12], [g.id + ' / ' + DI[g.id].nodes.length + ' AGENTS', '500 30px "IBM Plex Mono"', g.color, .16]];
+    else if (g.layer === 1) lines = [[g.name.toUpperCase(), '800 60px Archivo', '#ffffff', .12], [g.id + ' / ' + DI[g.id].nodes.length + ' AGENTS', '500 30px "IBM Plex Mono"', '#A9BCD1', .16]];
     else lines = [[g.name, (g.layer === 2 ? '600' : '500') + ' 44px "IBM Plex Sans"', g.layer === 2 ? '#ffffff' : '#DCEBF7', 0]];
+    const plate = g.layer <= 1;
     const c = document.createElement('canvas'), x = c.getContext('2d');
-    const spaced = (t, sp) => sp ? t.split('').join(' ') : t;
+    const spaced = (t, sp) => sp ? t.split('').join(' ') : t;
     let w = 0; lines.forEach(([t, f, , sp]) => { x.font = f; w = Math.max(w, x.measureText(spaced(t, sp)).width); });
-    const lh = lines.map(([, f]) => parseInt(f.split(' ')[1], 10) * 1.22); const hgt = lh.reduce((a, b) => a + b, 0) + 16;
-    c.width = Math.ceil(w + 40); c.height = Math.ceil(hgt);
-    let y = 8; lines.forEach(([t, f, col, sp], i) => { x.font = f; x.textAlign = 'center'; x.textBaseline = 'top'; x.shadowColor = 'rgba(4,12,26,.95)'; x.shadowBlur = 14; x.fillStyle = col; x.fillText(spaced(t, sp), c.width / 2, y); x.shadowBlur = 0; x.fillText(spaced(t, sp), c.width / 2, y); y += lh[i]; });
+    const lh = lines.map(([, f]) => parseInt(f.split(' ')[1], 10) * 1.22); const pad = plate ? 30 : 8; const hgt = lh.reduce((a, b) => a + b, 0) + pad * 2;
+    c.width = Math.ceil(w + (plate ? 90 : 40)); c.height = Math.ceil(hgt);
+    if (plate) { const r = 14, X = 4, Y = 4, W = c.width - 8, H = c.height - 8; x.beginPath(); if (x.roundRect) x.roundRect(X, Y, W, H, r); else x.rect(X, Y, W, H); x.fillStyle = 'rgba(11,37,69,.9)'; x.fill(); x.lineWidth = 2.5; x.strokeStyle = 'rgba(142,197,232,.45)'; x.stroke(); x.fillStyle = 'rgba(142,197,232,.45)'; [[X + 16, Y + 16], [X + W - 16, Y + 16], [X + 16, Y + H - 16], [X + W - 16, Y + H - 16]].forEach(([px, py]) => { x.beginPath(); x.arc(px, py, 3.5, 0, 6.2832); x.fill(); }); }
+    let y = pad; lines.forEach(([t, f, col, sp], i) => { x.font = f; x.textAlign = 'center'; x.textBaseline = 'top'; if (!plate) { x.shadowColor = 'rgba(7,26,51,.95)'; x.shadowBlur = 12; } x.fillStyle = col; x.fillText(spaced(t, sp), c.width / 2, y); x.shadowBlur = 0; x.fillText(spaced(t, sp), c.width / 2, y); y += lh[i]; });
     const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
     const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false, depthTest: false, opacity: 0 }));
     sp.userData.ratio = c.height / lh[0]; sp.userData.aspect = c.width / c.height;
-    sp.center.set(.5, 1); sp.position.y = -(RAD[g.layer] * (g.layer <= 1 ? 1.9 : 1.5)); sp.renderOrder = 20; sp.layers.set(1);
+    sp.center.set(.5, 1); sp.position.y = -(RAD[g.layer] * (g.layer <= 1 ? 2.3 : 1.5)); sp.renderOrder = 20; sp.layers.set(1);
     return sp;
   }
   let BRAIN = null;
   function nodeObj(g) {
     const grp = new THREE.Group();
     const col = new THREE.Color(g.color); const coreCol = col.clone();
-    if (g.layer === 0) coreCol.lerp(WHITE, .7); else if (g.layer === 1 || g.status === 'live') coreCol.lerp(WHITE, .45); else if (g.status === 'coming') coreCol.lerp(NAVY, .3); else if (g.status === 'concept') coreCol.lerp(WHITE, .3);
+    if (g.layer === 0) coreCol.copy(ICE); else if (g.layer === 1) coreCol.lerp(WHITE, .55); else if (g.status === 'live') coreCol.copy(WHITE); else if (g.status === 'coming') coreCol.lerp(NAVY, .55); else if (g.status === 'concept') coreCol.lerp(NAVY, .35);
     const core = new THREE.Mesh(GEO[g.layer], new THREE.MeshBasicMaterial({ color: coreCol, transparent: true }));
     if (g.status === 'concept') core.scale.setScalar(.6);
     grp.add(core);
-    const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: g.status === 'concept' ? TEX.ring : TEX.glow, color: col, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }));
-    const gs = RAD[g.layer] * GLOWMUL[g.layer] * (g.status === 'concept' ? .55 : 1); glow.scale.set(gs, gs, 1); grp.add(glow);
-    glow.layers.set(1); // glows never catch the pointer; an invisible hit sphere does, sized per layer so a big glow cannot hide the node behind it
+    const hub = g.layer <= 1;
+    const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: hub ? TEX.dial : g.status === 'concept' ? TEX.ring : TEX.soft, color: hub ? col : (g.status === 'live' ? ICE : col), transparent: true, depthWrite: false }));
+    const gs = RAD[g.layer] * GLOWMUL[g.layer] * (g.status === 'concept' ? .9 : 1); glow.scale.set(gs, gs, 1); grp.add(glow);
+    glow.layers.set(1); // dials never catch the pointer; an invisible hit sphere does, sized per layer
     const hit = new THREE.Mesh(HITGEO[g.layer], HITMAT); grp.add(hit);
     if (g.layer === 0) addBrain(grp);
     const label = makeLabel(g); grp.add(label);
     g._o = { grp, core, glow, gs, label };
     return grp;
   }
+  // the Shop Brain: one calibrated outer dial that turns very slowly, a flat plate ring under it. No pulse, no halo, no wireframe.
   function addBrain(grp) {
     const add = (o) => { o.layers.set(1); grp.add(o); return o; };
-    const halo = add(new THREE.Sprite(new THREE.SpriteMaterial({ map: TEX.glow, color: new THREE.Color('#8EC5E8'), transparent: true, opacity: .2, blending: THREE.AdditiveBlending, depthWrite: false })));
-    halo.scale.set(200, 200, 1);
-    const wave = add(new THREE.Sprite(new THREE.SpriteMaterial({ map: TEX.ring, color: new THREE.Color('#DCEBF7'), transparent: true, opacity: .3, blending: THREE.AdditiveBlending, depthWrite: false })));
-    const shellMat = (o) => new THREE.LineBasicMaterial({ color: new THREE.Color('#8EC5E8'), transparent: true, opacity: o, blending: THREE.AdditiveBlending, depthWrite: false });
-    const shell1 = add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(19, 1)), shellMat(.34)));
-    const shell2 = add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(28, 0)), shellMat(.13)));
-    const ringG = new THREE.RingGeometry(36, 36.6, 96); const ring = add(new THREE.Mesh(ringG, new THREE.MeshBasicMaterial({ color: new THREE.Color('#E08A3C'), transparent: true, opacity: .32, side: THREE.DoubleSide, blending: THREE.AdditiveBlending, depthWrite: false })));
-    ring.rotation.x = Math.PI / 2.2;
-    BRAIN = { halo, wave, shell1, shell2, ring };
+    const outer = add(new THREE.Sprite(new THREE.SpriteMaterial({ map: TEX.dial, color: new THREE.Color(SKY), transparent: true, opacity: .32, depthWrite: false })));
+    outer.scale.set(96, 96, 1);
+    const ring = add(new THREE.Mesh(new THREE.RingGeometry(34, 34.5, 96), new THREE.MeshBasicMaterial({ color: new THREE.Color(SKY), transparent: true, opacity: .28, side: THREE.DoubleSide, depthWrite: false })));
+    ring.rotation.x = Math.PI / 2;
+    BRAIN = { outer, ring };
   }
+  // the copper selection ring: the one copper detail on the stage, placed on whatever is selected
+  const SEL = new THREE.Sprite(new THREE.SpriteMaterial({ map: TEX.sel, color: COPPER, transparent: true, opacity: 0, depthWrite: false, depthTest: false }));
+  SEL.renderOrder = 19; SEL.layers.set(1); SEL.visible = false;
   // force-graph rebuilds particles as Mesh(geometry, material) from whatever this returns, so it must be a Mesh (a Sprite breaks the renderer)
   const PMAT = {}, PGEO = {};
   function particleObj(l) {
-    const key = l.kind === 'out' ? 'out' : l.kind === 'handoff' ? 'handoff' : l.color;
-    const m = PMAT[key] || (PMAT[key] = new THREE.MeshBasicMaterial({ color: new THREE.Color(l.kind === 'out' ? '#E08A3C' : l.kind === 'handoff' ? '#DCEBF7' : l.color).lerp(WHITE, l.kind === 'out' ? .15 : .5), transparent: true, opacity: .95, blending: THREE.AdditiveBlending, depthWrite: false }));
+    const key = l.kind;
+    const m = PMAT[key] || (PMAT[key] = new THREE.MeshBasicMaterial({ color: ICE.clone(), transparent: true, opacity: l.kind === 'branch' ? .7 : .9, depthWrite: false }));
     const w = PWIDTH[l.kind] / 2; const g = PGEO[w] || (PGEO[w] = new THREE.SphereGeometry(w, 8, 6));
     return new THREE.Mesh(g, m);
   }
-  function linkMat(l) { return l._mat || (l._mat = new THREE.LineBasicMaterial({ color: new THREE.Color(l.color), transparent: true, opacity: LBASE[l.kind], blending: THREE.AdditiveBlending, depthWrite: false, visible: l.kind !== 'out' })); }
+  function linkMat(l) { return l._mat || (l._mat = new THREE.LineBasicMaterial({ color: new THREE.Color(l.color), transparent: true, opacity: LBASE[l.kind], depthWrite: false, visible: l.kind !== 'out' })); }
 
   const el = $('#scene');
-  graph = ForceGraph3D({ controlType: 'orbit', rendererConfig: { antialias: true, powerPreference: 'high-performance' } })(el)
+  graph = ForceGraph3D({ controlType: 'orbit', rendererConfig: { antialias: true, alpha: true, powerPreference: 'high-performance' } })(el)
     .width(innerWidth).height(innerHeight)
-    .backgroundColor('#040C1A')
+    .backgroundColor('rgba(0,0,0,0)')
     .showNavInfo(false)
     .enableNodeDrag(false)
     .nodeLabel(() => '')
@@ -558,7 +582,7 @@ let go = () => {};
     .nodeThreeObject(nodeObj)
     .linkWidth(0)
     .linkMaterial(linkMat)
-    .linkCurvature(l => l.kind === 'handoff' ? .3 : 0)
+    .linkCurvature(l => l.kind === 'handoff' ? .12 : 0)
     .linkDirectionalParticleThreeObject(particleObj)
     .linkDirectionalParticleSpeed(l => PSPEED[l.kind] * (REDUCED ? .5 : 1))
     .linkHoverPrecision(0)
@@ -569,32 +593,23 @@ let go = () => {};
   cam = graph.camera(); ctr = graph.controls();
   cam.fov = 50; cam.near = .5; cam.far = 14000; cam.updateProjectionMatrix(); cam.layers.enable(1);
   graph.renderer().setPixelRatio(Math.min(devicePixelRatio || 1, 2));
-  ctr.enableDamping = true; ctr.dampingFactor = .07; ctr.rotateSpeed = .45; ctr.zoomSpeed = .6; ctr.minDistance = 12; ctr.maxDistance = 2600;
+  ctr.enableDamping = true; ctr.dampingFactor = .08; ctr.rotateSpeed = .4; ctr.zoomSpeed = .55; ctr.minDistance = 12; ctr.maxDistance = 2600;
   ctr.addEventListener('start', () => { userHold = true; lastUser = performance.now(); });
   ctr.addEventListener('end', () => { userHold = false; lastUser = performance.now(); });
   const scene = graph.scene();
-  scene.fog = new THREE.FogExp2(0x040C1A, .00085); fitFog();
+  scene.add(SEL);
+  scene.fog = new THREE.FogExp2(0x071A33, .00085); fitFog();
 
-  /* space: two starfield depths, a faint spiral disk, three nebula washes */
-  function stars(count, rMin, rMax, size, opacity, seed) {
-    const r = seeded(seed), pos = new Float32Array(count * 3), colA = new Float32Array(count * 3); const pal = [new THREE.Color('#ffffff'), new THREE.Color('#DCEBF7'), new THREE.Color('#8EC5E8'), new THREE.Color('#E8C27A')];
-    for (let i = 0; i < count; i++) { const u = r() * 2 - 1, th = r() * Math.PI * 2, s = Math.sqrt(1 - u * u), d = lerp(rMin, rMax, r()); pos.set([Math.cos(th) * s * d, u * d, Math.sin(th) * s * d], i * 3); const c = pal[r() < .82 ? (r() < .6 ? 0 : 1) : (r() < .8 ? 2 : 3)]; const k = .55 + .45 * r(); colA.set([c.r * k, c.g * k, c.b * k], i * 3); }
-    const gm = new THREE.BufferGeometry(); gm.setAttribute('position', new THREE.BufferAttribute(pos, 3)); gm.setAttribute('color', new THREE.BufferAttribute(colA, 3));
-    const p = new THREE.Points(gm, new THREE.PointsMaterial({ size, map: TEX.dot, vertexColors: true, transparent: true, opacity, depthWrite: false, fog: false, sizeAttenuation: true, blending: THREE.AdditiveBlending }));
-    p.layers.set(1); scene.add(p); return p;
-  }
-  const farStars = stars(2600, 2600, 3800, 16, .9, 'far');
-  const nearStars = stars(900, 900, 1700, 7, .8, 'near');
-  const disk = (() => {
-    const n = 1700, r = seeded('disk'), pos = new Float32Array(n * 3), colA = new Float32Array(n * 3); const a = new THREE.Color('#8EC5E8'), b = new THREE.Color('#DCEBF7'), c = new THREE.Color('#E08A3C');
-    for (let i = 0; i < n; i++) { const arm = i % 3, rr = 70 + Math.pow(r(), 1.35) * 1150, th = arm * 2.0944 + rr * .0052 + (r() - .5) * .55; const y = (r() - .5) * 22 * (1 - rr / 1400) + 30 * Math.sin(2 * th + .7) * (rr < 400 ? rr / 400 : 1) * .4; pos.set([Math.cos(th) * rr, y, Math.sin(th) * rr], i * 3); const cc = r() < .08 ? c : (r() < .5 ? a : b); const k = .35 + .4 * r(); colA.set([cc.r * k, cc.g * k, cc.b * k], i * 3); }
-    const gm = new THREE.BufferGeometry(); gm.setAttribute('position', new THREE.BufferAttribute(pos, 3)); gm.setAttribute('color', new THREE.BufferAttribute(colA, 3));
-    const p = new THREE.Points(gm, new THREE.PointsMaterial({ size: 3.4, map: TEX.dot, vertexColors: true, transparent: true, opacity: .55, depthWrite: false, sizeAttenuation: true, blending: THREE.AdditiveBlending }));
-    p.layers.set(1); scene.add(p); return p;
+  /* the floor: one engineering grid plate under the ring, like the layout sheet on a shop wall. No stars, no nebula, no disk. */
+  const floor = (() => {
+    const grid = new THREE.GridHelper(1400, 28, new THREE.Color(SKY), new THREE.Color(SKY));
+    grid.material.transparent = true; grid.material.opacity = .07; grid.material.depthWrite = false; grid.position.y = -95; grid.layers.set(1); scene.add(grid);
+    const plate = new THREE.Mesh(new THREE.RingGeometry(R1 - 2, R1 + 2, 120), new THREE.MeshBasicMaterial({ color: new THREE.Color(SKY), transparent: true, opacity: .1, side: THREE.DoubleSide, depthWrite: false }));
+    plate.rotation.x = -Math.PI / 2; plate.position.y = -94; plate.layers.set(1); scene.add(plate);
+    return grid;
   })();
-  const nebulae = [['#1D5FA8', .1, V(-1300, 260, -1500)], ['#13477F', .14, V(1500, -200, -900)], ['#E08A3C', .035, V(400, 500, 1700)]].map(([c, o, p]) => { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: TEX.glow, color: new THREE.Color(c), transparent: true, opacity: o, blending: THREE.AdditiveBlending, depthWrite: false, fog: false })); s.scale.set(2600, 2600, 1); s.position.copy(p); s.layers.set(1); scene.add(s); return s; });
 
-  /* particles: flow toward the brain on every visible link, a sparser flow outward; degrade first on low fps */
+  /* particles: one slow dot per main line toward the brain, one per branch when a department is open; degrade first on low fps */
   function particleCount(l) {
     if (quality === 0) return 0;
     const s = GI[l.sId], t = GI[l.tId];
@@ -607,7 +622,7 @@ let go = () => {};
   }
   function applyParticles() { GL.forEach(l => { l._p = particleCount(l); }); graph.linkDirectionalParticles(l => l._p); }
 
-  if (QS.get('q') === '0' || QS.get('q') === '1') { quality = +QS.get('q'); if (quality === 0) { nearStars.visible = false; graph.renderer().setPixelRatio(1); } }
+  if (QS.get('q') === '0' || QS.get('q') === '1') { quality = +QS.get('q'); if (quality === 0) { floor.visible = false; graph.renderer().setPixelRatio(1); } }
 
   /* focus */
   function setFocus(id) {
@@ -642,7 +657,7 @@ let go = () => {};
   function fitFog() { scene.fog.density = .5 / overviewDist(); }
   function flyTo(pos, tgt, ms) {
     if (REDUCED) ms = Math.min(ms, 600);
-    flight = { t0: performance.now(), ms, p0: cam.position.clone(), q0: ctr.target.clone(), p1: pos, q1: tgt, lift: cam.position.distanceTo(pos) * .1 };
+    flight = { t0: performance.now(), ms, p0: cam.position.clone(), q0: ctr.target.clone(), p1: pos, q1: tgt, lift: cam.position.distanceTo(pos) * .03 };
     ctr.enabled = false;
   }
   go = function (id, opts = {}) {
@@ -650,7 +665,7 @@ let go = () => {};
     if (id && !GI[id]) return;
     setFocus(id);
     const c = camFor(id); const g = id ? GI[id] : null;
-    flyTo(c.pos, c.tgt, opts.ms || (!g ? 2400 : g.layer === 1 ? 2100 : g.layer === 2 ? 1900 : 1500));
+    flyTo(c.pos, c.tgt, opts.ms || (!g ? 2200 : g.layer === 1 ? 2000 : g.layer === 2 ? 1800 : 1500));
     if (opts.panel !== false) { if (id) openPanel(id); else if (opts.brain) openPanel('brain'); else closePanel(); }
     try { history.replaceState(null, '', location.pathname + location.search + (id ? '#' + id : '')); } catch (e) {}
   };
@@ -710,7 +725,7 @@ let go = () => {};
   function tick(now) {
     requestAnimationFrame(tick);
     const dt = Math.min(.05, (now - last) / 1000); last = now; const t = (now - t0) / 1000;
-    frames++; if (now - fpsT >= 1000) { fpsNow = frames * 1000 / (now - fpsT); fpsLog.push(Math.round(fpsNow)); if (fpsLog.length > 60) fpsLog.shift(); frames = 0; fpsT = now; if (!PIN_QUALITY && !document.hidden && t > 6) { if (fpsNow < 42) lowStreak++; else lowStreak = 0; if (lowStreak >= 3 && quality > 0) { quality--; lowStreak = 0; applyParticles(); if (quality === 0) { nearStars.visible = false; graph.renderer().setPixelRatio(1); } } } }
+    frames++; if (now - fpsT >= 1000) { fpsNow = frames * 1000 / (now - fpsT); fpsLog.push(Math.round(fpsNow)); if (fpsLog.length > 60) fpsLog.shift(); frames = 0; fpsT = now; if (!PIN_QUALITY && !document.hidden && t > 6) { if (fpsNow < 42) lowStreak++; else lowStreak = 0; if (lowStreak >= 3 && quality > 0) { quality--; lowStreak = 0; applyParticles(); if (quality === 0) { floor.visible = false; graph.renderer().setPixelRatio(1); } } } }
     if (toastT && now > toastT) { toast.classList.remove('show'); toastT = 0; }
     { const k = REDUCED ? 1 : Math.min(1, dt * 2.2); viewShift.x += (viewShift.tx - viewShift.x) * k; viewShift.y += (viewShift.ty - viewShift.y) * k; if (Math.abs(viewShift.x) > .5 || Math.abs(viewShift.y) > .5) cam.setViewOffset(innerWidth, innerHeight, viewShift.x, viewShift.y, innerWidth, innerHeight); else if (cam.view && cam.view.enabled) cam.clearViewOffset(); }
     // camera
@@ -719,43 +734,43 @@ let go = () => {};
       cam.position.lerpVectors(flight.p0, flight.p1, e); cam.position.y += Math.sin(Math.PI * e) * flight.lift;
       ctr.target.lerpVectors(flight.q0, flight.q1, e);
       if (u >= 1) { flight = null; ctr.enabled = true; lastUser = now - 2500; }
-    } else if (!REDUCED) {
+    } else if (!REDUCED && (presenting || tour)) {
+      // the stage holds still unless someone asked for a show: present mode and the tour turn once every four minutes
       const k = userHold ? 0 : smooth(3500, 6500, now - lastUser);
       if (k > 0) {
-        const period = (focus ? 150 : 90) * (presenting ? 1.6 : 1);
+        const period = 240;
         off.copy(cam.position).sub(ctr.target); sph.setFromVector3(off);
         sph.theta += dt * (Math.PI * 2 / period) * k;
-        sph.phi = clamp(sph.phi + Math.cos(t * Math.PI * 2 / 42) * (Math.PI * 2 / 42) * .07 * dt * k, .3, 2.7);
         off.setFromSpherical(sph); cam.position.copy(ctr.target).add(off);
       }
     }
     // tour
-    if (tour) { if (!hoverG && !capHover && !flight) tour.acc += dt * 1000; if (tour.acc >= 8000) { tour.acc = 0; tour.i = (tour.i + 1) % D.length; const d = D[tour.i]; go(d.id, { panel: false }); tourCaption(d); } }
+    if (tour) { if (!hoverG && !capHover && !flight) tour.acc += dt * 1000; if (tour.acc >= 10000) { tour.acc = 0; tour.i = (tour.i + 1) % D.length; const d = D[tour.i]; go(d.id, { panel: false }); tourCaption(d); } }
     // brain
     if (BRAIN) {
-      BRAIN.halo.scale.setScalar(200 * (1 + .07 * Math.sin(t * .9)));
-      BRAIN.halo.material.opacity = (.17 + .06 * Math.sin(t * .9)) * GI.brain._dim;
-      const w = REDUCED ? .5 : (t % 6.5) / 6.5; BRAIN.wave.scale.setScalar(30 + w * 170); BRAIN.wave.material.opacity = .3 * (1 - w) * GI.brain._dim;
-      BRAIN.shell1.rotation.y += dt * .05; BRAIN.shell1.rotation.x += dt * .018; BRAIN.shell2.rotation.y -= dt * .03; BRAIN.ring.rotation.z += dt * .04;
+      if (!REDUCED) BRAIN.outer.material.rotation += dt * .02;
+      BRAIN.outer.material.opacity = .32 * GI.brain._dim; BRAIN.ring.material.opacity = .28 * GI.brain._dim;
     }
-    farStars.rotation.y += dt * .0018; nearStars.rotation.y += dt * .005; disk.rotation.y += dt * .004;
+    // the copper selection ring follows the selected piece
+    if (focus && GI[focus] && GI[focus]._o) { const fg = GI[focus]; fg._o.grp.getWorldPosition(SEL.position); const r = RAD[fg.layer] * (fg.layer <= 1 ? 4.6 : 3.8) * Math.max(.5, fg._o.grp.scale.x); SEL.scale.set(r, r, 1); SEL.material.opacity += (.9 - SEL.material.opacity) * Math.min(1, dt * 4); SEL.visible = true; }
+    else { SEL.material.opacity += (0 - SEL.material.opacity) * Math.min(1, dt * 6); SEL.visible = SEL.material.opacity > .02; }
     // nodes
     const labMul = presenting ? 1.45 : 1, phone = PHONE(), fdept = focus ? (GI[focus].layer === 1 ? focus : GI[focus].dept) : null;
     for (let i = 0; i < GN.length; i++) {
       const g = GN[i], o = g._o;
       g._dim += (g._dimT - g._dim) * Math.min(1, dt * 2.6);
-      g._h += ((g === hoverG ? 1.35 : 1) - g._h) * Math.min(1, dt * 8);
+      g._h += ((g === hoverG ? 1.15 : 1) - g._h) * Math.min(1, dt * 8);
       if (g.kind === 'sub') { g._u += (g._uT - g._u) * Math.min(1, dt * 1.5); subPos(g, pv); g.fx = pv.x; g.fy = pv.y; g.fz = pv.z; }
       if (!o) continue;
       const uf = g.kind === 'sub' ? clamp(g._u, 0, 1) : 1;
-      const breathe = (g.status === 'coming' || g.status === 'concept') && !REDUCED ? .7 + .3 * Math.sin(t * 1.1 + g.phase) : 1;
+      const breathe = 1; // nothing twinkles: status is read from brightness and the legend, not from motion
       o.core.material.opacity = g._dim * (g.status === 'concept' ? .7 : 1) * lerp(.35, 1, uf);
       o.glow.material.opacity = (BASEGLOW[g.status] || .6) * breathe * g._dim * lerp(.3, 1, uf);
       o.grp.scale.setScalar(g._h * lerp(.5, 1, uf));
       // labels
       const lab = o.label; let a;
       const dist = cam.position.distanceTo(o.grp.position);
-      if (g.layer <= 1) a = g._dim * (g.layer === 1 ? smooth(1700, 900, dist) : 1);
+      if (g.layer <= 1) a = g._dim * (g.layer === 1 ? (phone ? smooth(1300, 800, dist) : smooth(1700, 900, dist)) : 1); // on a phone the ten plates would only overlap at the overview, so they wait for a tap
       else if (g.layer === 2) a = (phone && fdept !== g.dept ? 0 : !fdept ? smooth(330, 200, dist) : smooth(phone ? 300 : 520, phone ? 140 : 270, dist)) * (g._dim >= .99 ? 1 : g._dim >= .45 ? .38 : 0);
       else if (g.layer === 3) a = (uf > .6 ? (uf - .6) / .4 : 0) * smooth(230, 90, dist) * (g._dim >= .99 ? 1 : 0);
       else a = (uf > .6 ? (uf - .6) / .4 : 0) * (focus === g.id || focus === g.parent ? 1 : 0);
@@ -769,13 +784,13 @@ let go = () => {};
   }
   requestAnimationFrame(tick);
 
-  /* entrance: start deep in space and drift in */
+  /* entrance: a short settle from just outside the overview, then the stage holds still until a click */
   setFocus(null);
   const home = camFor(null);
-  cam.position.copy(home.pos.clone().multiplyScalar(REDUCED ? 1 : 2.6)).add(V(0, REDUCED ? 0 : 420, 0)); ctr.target.set(0, 0, 0); ctr.update();
-  flyTo(home.pos, home.tgt, REDUCED ? 10 : 4200);
+  cam.position.copy(home.pos.clone().multiplyScalar(REDUCED ? 1 : 1.18)); ctr.target.set(0, 0, 0); ctr.update();
+  flyTo(home.pos, home.tgt, REDUCED ? 10 : 1600);
   const h0 = decodeURIComponent(location.hash.slice(1));
-  if (GI[h0] && h0 !== 'brain') setTimeout(() => go(h0), REDUCED ? 50 : 4300);
+  if (GI[h0] && h0 !== 'brain') setTimeout(() => go(h0), REDUCED ? 50 : 1700);
 
   window.GALAXY = { go: (id, o) => go(id, o), focus: () => focus, fps: () => Math.round(fpsNow), fpsLog: () => fpsLog.slice(), quality: () => quality, flying: () => !!flight, layers: LAYER_COUNTS, nodes: GN.length, links: GL.length, present: setPresent, tour: startTour, screen: id => { const g = GI[id]; if (!g || !g._o) return null; const v = g._o.grp.getWorldPosition(V()).project(cam); return { x: (v.x + 1) / 2 * innerWidth, y: (1 - v.y) / 2 * innerHeight, front: v.z < 1 }; }, ready: true };
 })().catch(e => { console.error(e); fail('The 3D view hit an error. The flat map still works.'); });
