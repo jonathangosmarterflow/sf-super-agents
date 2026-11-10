@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta name="robots" content="noindex">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HVAC Foundry | Kit 1, Airflow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@500&family=Red+Hat+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --af-white:#FFFFFF; --af-mist:#F4F7FA; --af-haze:#E8EEF4; --af-line:#D9E2EB;
+  --af-ink:#0F1E2E; --af-slate:#50627A;
+  --af-blue:#1F5FE0; --af-blue-dk:#174BB8; --af-blue-tint:#E8F0FE;
+  --af-cool:#7DBEF5; --af-warm:#F2A65A;
+  --af-ember:#C2470F; --af-ember-dk:#A63A0A;
+  --af-head:'Red Hat Display','Helvetica Neue',Arial,sans-serif;
+  --af-body:'Figtree','Helvetica Neue',Arial,sans-serif;
+  --af-mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  --af-radius:14px; --af-radius-sm:8px;
+  --af-shadow:0 1px 2px rgba(15,30,46,.04),0 12px 32px rgba(15,30,46,.07);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--af-white);color:var(--af-ink);font-family:var(--af-body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{width:100%;max-width:1200px;margin:0 auto;padding:0 40px}
+.mono{font-family:var(--af-mono);font-weight:500;font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+
+/* demo pill */
+.kitpill{position:fixed;top:10px;right:12px;z-index:50;display:flex;gap:10px;align-items:center;padding:7px 8px 7px 14px;border-radius:999px;background:rgba(15,30,46,.92);color:#fff;font-family:var(--af-mono);font-size:11px;letter-spacing:.06em;box-shadow:0 6px 20px rgba(15,30,46,.18)}
+.kitpill a{color:var(--af-ink);background:#fff;border-radius:999px;padding:3px 10px;text-decoration:none}
+.kitpill a:hover{background:var(--af-blue-tint)}
+
+/* wordmark */
+.wm{display:inline-flex;align-items:center;gap:11px;font-family:var(--af-head);font-size:19px;letter-spacing:-.01em;color:var(--af-ink);text-decoration:none;white-space:nowrap}
+.wm svg{width:34px;height:34px;flex:none}
+.wm b{font-weight:800}.wm span{font-weight:500;color:var(--af-slate)}
+.wm.rev{color:#fff}.wm.rev span{color:#B9C8D9}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-family:var(--af-head);font-weight:700;font-size:16px;letter-spacing:-.005em;padding:16px 26px;border-radius:var(--af-radius);border:1.5px solid transparent;text-decoration:none;cursor:pointer;transition:background .2s,border-color .2s,transform .2s,box-shadow .2s}
+.btn svg{width:16px;height:16px}
+.btn-primary{background:var(--af-ember);color:#fff;box-shadow:0 8px 22px rgba(194,71,15,.22)}
+.btn-primary:hover{background:var(--af-ember-dk);transform:translateY(-1px)}
+.btn-blue{background:var(--af-blue);color:#fff}
+.btn-blue:hover{background:var(--af-blue-dk)}
+.btn-ghost{background:#fff;color:var(--af-ink);border-color:var(--af-line)}
+.btn-ghost:hover{border-color:var(--af-blue);color:var(--af-blue)}
+.btn-sm{padding:10px 16px;font-size:14px;border-radius:10px}
+.tlink{font-family:var(--af-head);font-weight:600;font-size:16px;color:var(--af-blue);text-decoration:none;border-bottom:1.5px solid rgba(31,95,224,.3);padding-bottom:2px}
+.tlink:hover{border-color:var(--af-blue)}
+:focus-visible{outline:2px solid var(--af-blue);outline-offset:3px}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;padding-top:44px;overflow:hidden;background:linear-gradient(180deg,#fff 0%,#fff 62%,var(--af-mist) 100%)}
+#flow{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.hero>*:not(canvas){position:relative;z-index:1}
+.nav{display:flex;align-items:center;justify-content:space-between;padding-top:14px;padding-bottom:14px}
+.nav ul{display:flex;gap:34px;list-style:none;margin:0;padding:0}
+.nav ul a{font-size:15px;font-weight:500;color:var(--af-slate);text-decoration:none}
+.nav ul a:hover{color:var(--af-ink)}
+.hero-grid{flex:1;display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,1fr);gap:56px;align-items:center;padding-top:24px;padding-bottom:40px}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;color:var(--af-blue);margin-bottom:26px}
+.eyebrow i{width:28px;height:1.5px;background:linear-gradient(90deg,var(--af-warm),var(--af-blue))}
+h1{font-family:var(--af-head);font-weight:800;font-size:clamp(42px,5.7vw,84px);line-height:.98;letter-spacing:-.035em;margin:0 0 26px}
+h1 em{font-style:normal;color:var(--af-blue)}
+.sub{font-size:clamp(17px,1.35vw,20px);line-height:1.55;color:var(--af-slate);max-width:33em;margin:0 0 36px}
+.sub strong{color:var(--af-ink);font-weight:600}
+.cta-row{display:flex;flex-wrap:wrap;gap:22px;align-items:center}
+.note{margin-top:28px;font-size:14px;color:var(--af-slate);display:flex;gap:10px;align-items:center}
+.note svg{width:16px;height:16px;flex:none;color:var(--af-blue)}
+.stage{position:relative}
+#unit{display:block;width:100%;height:auto;overflow:visible}
+.readout{position:absolute;right:2%;top:4%;background:rgba(255,255,255,.9);border:1px solid var(--af-line);border-radius:10px;padding:8px 12px;display:flex;gap:12px;align-items:baseline;box-shadow:var(--af-shadow)}
+.readout .mono{font-size:10px;color:var(--af-slate)}
+.readout b{font-family:var(--af-head);font-weight:700;font-size:18px;color:var(--af-blue);font-variant-numeric:tabular-nums}
+.inout{display:flex;justify-content:space-between;gap:16px;margin-top:18px}
+.inout div{max-width:46%}
+.inout div:last-child{text-align:right}
+.inout .mono{display:block;font-size:11px;margin-bottom:3px}
+.inout .w{color:#9A5A12}.inout .c{color:var(--af-blue)}
+.inout span:last-child{font-size:14px;color:var(--af-slate);line-height:1.4;display:block}
+.hero-foot{display:flex;justify-content:space-between;align-items:center;padding-bottom:22px;color:var(--af-slate)}
+.hero-foot .mono{font-size:11px}
+.scrollhint{display:flex;align-items:center;gap:10px}
+.scrollhint i{width:1.5px;height:26px;background:var(--af-line);position:relative;overflow:hidden}
+.scrollhint i:after{content:"";position:absolute;left:0;top:-10px;width:100%;height:10px;background:var(--af-blue);animation:drop 2.2s ease-in-out infinite}
+@keyframes drop{to{top:28px}}
+
+/* SECTION */
+.sec{padding:120px 0}
+.sec.alt{background:var(--af-mist)}
+.sec-head{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:end;margin-bottom:56px}
+.sec-head .mono{color:var(--af-blue);display:block;margin-bottom:16px}
+h2{font-family:var(--af-head);font-weight:800;font-size:clamp(32px,3.6vw,52px);line-height:1.04;letter-spacing:-.03em;margin:0}
+.sec-head p{margin:0;color:var(--af-slate);font-size:18px;max-width:30em}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.card{background:#fff;border:1px solid var(--af-line);border-radius:var(--af-radius);padding:32px 30px 34px;transition:transform .25s,box-shadow .25s,border-color .25s}
+.card:hover{transform:translateY(-3px);box-shadow:var(--af-shadow);border-color:#C5D3E3}
+.card .ico{width:48px;height:48px;border-radius:12px;background:var(--af-blue-tint);display:grid;place-items:center;margin-bottom:26px}
+.card .ico svg{width:24px;height:24px;stroke:var(--af-blue);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.card .mono{color:var(--af-slate);font-size:11px}
+.card h3{font-family:var(--af-head);font-weight:700;font-size:23px;letter-spacing:-.02em;line-height:1.15;margin:8px 0 12px}
+.card p{margin:0;color:var(--af-slate);font-size:16px}
+.limits{margin-top:20px;border:1px solid var(--af-line);border-radius:var(--af-radius);background:#fff;display:grid;grid-template-columns:260px 1fr;overflow:hidden}
+.limits .lh{padding:30px;border-right:1px solid var(--af-line);background:linear-gradient(180deg,#fff,var(--af-mist))}
+.limits .lh .mono{color:var(--af-slate)}
+.limits .lh h3{font-family:var(--af-head);font-weight:700;font-size:23px;letter-spacing:-.02em;line-height:1.15;margin:8px 0 0}
+.limits ul{list-style:none;margin:0;padding:12px 30px;display:grid}
+.limits li{display:flex;gap:14px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--af-haze);font-size:16px;color:var(--af-ink)}
+.limits li:last-child{border:0}
+.limits li svg{width:18px;height:18px;flex:none;margin-top:4px;stroke:var(--af-slate);fill:none;stroke-width:1.6;stroke-linecap:round}
+.limits li span{color:var(--af-slate)}
+
+/* BRAND SHEET */
+.sheet{background:var(--af-mist);padding:120px 0;border-top:1px solid var(--af-line)}
+.sheet-head{margin-bottom:56px}
+.sheet-head .mono{color:var(--af-blue)}
+.sheet-head h2{font-size:clamp(48px,7vw,104px);margin:14px 0 14px}
+.sheet-head p{font-size:21px;color:var(--af-slate);margin:0;max-width:32em}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:20px}
+.panel{background:#fff;border:1px solid var(--af-line);border-radius:var(--af-radius);padding:28px;min-width:0;display:flex;flex-direction:column}
+.panel>.optin,.panel>.spec:last-child{margin-top:auto;margin-bottom:auto}
+.panel>.mono{display:block;color:var(--af-slate);margin-bottom:22px}
+.c12{grid-column:span 12}.c7{grid-column:span 7}.c6{grid-column:span 6}.c5{grid-column:span 5}.c4{grid-column:span 4}.c8{grid-column:span 8}
+.logos{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.logo-tile{border-radius:12px;min-height:170px;display:grid;place-items:center;border:1px solid var(--af-line);background:#fff;padding:24px}
+.logo-tile.dark{background:var(--af-ink);border-color:var(--af-ink)}
+.logo-tile .wm{font-size:26px}.logo-tile .wm svg{width:46px;height:46px}
+.marks{display:flex;gap:16px;margin-top:16px;align-items:center}
+.marks svg{width:56px;height:56px}
+.marks small{color:var(--af-slate);font-size:14px;margin-left:6px}
+.swatches{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.sw{border-radius:12px;border:1px solid var(--af-line);overflow:hidden;background:#fff}
+.sw i{display:block;height:92px}
+.sw div{padding:10px 12px 12px}
+.sw b{display:block;font-family:var(--af-head);font-weight:700;font-size:14px}
+.sw code{display:block;font-family:var(--af-mono);font-size:11px;color:var(--af-slate);line-height:1.5}
+.spec{padding:18px 0;border-top:1px solid var(--af-haze)}
+.spec:first-of-type{border:0;padding-top:0}
+.spec .mono{font-size:10px;color:var(--af-slate);display:block;margin-bottom:8px}
+.spec .h{font-family:var(--af-head);font-weight:800;font-size:clamp(34px,4vw,56px);letter-spacing:-.035em;line-height:1}
+.spec .b{font-size:18px;color:var(--af-slate);max-width:34em}
+.spec .l{font-family:var(--af-mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--af-blue)}
+.btnrow{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+.chip{font-family:var(--af-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:6px 10px;border-radius:999px;background:var(--af-blue-tint);color:var(--af-blue-dk)}
+.chip.w{background:#FDF0E2;color:#8A4A0C}
+.optin{max-width:400px;margin:0 auto;border:1px solid var(--af-line);border-radius:18px;padding:30px;box-shadow:var(--af-shadow);background:#fff}
+.optin h4{font-family:var(--af-head);font-weight:800;font-size:25px;letter-spacing:-.025em;line-height:1.12;margin:10px 0 8px}
+.optin p{margin:0 0 20px;font-size:15px;color:var(--af-slate)}
+.optin label{display:block;font-size:13px;font-weight:600;margin:0 0 6px}
+.optin input{width:100%;font:inherit;font-size:16px;padding:13px 14px;border:1.5px solid var(--af-line);border-radius:10px;margin-bottom:14px;background:var(--af-mist);color:var(--af-ink)}
+.optin input::placeholder{color:#6B7C92}
+.optin input:focus{outline:none;border-color:var(--af-blue);background:#fff;box-shadow:0 0 0 4px rgba(31,95,224,.12)}
+.optin .btn{width:100%;margin-top:4px}
+.optin small{display:block;margin-top:14px;font-size:13px;color:var(--af-slate);text-align:center}
+.slide{container-type:inline-size;aspect-ratio:16/9;border-radius:12px;border:1px solid var(--af-line);background:#fff;position:relative;overflow:hidden}
+.slide svg.bg{position:absolute;inset:0;width:100%;height:100%}
+.slide .in{position:absolute;inset:0;padding:6cqw 6.5cqw;display:flex;flex-direction:column;justify-content:space-between}
+.slide .mono{font-size:1.25cqw;color:var(--af-blue)}
+.slide h5{font-family:var(--af-head);font-weight:800;font-size:6.6cqw;letter-spacing:-.035em;line-height:.98;margin:1.6cqw 0 0;max-width:9.5em}
+.slide h5 em{font-style:normal;color:var(--af-blue)}
+.slide .ft{display:flex;justify-content:space-between;align-items:center}
+.slide .wm{font-size:1.9cqw;gap:1cqw}.slide .wm svg{width:3.2cqw;height:3.2cqw}
+.slide .ft .mono{color:var(--af-slate)}
+pre{margin:0;background:var(--af-ink);color:#D6E2EE;border-radius:var(--af-radius);padding:30px 32px;font-family:var(--af-mono);font-size:13px;line-height:1.75;overflow:auto;white-space:pre}
+pre .k{color:var(--af-cool)}pre .c{color:#8296AC}
+.foot{padding:36px 0;font-size:14px;color:var(--af-slate);background:var(--af-mist)}
+
+@media (max-width:960px){
+  .wrap{padding:0 24px}
+  .nav ul{display:none}
+  .hero-grid{grid-template-columns:1fr;gap:44px;padding-top:28px;padding-bottom:28px;align-items:start}
+  .hero-foot{display:none}
+  .eyebrow{margin-bottom:18px}.eyebrow.mono{font-size:10.5px;letter-spacing:.08em}.eyebrow i{width:18px;flex:none}
+  .readout{top:-14px;right:0;padding:6px 10px}.readout b{font-size:15px}
+  .sec,.sheet{padding:80px 0}
+  .sec-head{grid-template-columns:1fr;gap:20px;margin-bottom:36px}
+  .cards{grid-template-columns:1fr}
+  .limits{grid-template-columns:1fr}.limits .lh{border-right:0;border-bottom:1px solid var(--af-line)}
+  .c7,.c6,.c5,.c4,.c8{grid-column:span 12}
+  .swatches{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width:520px){
+  body{font-size:16px}
+  .wrap{padding:0 20px}
+  h1{font-size:44px;margin-bottom:18px}
+  .sub{margin-bottom:26px}
+  .note{display:none}
+  .hero-grid{gap:52px;padding-top:36px}
+  .btn-primary{width:100%}
+  .cta-row{gap:18px}
+  .logos{grid-template-columns:1fr}
+  .swatches{grid-template-columns:repeat(2,1fr)}
+  .panel{padding:22px}
+  .inout span:last-child{font-size:13px}
+  pre{font-size:11px;padding:20px}
+  .nav .btn{padding:9px 13px;font-size:13px}
+  .wm{font-size:17px}.wm svg{width:30px;height:30px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .scrollhint i:after{animation:none;top:8px}
+  .btn,.card{transition:none}
+}
+</style>
+</head>
+<body>
+
+<div class="kitpill"><span>Kit 1 of 4 · Airflow</span><a href="index.html">All kits</a></div>
+
+<!-- shared logo symbol -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="af-mark" viewBox="0 0 40 40">
+    <rect width="40" height="40" rx="11" fill="#1F5FE0"/>
+    <g fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 11v18"/>
+      <path d="M12 12h9c4.2 0 4.6 4.2 8.6 4.2"/>
+      <path d="M12 20.5h6c3.4 0 3.8 3.4 7 3.4"/>
+    </g>
+    <circle cx="29.6" cy="16.2" r="2.1" fill="#F2A65A"/>
+  </symbol>
+  <symbol id="af-mark-line" viewBox="0 0 40 40">
+    <rect x="1" y="1" width="38" height="38" rx="10" fill="none" stroke="currentColor" stroke-width="1.6"/>
+    <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 11v18"/><path d="M12 12h9c4.2 0 4.6 4.2 8.6 4.2"/><path d="M12 20.5h6c3.4 0 3.8 3.4 7 3.4"/>
+    </g>
+  </symbol>
+</svg>
+
+<!-- ============ A. HERO ============ -->
+<header class="hero" id="hero">
+  <canvas id="flow" aria-hidden="true"></canvas>
+
+  <nav class="nav wrap" aria-label="Main">
+    <a class="wm" href="#hero"><svg aria-hidden="true"><use href="#af-mark"/></svg><b>HVAC</b><span>Foundry</span></a>
+    <ul>
+      <li><a href="#does">What it does</a></li>
+      <li><a href="#limits">What it does not do</a></li>
+      <li><a href="#kit">Brand kit</a></li>
+    </ul>
+    <a class="btn btn-ghost btn-sm" href="#book">Book a call</a>
+  </nav>
+
+  <div class="hero-grid wrap">
+    <div class="copy">
+      <div class="eyebrow mono"><i></i>The AI front desk built for HVAC shops</div>
+      <h1>Calls in.<br><em>Booked jobs</em> out.</h1>
+      <p class="sub">HVAC Foundry answers new leads, follows up on quiet estimates and puts the visit on your board, <strong>while your crew stays on the job.</strong></p>
+      <div class="cta-row" id="book">
+        <a class="btn btn-primary" href="#book">Book a call with our team
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+        <a class="tlink" href="#does">See what it does</a>
+      </div>
+      <div class="note">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.6V8l2.2 1.6"/></svg>
+        Built for after hours, overflow and the busy season.
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="readout" aria-hidden="true"><span class="mono">Supply air</span><b id="temp">68°F</b></div>
+      <svg id="unit" viewBox="0 0 520 300" role="img" aria-label="Line drawing of an air handler. Warm air enters on the left and leaves cool on the right.">
+        <defs>
+          <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0v6" stroke="#0F1E2E" stroke-width=".7" opacity=".35"/></pattern>
+        </defs>
+        <g fill="none" stroke="#0F1E2E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <!-- return flare -->
+          <path d="M14 52 70 84M14 248 70 216" opacity=".55"/>
+          <!-- cabinet -->
+          <rect x="70" y="64" width="380" height="172" rx="14" fill="rgba(255,255,255,.62)"/>
+          <path d="M112 236v10M408 236v10M100 246h24M396 246h24" opacity=".6"/>
+          <!-- supply duct -->
+          <path d="M450 92h58M450 208h58" opacity=".55"/>
+          <path d="M450 84v132" stroke-width="3"/>
+          <!-- section dividers -->
+          <path d="M150 72v156M282 72v156" stroke-dasharray="2 6" opacity=".35"/>
+          <!-- filter -->
+          <rect x="98" y="82" width="14" height="136" rx="2" fill="url(#hatch)" opacity=".8"/>
+          <!-- coil -->
+          <g stroke="#1F5FE0">
+            <path d="M186 86 246 150 186 214"/>
+            <path d="M200 86 260 150 200 214"/>
+            <path d="M193 93h8M200 101h8M207 109h8M214 116h8M221 124h8M228 131h8M235 139h8M242 146h8M242 154h8M235 161h8M228 169h8M221 176h8M214 184h8M207 191h8M200 199h8M193 207h8" stroke-width="1"/>
+          </g>
+          <!-- blower -->
+          <circle cx="352" cy="150" r="56" opacity=".9"/>
+          <g id="blower" stroke="#1F5FE0">
+            <circle cx="352" cy="150" r="46" stroke-width="1"/>
+            <circle cx="352" cy="150" r="13"/>
+            <g id="blades" stroke-width="1.2"></g>
+          </g>
+          <!-- nameplate + led -->
+          <rect x="398" y="76" width="38" height="13" rx="2.5" stroke-width="1" opacity=".6"/>
+          <path d="M403 82.5h18" stroke-width="1" opacity=".5"/>
+          <circle cx="430" cy="82.5" r="2" fill="#1F5FE0" stroke="none"/>
+        </g>
+        <g font-family="JetBrains Mono,monospace" font-size="9.5" letter-spacing="1.2" fill="#50627A" text-anchor="middle">
+          <text x="105" y="270">FILTER</text><text x="222" y="270">COIL</text><text x="352" y="270">BLOWER</text>
+        </g>
+      </svg>
+      <div class="inout">
+        <div><span class="mono w">Warm in</span><span>Late calls, texts and web forms</span></div>
+        <div><span class="mono c">Cool out</span><span>Booked visits on your board</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-foot wrap">
+    <div class="scrollhint mono"><i></i>Scroll to turn the system up</div>
+    <div class="mono">Illustration: air handler, side view</div>
+  </div>
+</header>
+
+<!-- ============ B. LANDING SECTION ============ -->
+<section class="sec" id="does">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><span class="mono">01 / What it does</span><h2>Three jobs, done calmly.</h2></div>
+      <p>You are the HVAC expert. We build the front desk around the way your shop already runs.</p>
+    </div>
+    <div class="cards">
+      <article class="card">
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M5 5h14v10H10l-5 4z"/><path d="M9 9h6M9 12h4"/></svg></div>
+        <span class="mono">Intake</span>
+        <h3>Answers the new lead</h3>
+        <p>A call you could not pick up, a late text, a web form. The front desk replies in your shop's voice and collects what a tech needs to know.</p>
+      </article>
+      <article class="card">
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.6-5.9"/><path d="M4 4v4h4"/><path d="M12 8v4l3 2"/></svg></div>
+        <span class="mono">Follow-up</span>
+        <h3>Checks in on quiet estimates</h3>
+        <p>The replacement quote that went silent gets a polite check-in, so it is not left sitting in a pile on the desk.</p>
+      </article>
+      <article class="card">
+        <div class="ico"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M8 3v4M16 3v4M9 15l2 2 4-4"/></svg></div>
+        <span class="mono">Booking</span>
+        <h3>Puts the visit on the board</h3>
+        <p>Tune-ups and service calls are handed to your board with the address, the unit and the issue written down.</p>
+      </article>
+    </div>
+    <div class="limits" id="limits">
+      <div class="lh"><span class="mono">02 / Limits</span><h3>What it does not do</h3></div>
+      <ul>
+        <li><svg viewBox="0 0 18 18"><path d="M4 9h10"/></svg><div>It does not quote prices. <span>Your team does that, on the job or on the phone.</span></div></li>
+        <li><svg viewBox="0 0 18 18"><path d="M4 9h10"/></svg><div>It does not dispatch emergencies on its own. <span>No heat and no cooling go straight to your on-call tech.</span></div></li>
+        <li><svg viewBox="0 0 18 18"><path d="M4 9h10"/></svg><div>It does not replace 911 or the gas utility. <span>It says so to the caller, plainly.</span></div></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ C. BRAND KIT ============ -->
+<section class="sheet" id="kit">
+  <div class="wrap">
+    <div class="sheet-head">
+      <span class="mono">Brand kit / 1 of 4</span>
+      <h2>Airflow</h2>
+      <p>Light, quiet and clean. The feeling of a house that is finally the right temperature.</p>
+    </div>
+
+    <div class="grid">
+      <div class="panel c7">
+        <span class="mono">Logo</span>
+        <div class="logos">
+          <div class="logo-tile"><span class="wm"><svg aria-hidden="true"><use href="#af-mark"/></svg><b>HVAC</b><span>Foundry</span></span></div>
+          <div class="logo-tile dark"><span class="wm rev"><svg aria-hidden="true"><use href="#af-mark"/></svg><b>HVAC</b><span>Foundry</span></span></div>
+        </div>
+        <div class="marks">
+          <svg aria-hidden="true"><use href="#af-mark"/></svg>
+          <svg aria-hidden="true" style="color:#0F1E2E"><use href="#af-mark-line"/></svg>
+          <svg aria-hidden="true" style="color:#1F5FE0"><use href="#af-mark-line"/></svg>
+          <small>The mark is an F drawn from two streams of air. One warm dot, where the air turns.</small>
+        </div>
+      </div>
+
+      <div class="panel c5">
+        <span class="mono">Buttons and chips</span>
+        <div class="btnrow">
+          <a class="btn btn-primary" href="#kit">Book a call with our team</a>
+          <a class="btn btn-blue" href="#kit">See what it does</a>
+          <a class="btn btn-ghost" href="#kit">How it works</a>
+          <a class="tlink" href="#kit">Text link</a>
+        </div>
+        <div class="chips"><span class="chip">After hours</span><span class="chip">On the board</span><span class="chip w">No heat</span></div>
+        <p style="margin:22px 0 0;font-size:14px;color:var(--af-slate)">Ember is for the one primary action on a screen. Everything else is blue or outline.</p>
+      </div>
+
+      <div class="panel c12">
+        <span class="mono">Palette</span>
+        <div class="swatches">
+          <div class="sw"><i style="background:#1F5FE0"></i><div><b>Supply Blue</b><code>#1F5FE0</code><code>--af-blue</code></div></div>
+          <div class="sw"><i style="background:#174BB8"></i><div><b>Blue Deep</b><code>#174BB8</code><code>--af-blue-dk</code></div></div>
+          <div class="sw"><i style="background:#7DBEF5"></i><div><b>Cool</b><code>#7DBEF5</code><code>--af-cool</code></div></div>
+          <div class="sw"><i style="background:#E8F0FE"></i><div><b>Blue Tint</b><code>#E8F0FE</code><code>--af-blue-tint</code></div></div>
+          <div class="sw"><i style="background:#C2470F"></i><div><b>Ember (CTA)</b><code>#C2470F</code><code>--af-ember</code></div></div>
+          <div class="sw"><i style="background:#F2A65A"></i><div><b>Warm</b><code>#F2A65A</code><code>--af-warm</code></div></div>
+          <div class="sw"><i style="background:#0F1E2E"></i><div><b>Ink</b><code>#0F1E2E</code><code>--af-ink</code></div></div>
+          <div class="sw"><i style="background:#50627A"></i><div><b>Slate</b><code>#50627A</code><code>--af-slate</code></div></div>
+          <div class="sw"><i style="background:#D9E2EB"></i><div><b>Line</b><code>#D9E2EB</code><code>--af-line</code></div></div>
+          <div class="sw"><i style="background:#E8EEF4"></i><div><b>Haze</b><code>#E8EEF4</code><code>--af-haze</code></div></div>
+          <div class="sw"><i style="background:#F4F7FA"></i><div><b>Mist</b><code>#F4F7FA</code><code>--af-mist</code></div></div>
+          <div class="sw"><i style="background:#FFFFFF"></i><div><b>White</b><code>#FFFFFF</code><code>--af-white</code></div></div>
+        </div>
+      </div>
+
+      <div class="panel c7">
+        <span class="mono">Typography</span>
+        <div class="spec"><span class="mono">Headline / Red Hat Display 800</span><div class="h">The right call, at the right temperature.</div></div>
+        <div class="spec"><span class="mono">Body / Figtree 400, 500, 600</span><div class="b">When the phone rings during a changeout, the front desk picks up, takes the details and lets the customer know what happens next.</div></div>
+        <div class="spec"><span class="mono">Label / JetBrains Mono 500</span><div class="l">01 / After hours &nbsp; Return &nbsp; Supply</div></div>
+      </div>
+
+      <div class="panel c5">
+        <span class="mono">Funnel opt-in card</span>
+        <form class="optin" onsubmit="return false">
+          <span class="mono" style="color:var(--af-blue)">Free walkthrough</span>
+          <h4>See it answer a lead for a shop like yours.</h4>
+          <p>Pick a time and our team will show you the front desk, live.</p>
+          <label for="n1">Name</label><input id="n1" type="text" placeholder="Your name" autocomplete="off">
+          <label for="p1">Mobile phone</label><input id="p1" type="tel" placeholder="(555) 000-0000" autocomplete="off">
+          <button class="btn btn-primary" type="submit">Book a call with our team</button>
+          <small>We use your number to confirm the time.</small>
+        </form>
+      </div>
+
+      <div class="panel c12">
+        <span class="mono">Presentation slide, 16:9</span>
+        <div class="slide">
+          <svg class="bg" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true">
+            <defs><linearGradient id="sg" x1="0" x2="1"><stop offset="0" stop-color="#F2A65A" stop-opacity="0"/><stop offset=".45" stop-color="#F2A65A" stop-opacity=".0"/><stop offset=".6" stop-color="#F2A65A" stop-opacity=".8"/><stop offset=".78" stop-color="#1F5FE0" stop-opacity=".8"/><stop offset="1" stop-color="#1F5FE0" stop-opacity=".25"/></linearGradient></defs>
+            <g fill="none" stroke="url(#sg)" stroke-width="1.6">
+              <path d="M0 250C500 250 800 430 1150 430S1500 300 1600 300"/>
+              <path d="M0 330C500 330 800 450 1150 450S1500 370 1600 370"/>
+              <path d="M0 410C500 410 800 470 1150 470S1500 440 1600 440"/>
+              <path d="M0 490C500 490 800 490 1150 490S1500 510 1600 510"/>
+              <path d="M0 570C500 570 800 510 1150 510S1500 580 1600 580"/>
+              <path d="M0 650C500 650 800 530 1150 530S1500 650 1600 650"/>
+              <path d="M0 730C500 730 800 550 1150 550S1500 720 1600 720"/>
+            </g>
+            <rect x="1090" y="400" width="120" height="180" rx="14" fill="rgba(255,255,255,.7)" stroke="#0F1E2E" stroke-width="1.6"/>
+            <path d="M1130 420v140M1150 420v140M1170 420v140" stroke="#1F5FE0" stroke-width="1.6"/>
+          </svg>
+          <div class="in">
+            <span class="mono">02 / After hours</span>
+            <h5>No heat at midnight goes to <em>your on-call tech.</em></h5>
+            <div class="ft"><span class="wm"><svg aria-hidden="true"><use href="#af-mark"/></svg><b>HVAC</b><span>Foundry</span></span><span class="mono">02</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ D. TOKENS ============ -->
+      <div class="panel c12" style="padding:0;border:0;background:none">
+<pre><span class="c">/* HVAC Foundry, Kit 1 "Airflow". Paste into any build. */</span>
+<span class="c">/* Fonts: Red Hat Display 500..800, Figtree 400..600, JetBrains Mono 500 (Google Fonts) */</span>
+:root{
+  <span class="k">--af-white</span>:#FFFFFF;  <span class="k">--af-mist</span>:#F4F7FA;  <span class="k">--af-haze</span>:#E8EEF4;  <span class="k">--af-line</span>:#D9E2EB;
+  <span class="k">--af-ink</span>:#0F1E2E;    <span class="k">--af-slate</span>:#50627A;
+  <span class="k">--af-blue</span>:#1F5FE0;   <span class="k">--af-blue-dk</span>:#174BB8;  <span class="k">--af-blue-tint</span>:#E8F0FE;
+  <span class="k">--af-cool</span>:#7DBEF5;   <span class="k">--af-warm</span>:#F2A65A;      <span class="c">/* airflow art only, never text on white */</span>
+  <span class="k">--af-ember</span>:#C2470F;  <span class="k">--af-ember-dk</span>:#A63A0A;  <span class="c">/* the one primary CTA per screen */</span>
+  <span class="k">--af-head</span>:'Red Hat Display','Helvetica Neue',Arial,sans-serif;
+  <span class="k">--af-body</span>:'Figtree','Helvetica Neue',Arial,sans-serif;
+  <span class="k">--af-mono</span>:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  <span class="k">--af-radius</span>:14px;  <span class="k">--af-radius-sm</span>:8px;
+  <span class="k">--af-shadow</span>:0 1px 2px rgba(15,30,46,.04),0 12px 32px rgba(15,30,46,.07);
+}</pre>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="foot"><div class="wrap">HVAC Foundry brand options, round 3. Kit 1 of 4. Illustrations are drawn in code, not photos.</div></div>
+
+<script>
+(function(){
+  var hero=document.getElementById('hero'),cv=document.getElementById('flow'),ctx=cv.getContext('2d');
+  var unit=document.getElementById('unit'),blower=document.getElementById('blower'),bladesG=document.getElementById('blades'),tempEl=document.getElementById('temp');
+  var mq=window.matchMedia('(prefers-reduced-motion: reduce)');
+  var NS='http://www.w3.org/2000/svg';
+  // blower wheel blades
+  for(var b=0;b<14;b++){var p=document.createElementNS(NS,'path');p.setAttribute('d','M352 133c6-8 8-18 5-28');p.setAttribute('transform','rotate('+(b*360/14)+' 352 150)');bladesG.appendChild(p);}
+
+  var W=0,H=0,U=null,lines=[],mobile=false,visible=true,raf=0,last=0,time=0,spin=0,p=0,pS=0,lastTemp='';
+  function rnd(seed){var x=Math.sin(seed*127.1)*43758.5453;return x-Math.floor(x);}
+  function sm(x){x=x<0?0:x>1?1:x;return x*x*(3-2*x);}
+  function measure(){
+    var r=hero.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,2);
+    W=r.width;H=r.height;cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);
+    var u=unit.getBoundingClientRect(),s=u.width/520;
+    mobile=W<960;
+    U={x0:u.left-r.left+70*s,x1:u.left-r.left+450*s,cy:u.top-r.top+150*s,ch:124*s,ca:u.left-r.left+190*s,cb:u.left-r.left+262*s,L:(mobile?.55:.8)*u.width};
+    var n=mobile?15:27;lines=[];
+    for(var i=0;i<n;i++){
+      lines.push({t:(i/(n-1))*2-1,ph:rnd(i+1)*6.28,ph2:rnd(i+40)*6.28,a:8+rnd(i+9)*12,
+        pulses:[{o:rnd(i+3),v:46+rnd(i+5)*44,len:70+rnd(i+7)*90},{o:rnd(i+13),v:40+rnd(i+15)*40,len:60+rnd(i+17)*70}]});
+    }
+    draw();
+  }
+  function yAt(l,x){
+    var w=x<U.x0?sm(1-(U.x0-x)/U.L):x>U.x1?sm(1-(x-U.x1)/U.L):1;
+    var spread=mobile?Math.min(H*.11,U.ch*1.5):H*.37;
+    var free=U.cy+l.t*spread+l.a*Math.sin(x*.0052+l.ph+time*.55)+l.a*.5*Math.sin(x*.011-time*.4+l.ph2);
+    var chan=U.cy+l.t*U.ch*.5+1.2*Math.sin(x*.05+l.ph+time*2);
+    return free+(chan-free)*w;
+  }
+  function mix(a,b,t){return Math.round(a+(b-a)*t);}
+  function grad(alpha){
+    var g=ctx.createLinearGradient(0,0,W,0),warm='232,140,52',cool=mix(90,31,pS)+','+mix(169,95,pS)+','+mix(240,224,pS);
+    var lead=mobile?.75:.5;
+    function st(x,c,a){g.addColorStop(Math.max(0,Math.min(1,x/W)),'rgba('+c+','+(a*alpha).toFixed(3)+')');}
+    st(0,warm,0);st(W*.05,warm,lead);st(Math.max(W*.06,U.x0-U.L*.5),warm,lead);st(U.x0,warm,1);st(U.ca,warm,1);st(U.cb,cool,1);st(Math.max(U.cb+1,W*.965),cool,1);
+    g.addColorStop(1,'rgba('+cool+',0)');
+    return g;
+  }
+  function draw(){
+    if(!U)return;
+    ctx.clearRect(0,0,W,H);
+    ctx.lineCap='round';ctx.lineJoin='round';
+    var step=mobile?8:10,i,x,l;
+    ctx.strokeStyle=grad(.3);ctx.lineWidth=1;
+    for(i=0;i<lines.length;i++){
+      l=lines[i];ctx.beginPath();
+      for(x=-10;x<=W+10;x+=step){var y=yAt(l,x);if(x===-10)ctx.moveTo(x,y);else ctx.lineTo(x,y);}
+      ctx.stroke();
+    }
+    ctx.strokeStyle=grad(1);ctx.lineWidth=1.6;
+    for(i=0;i<lines.length;i++){
+      l=lines[i];
+      for(var k=0;k<l.pulses.length;k++){
+        var pu=l.pulses[k],span=W+pu.len*2,head=((pu.o*span+time*pu.v)%span)-pu.len,seg=pu.len/4;
+        for(var s=0;s<4;s++){
+          var xa=head-pu.len+s*seg,xb=xa+seg;
+          ctx.globalAlpha=[.12,.3,.55,.85][s];
+          ctx.beginPath();ctx.moveTo(xa,yAt(l,xa));
+          for(x=xa+6;x<xb;x+=6)ctx.lineTo(x,yAt(l,x));
+          ctx.lineTo(xb,yAt(l,xb));ctx.stroke();
+        }
+      }
+    }
+    ctx.globalAlpha=1;
+    blower.setAttribute('transform','rotate('+spin.toFixed(2)+' 352 150)');
+    var tx=Math.round(68-13*pS)+'°F';if(tx!==lastTemp){tempEl.textContent=tx;lastTemp=tx;}
+  }
+  function readScroll(){var r=hero.getBoundingClientRect();p=Math.max(0,Math.min(1,-r.top/(r.height*.75)));}
+  function frame(now){
+    raf=0;if(!visible||mq.matches)return;
+    var dt=Math.min(.05,(now-last)/1000||0);last=now;
+    pS+=(p-pS)*Math.min(1,dt*5);
+    var sp=1+pS*1.8;time+=dt*sp;spin=(spin+dt*(36+150*pS))%360;
+    draw();raf=requestAnimationFrame(frame);
+  }
+  function start(){if(!raf&&visible&&!mq.matches){last=performance.now();raf=requestAnimationFrame(frame);}}
+  function staticFrame(){readScroll();pS=p;time=2.4;spin=8;draw();}
+  window.addEventListener('scroll',function(){readScroll();if(mq.matches){pS=p;draw();}},{passive:true});
+  if('IntersectionObserver' in window){new IntersectionObserver(function(e){visible=e[0].isIntersecting;if(visible)start();}).observe(hero);}
+  if('ResizeObserver' in window){new ResizeObserver(measure).observe(hero);}else{window.addEventListener('resize',measure);}
+  (mq.addEventListener?mq.addEventListener.bind(mq,'change'):mq.addListener.bind(mq))(function(){if(mq.matches){staticFrame();}else{start();}});
+  readScroll();measure();
+  if(document.fonts&&document.fonts.ready){document.fonts.ready.then(measure);}
+  if(mq.matches){staticFrame();}else{start();}
+})();
+</script>
+</body>
+</html>

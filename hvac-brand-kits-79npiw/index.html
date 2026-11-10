@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>HVAC Foundry brand kits, round 3</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#f4f5f7;color:#14181f;font:16px/1.55 -apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif}
+  header{max-width:1320px;margin:0 auto;padding:56px 32px 8px}
+  h1{font-size:34px;line-height:1.15;letter-spacing:-.02em;margin:0 0 10px}
+  header p{max-width:760px;margin:0 0 6px;color:#4a5361}
+  .grid{max-width:1320px;margin:0 auto;padding:28px 32px 80px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}
+  a.kit{display:block;background:#fff;border:1px solid #dfe3e9;border-radius:14px;overflow:hidden;text-decoration:none;color:inherit;transition:box-shadow .2s,transform .2s}
+  a.kit:hover{box-shadow:0 14px 40px rgba(20,24,31,.14);transform:translateY(-2px)}
+  .frame{position:relative;width:100%;aspect-ratio:16/10;overflow:hidden;background:#e9ecf1}
+  .frame iframe{position:absolute;top:0;left:0;width:1440px;height:900px;border:0;transform-origin:0 0;pointer-events:none}
+  .meta{padding:18px 22px 22px;border-top:1px solid #dfe3e9}
+  .meta .n{font:600 12px/1 ui-monospace,Menlo,monospace;letter-spacing:.12em;text-transform:uppercase;color:#6a7382}
+  .meta h2{font-size:22px;margin:8px 0 4px;letter-spacing:-.01em}
+  .meta p{margin:0;color:#4a5361;font-size:15px}
+  .meta .open{display:inline-block;margin-top:12px;font-weight:600;color:#1d4fd8}
+  @media (max-width:860px){.grid{grid-template-columns:1fr;padding:20px 16px 60px}header{padding:36px 16px 4px}h1{font-size:26px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>HVAC Foundry brand kits, round 3</h1>
+  <p>Four directions. Each one is a real landing page hero with a moving HVAC visual, then the full kit below it: logo, colors, fonts, buttons, a funnel card and a slide.</p>
+  <p><strong>How to pick:</strong> open each one, scroll the first two screens, then say the number. Mixing is fine ("3, with the hero from 2").</p>
+</header>
+<main class="grid">
+  <a class="kit" href="kit-1-airflow.html">
+    <div class="frame"><iframe src="kit-1-airflow.html" loading="lazy" tabindex="-1" title="Kit 1 preview"></iframe></div>
+    <div class="meta"><span class="n">Kit 1</span><h2>Airflow</h2><p>Light, airy, clean. Air streams pass through a vent and turn from warm to cool.</p><span class="open">Open kit 1</span></div>
+  </a>
+  <a class="kit" href="kit-2-schematic.html">
+    <div class="frame"><iframe src="kit-2-schematic.html" loading="lazy" tabindex="-1" title="Kit 2 preview"></iframe></div>
+    <div class="meta"><span class="n">Kit 2</span><h2>Schematic</h2><p>Dark, technical, precise. A line-drawn condenser with a spinning fan and spec callouts. Closest to today's navy brand.</p><span class="open">Open kit 2</span></div>
+  </a>
+  <a class="kit" href="kit-3-setpoint.html">
+    <div class="frame"><iframe src="kit-3-setpoint.html" loading="lazy" tabindex="-1" title="Kit 3 preview"></iframe></div>
+    <div class="meta"><span class="n">Kit 3</span><h2>Setpoint</h2><p>Minimal modern tech. A thermostat dial turns from hot to cool as you scroll.</p><span class="open">Open kit 3</span></div>
+  </a>
+  <a class="kit" href="kit-4-forge.html">
+    <div class="frame"><iframe src="kit-4-forge.html" loading="lazy" tabindex="-1" title="Kit 4 preview"></iframe></div>
+    <div class="meta"><span class="n">Kit 4</span><h2>Forge</h2><p>Bold, warm, industrial. A coil glows as work moves through it. Plays on the word Foundry.</p><span class="open">Open kit 4</span></div>
+  </a>
+</main>
+<script>
+  function fit(){document.querySelectorAll('.frame').forEach(function(f){var s=f.clientWidth/1440;f.querySelector('iframe').style.transform='scale('+s+')';});}
+  addEventListener('resize',fit);fit();
+</script>
+</body>
+</html>
