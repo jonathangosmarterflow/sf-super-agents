@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Hero 3, Schematic, new colors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060A12; --surface:#0D1727; --line:#1C2B40;
+  --text:#F3F7FB; --muted:#A4B4C8; --dim:#74859B;
+  --ice:#8FD8FF; --ice-hi:#C4EBFF;
+  --cta:#FF8A3D; --cta-hi:#FFA05E; --cta-text:#1C0C00;
+  --head:'Geist','Helvetica Neue',Arial,sans-serif;
+  --body:'Geist','Helvetica Neue',Arial,sans-serif;
+  --mono:'Geist Mono',ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit;text-decoration:none}
+h1,p,ul{margin:0;padding:0}
+:focus-visible{outline:2px solid var(--ice);outline-offset:3px;border-radius:4px}
+
+.hero{position:relative;min-height:max(100vh,700px);display:flex;flex-direction:column;overflow:hidden;isolation:isolate;background:
+  radial-gradient(44% 56% at 76% 52%,rgba(52,132,214,.2) 0%,rgba(52,132,214,0) 100%),
+  linear-gradient(180deg,#080E19 0%,#060A12 50%,#04070D 100%)}
+.wrap{width:100%;max-width:1280px;margin:0 auto;padding:0 64px}
+
+/* nav */
+.nav{display:flex;align-items:center;justify-content:space-between;padding-top:30px;position:relative;z-index:3}
+.wm{font-family:var(--head);font-size:21px;letter-spacing:-.025em;line-height:1;white-space:nowrap}
+.wm b{font-weight:700}
+.wm span{font-weight:400;margin-left:.24em}
+.nav-r{display:flex;align-items:center;gap:36px}
+.nav ul{display:flex;gap:34px;list-style:none}
+.nav ul a{font-size:15px;color:var(--muted);transition:color .2s}
+.nav ul a:hover{color:#fff}
+.btn-out{display:inline-flex;align-items:center;height:40px;padding:0 17px;border-radius:9px;border:1px solid rgba(143,216,255,.32);font-size:14.5px;font-weight:500;color:#fff;transition:border-color .2s,background .2s}
+.btn-out:hover{border-color:var(--ice);background:rgba(143,216,255,.06)}
+
+/* grid */
+.grid{flex:1;display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);gap:56px;align-items:center;padding-top:20px;padding-bottom:64px;min-height:0}
+.copy{position:relative;z-index:2}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;height:32px;padding:0 14px 0 12px;border-radius:999px;border:1px solid rgba(143,216,255,.24);background:rgba(143,216,255,.06);font-size:13.5px;font-weight:500;letter-spacing:-.005em;color:var(--ice-hi);white-space:nowrap}
+.eyebrow i{width:7px;height:7px;border-radius:50%;background:var(--cta);box-shadow:0 0 0 3px rgba(255,138,61,.2);flex:none}
+h1{font-family:var(--head);font-weight:600;font-size:clamp(40px,5.1vw,76px);line-height:1.02;letter-spacing:-.045em;margin-top:24px}
+h1 span{display:block;white-space:nowrap}
+h1 em{font-style:normal;color:var(--ice)}
+.sub{margin-top:24px;font-size:19px;line-height:1.55;color:var(--muted);max-width:520px}
+.cta{display:flex;align-items:center;gap:28px;margin-top:36px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:58px;padding:0 28px;border-radius:11px;background:var(--cta);color:var(--cta-text);font-size:17px;font-weight:600;letter-spacing:-.015em;box-shadow:0 1px 0 rgba(255,255,255,.3) inset,0 14px 40px -12px rgba(255,138,61,.6);transition:transform .2s ease,background .2s ease}
+.btn:hover{transform:translateY(-1px);background:var(--cta-hi)}
+.btn svg{width:17px;height:17px}
+.link{display:inline-flex;align-items:center;gap:8px;font-size:16px;font-weight:500;color:#fff}
+.link svg{width:16px;height:16px;color:var(--ice);transition:transform .2s ease}
+.link:hover svg{transform:translateX(3px)}
+.trust{display:flex;align-items:center;gap:10px;margin-top:30px;font-size:14.5px;color:var(--muted)}
+.trust svg{width:16px;height:16px;flex:none;color:var(--ice)}
+
+/* unit */
+.visual{display:flex;justify-content:center;align-items:center;min-height:0;position:relative}
+#unit{display:block;width:min(570px,70vh,104%);flex:none;height:auto;overflow:visible}
+#unit *{vector-effect:non-scaling-stroke}
+.ln{fill:none;stroke:var(--ice);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.l2{fill:none;stroke:var(--ice);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.lv{opacity:.62}
+.fan{transform-box:fill-box;transform-origin:center;animation:spin 14s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.air path{fill:none;stroke:url(#airg);stroke-width:2;stroke-linecap:round;opacity:0;animation:rise 6s ease-in-out infinite}
+.air path:nth-child(2){animation-delay:-2s}
+.air path:nth-child(3){animation-delay:-4s}
+@keyframes rise{0%{opacity:0;transform:translateY(16px)}45%{opacity:.6}100%{opacity:0;transform:translateY(-26px)}}
+.led{animation:led 3.2s ease-in-out infinite}
+@keyframes led{0%,100%{opacity:1}50%{opacity:.45}}
+
+.chip{position:fixed;left:14px;bottom:12px;z-index:20;font-family:var(--mono);font-size:10.5px;letter-spacing:.04em;color:var(--dim);padding:5px 9px;border:1px solid rgba(255,255,255,.1);border-radius:6px;background:rgba(6,10,18,.7)}
+
+@media (max-width:1100px){
+  .wrap{padding:0 40px}
+  .nav ul{gap:24px}
+  .grid{gap:36px}
+}
+@media (max-width:900px){
+  .wrap{padding:0 22px}
+  .hero{height:max(100vh,700px);min-height:0}
+  .nav{padding-top:18px}
+  .nav ul{display:none}
+  .wm{font-size:19px}
+  .btn-out{height:36px;padding:0 14px;font-size:13.5px}
+  .grid{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:10px;padding-top:28px;padding-bottom:30px;align-items:stretch}
+  .eyebrow{height:28px;font-size:12.5px;padding:0 12px 0 10px;gap:8px}
+  h1{font-size:clamp(34px,10.9vw,56px);margin-top:16px}
+  .sub{font-size:16px;line-height:1.5;margin-top:14px;max-width:34em}
+  .cta{margin-top:22px;gap:14px;flex-direction:column;align-items:stretch}
+  .btn{height:54px;font-size:16.5px;width:100%}
+  .link{justify-content:center;font-size:15px}
+  .trust{margin-top:14px;font-size:13px;justify-content:center;gap:8px}
+  .trust svg{width:14px;height:14px}
+  #unit{width:auto;height:100%;max-width:100%;max-height:380px;flex:0 1 auto}
+  .ln{stroke-width:2.1}
+  .l2{stroke-width:2}
+  .m-hide{display:none}
+}
+@supports (height:100svh){
+  .hero{min-height:max(100svh,700px)}
+  @media (max-width:900px){.hero{height:max(100svh,700px);min-height:0}}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+  .air path{opacity:.45}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <nav class="nav wrap" aria-label="Main">
+    <a class="wm" href="#" aria-label="HVAC Foundry"><b>HVAC</b><span>Foundry</span></a>
+    <div class="nav-r">
+      <ul>
+        <li><a href="#does">What it does</a></li>
+        <li><a href="#limits">What it does not do</a></li>
+      </ul>
+      <a class="btn-out" href="#book">Book a call</a>
+    </div>
+  </nav>
+
+  <div class="grid wrap">
+    <div class="copy">
+      <p class="eyebrow"><i></i>The AI front desk built for HVAC shops</p>
+      <h1><span>Calls in.</span><span><em>Booked jobs</em> out.</span></h1>
+      <p class="sub">HVAC Foundry answers new leads, follows up on quiet estimates and puts the visit on your board, while your crew stays on the job.</p>
+      <div class="cta">
+        <a class="btn" href="#book">Book a call with our team
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+        <a class="link" href="#does">See what it does
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+      </div>
+      <p class="trust">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.6V8l2.2 1.6"/></svg>
+        Built for after hours, overflow and the busy season.</p>
+    </div>
+
+    <div class="visual">
+      <svg id="unit" viewBox="34 14 492 530" role="img" aria-label="Line drawing of an outdoor condenser unit with its fan turning slowly">
+        <defs>
+          <radialGradient id="ground" cx="50%" cy="50%" r="50%">
+            <stop offset="0" stop-color="#4FA8F0" stop-opacity=".26"/><stop offset=".6" stop-color="#4FA8F0" stop-opacity=".07"/><stop offset="1" stop-color="#4FA8F0" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="airg" gradientUnits="userSpaceOnUse" x1="0" y1="176" x2="0" y2="36">
+            <stop offset="0" stop-color="#8FD8FF" stop-opacity="0"/><stop offset=".35" stop-color="#8FD8FF" stop-opacity=".7"/><stop offset="1" stop-color="#8FD8FF" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="fl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0E1B2E"/><stop offset="1" stop-color="#0A1422"/></linearGradient>
+          <linearGradient id="fr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0A1524"/><stop offset="1" stop-color="#070E19"/></linearGradient>
+        </defs>
+
+        <ellipse cx="280" cy="448" rx="270" ry="96" fill="url(#ground)"/>
+
+        <!-- pad -->
+        <polygon points="280,248 512,382 280,516 48,382" fill="#0A1320"/>
+        <polygon points="48,382 280,516 280,530 48,396" fill="#08101B"/>
+        <polygon points="280,516 512,382 512,396 280,530" fill="#060C15"/>
+        <path class="l2 lv" d="M48 382 280 516 512 382M48 382v14L280 530l232-134v-14M280 516v14M48 382l38-22M512 382l-38-22"/>
+
+        <!-- body faces -->
+        <polygon points="86,196 280,308 280,494 86,382" fill="url(#fl)"/>
+        <polygon points="280,308 474,196 474,382 280,494" fill="url(#fr)"/>
+        <polygon points="280,84 474,196 280,308 86,196" fill="#111F33"/>
+
+        <!-- left face detail -->
+        <g transform="matrix(.866,.5,0,1,86,196)">
+          <path class="l2 lv" d="M0 16H224M0 166H224"/>
+          <path class="l2 lv" d="M22 38H202M22 66H202M22 94H202M22 122H202M22 150H202"/>
+          <path class="l2 lv m-hide" d="M22 52H202M22 80H202M22 108H202M22 136H202"/>
+        </g>
+        <!-- right face detail -->
+        <g transform="matrix(.866,-.5,0,1,280,308)">
+          <path class="l2 lv" d="M0 16H224M0 166H224"/>
+          <path class="l2 lv" d="M22 38H136M22 66H136M22 94H136M22 122H136M22 150H136"/>
+          <path class="l2 lv m-hide" d="M22 52H136M22 80H136M22 108H136M22 136H136"/>
+          <rect class="l2" x="154" y="34" width="50" height="118" rx="6" fill="#0B1626"/>
+          <path class="l2 lv" d="M167 74H191M167 88H191M167 102H191"/>
+          <circle class="l2" cx="179" cy="130" r="7"/>
+          <circle class="led" cx="179" cy="52" r="5" fill="#FF8A3D"/>
+        </g>
+
+        <!-- top face: grille and fan -->
+        <g transform="matrix(.866,.5,-.866,.5,280,196)">
+          <circle cx="0" cy="0" r="92" fill="#070F1B"/>
+          <g class="fan">
+            <circle cx="0" cy="0" r="86" fill="none" stroke="none"/>
+            <g fill="rgba(143,216,255,.2)" stroke="#8FD8FF" stroke-width="2" stroke-linejoin="round">
+              <path d="M20.7-7.5C28-32 38-50 51.4-61.3A80 80 0 0 1 77.3 20.7C58 22 36 18 19.9 9.3Z"/>
+              <path d="M20.7-7.5C28-32 38-50 51.4-61.3A80 80 0 0 1 77.3 20.7C58 22 36 18 19.9 9.3Z" transform="rotate(120)"/>
+              <path d="M20.7-7.5C28-32 38-50 51.4-61.3A80 80 0 0 1 77.3 20.7C58 22 36 18 19.9 9.3Z" transform="rotate(240)"/>
+            </g>
+          </g>
+          <circle class="l2 lv" cx="0" cy="0" r="70"/>
+          <circle class="l2 lv" cx="0" cy="0" r="46"/>
+          <path class="l2 lv" d="M22 0H92M-22 0H-92M0 22V92M0-22V-92"/>
+          <path class="l2 lv m-hide" d="M15.6 15.6 65 65M-15.6 15.6-65 65M15.6-15.6 65-65M-15.6-15.6-65-65"/>
+          <circle class="ln" cx="0" cy="0" r="92"/>
+          <circle class="l2" cx="0" cy="0" r="22" fill="#111F33"/>
+          <circle cx="0" cy="0" r="6" fill="#8FD8FF"/>
+          <g fill="#8FD8FF" opacity=".7"><circle cx="-98" cy="-98" r="3"/><circle cx="98" cy="-98" r="3"/><circle cx="98" cy="98" r="3"/><circle cx="-98" cy="98" r="3"/></g>
+        </g>
+
+        <!-- silhouette -->
+        <path class="ln" d="M280 84 474 196V382L280 494 86 382V196ZM86 196 280 308 474 196M280 308V494"/>
+
+        <!-- rising air -->
+        <g class="air">
+          <path d="M246 168 238 62"/>
+          <path d="M280 172V40"/>
+          <path d="M314 168 322 62"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<div class="chip">Hero 3 · Schematic, new colors</div>
+</body>
+</html>

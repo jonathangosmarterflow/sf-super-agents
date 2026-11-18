@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Hero 7, Type Only</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0B0C0E; --surface:#131519; --text:#F4F5F7; --muted:#A0A5AF;
+  --accent:#5B9DFF; --cta:#2563EB; --cta-hover:#3572F4; --cta-text:#FFFFFF;
+  --line:rgba(255,255,255,.1);
+  --head:'Inter Tight','Helvetica Neue',Arial,sans-serif;
+  --body:'Inter','Helvetica Neue',Arial,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+
+.hero{position:relative;isolation:isolate;min-height:100vh;min-height:max(100svh,700px);display:flex;flex-direction:column;overflow:hidden;
+  background:
+    radial-gradient(620px 420px at 84% 30%,rgba(59,123,255,.13) 0%,rgba(59,123,255,0) 70%),
+    radial-gradient(900px 520px at 12% 108%,rgba(59,123,255,.07) 0%,rgba(59,123,255,0) 70%),
+    var(--bg)}
+.wrap{width:100%;max-width:1296px;margin:0 auto;padding:0 64px}
+
+/* nav */
+.nav{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:92px}
+.wm{font-family:var(--head);font-size:22px;letter-spacing:-.02em;display:inline-flex;gap:.26em;line-height:1;justify-self:start}
+.wm b{font-weight:700}.wm span{font-weight:400}
+.nav ul{display:flex;gap:36px;list-style:none}
+.nav ul a{font-size:15px;color:var(--muted);transition:color .2s}
+.nav ul a:hover{color:var(--text)}
+.btn-out{justify-self:end;font-size:14.5px;font-weight:500;padding:10px 17px;border-radius:999px;border:1px solid rgba(255,255,255,.3);transition:border-color .2s,background .2s}
+.btn-out:hover{border-color:var(--accent);background:rgba(91,157,255,.08)}
+
+/* copy */
+.main{flex:1;display:flex;flex-direction:column;justify-content:center;padding-bottom:72px}
+.block{position:relative}
+.eyebrow{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);margin-bottom:26px}
+.eyebrow i{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:none;box-shadow:0 0 0 4px rgba(91,157,255,.16)}
+h1{font-family:var(--head);font-weight:500;font-size:clamp(48px,min(10.6vw,18.5vh),168px);line-height:.94;letter-spacing:-.045em;margin:0 0 40px -.04em}
+h1 span{display:block;white-space:nowrap}
+h1 .l2{color:var(--accent)}
+.sub{font-size:clamp(17px,1.45vw,21px);line-height:1.55;color:var(--muted);max-width:32em;margin-bottom:36px;text-wrap:pretty}
+.cta-row{display:flex;flex-wrap:wrap;align-items:center;gap:28px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:11px;height:60px;padding:0 30px;border-radius:999px;background:var(--cta);color:var(--cta-text);font-family:var(--body);font-weight:600;font-size:17px;letter-spacing:-.01em;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 16px 44px -10px rgba(37,99,235,.7);transition:background .2s,transform .2s}
+.btn:hover{background:var(--cta-hover);transform:translateY(-1px)}
+.btn svg{width:17px;height:17px}
+.link{font-size:16px;font-weight:500;color:var(--text);padding-bottom:3px;border-bottom:1px solid rgba(255,255,255,.36);transition:border-color .2s}
+.link:hover{border-color:var(--accent)}
+.trust{margin-top:30px;font-size:14.5px;color:var(--muted)}
+
+/* status card */
+.card{position:absolute;right:0;bottom:22px;width:348px;padding:18px 20px 20px;border-radius:18px;background:linear-gradient(180deg,#16191E 0%,#101216 100%);border:1px solid rgba(255,255,255,.1);box-shadow:0 30px 80px -20px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.05)}
+.card-top{display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase}
+.card-top .who{display:flex;align-items:center;gap:9px;color:#C9CDD4}
+.card-top .who i{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(91,157,255,.45)}60%{box-shadow:0 0 0 7px rgba(91,157,255,0)}}
+.card-top .tag{color:#8D929C;border:1px solid rgba(255,255,255,.12);border-radius:5px;padding:3px 6px;font-size:9.5px;letter-spacing:.08em}
+.card .ctx{margin-top:20px;font-family:var(--mono);font-size:12.5px;color:var(--muted);letter-spacing:.01em}
+.states{position:relative;height:34px;margin-top:6px}
+.st{position:absolute;inset:0;display:flex;align-items:center;gap:10px;font-family:var(--head);font-weight:600;font-size:23px;letter-spacing:-.025em;line-height:1;white-space:nowrap;opacity:0}
+.st svg{width:20px;height:20px;flex:none}
+.s1{animation:s1 13.5s ease infinite}
+.s2{animation:s2 13.5s ease infinite}
+.s3{animation:s3 13.5s ease infinite}
+@keyframes s1{0%,1%{opacity:0;transform:translateY(8px)}5%,28%{opacity:1;transform:none}32%,100%{opacity:0;transform:translateY(-8px)}}
+@keyframes s2{0%,33%{opacity:0;transform:translateY(8px)}37%,60%{opacity:1;transform:none}64%,100%{opacity:0;transform:translateY(-8px)}}
+@keyframes s3{0%,65%{opacity:0;transform:translateY(8px)}69%,95%{opacity:1;transform:none}99%,100%{opacity:0;transform:translateY(-8px)}}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:20px}
+.steps i{height:3px;border-radius:3px;background:rgba(255,255,255,.12);position:relative;overflow:hidden}
+.steps i:after{content:"";position:absolute;inset:0;background:var(--accent);border-radius:3px;opacity:0}
+.steps i:nth-child(1):after{animation:b1 13.5s ease infinite}
+.steps i:nth-child(2):after{animation:b2 13.5s ease infinite}
+.steps i:nth-child(3):after{animation:b3 13.5s ease infinite}
+@keyframes b1{0%,1%{opacity:0}5%,95%{opacity:1}99%,100%{opacity:0}}
+@keyframes b2{0%,33%{opacity:0}37%,95%{opacity:1}99%,100%{opacity:0}}
+@keyframes b3{0%,65%{opacity:0}69%,95%{opacity:1}99%,100%{opacity:0}}
+
+.chip{position:fixed;left:14px;bottom:12px;z-index:20;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:rgba(244,245,247,.6);padding:6px 9px;border-radius:6px;border:1px solid rgba(255,255,255,.12);background:rgba(11,12,14,.72)}
+
+@media (max-width:1060px){
+  .nav{grid-template-columns:1fr auto}
+  .nav ul{display:none}
+  .wrap{padding:0 40px}
+  .main{justify-content:flex-start;padding-top:40px}
+  h1{font-size:clamp(48px,13.4vw,128px)}
+  .card{position:relative;bottom:auto;right:auto;margin-top:40px;width:min(100%,380px)}
+}
+@media (max-width:520px){
+  body{font-size:16px}
+  .wrap{padding:0 24px}
+  .nav{height:68px}
+  .wm{font-size:19px}
+  .btn-out{font-size:13.5px;padding:8px 14px}
+  .main{padding-top:24px;padding-bottom:56px}
+  .eyebrow{font-size:10.5px;letter-spacing:.07em;gap:10px;margin-bottom:18px}
+  h1{font-size:13vw;line-height:.97;margin-bottom:20px}
+  .sub{font-size:16px;line-height:1.52;margin-bottom:26px}
+  .cta-row{gap:18px}
+  .btn{width:100%;height:56px}
+  .link{margin:0 auto}
+  .trust{margin-top:20px;font-size:13.5px;text-align:center}
+  .card{margin-top:28px;width:100%;padding:16px 18px 18px}
+  .st{font-size:21px}
+}
+@media (prefers-reduced-motion:reduce){
+  .s1,.s2,.s3,.steps i:after,.card-top .who i{animation:none}
+  .s3{opacity:1}
+  .steps i:nth-child(n):after{animation:none;opacity:1}
+  .btn{transition:none}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <nav class="nav wrap" aria-label="Main">
+    <a class="wm" href="#" aria-label="HVAC Foundry"><b>HVAC</b><span>Foundry</span></a>
+    <ul>
+      <li><a href="#does">What it does</a></li>
+      <li><a href="#limits">What it does not do</a></li>
+    </ul>
+    <a class="btn-out" href="#book">Book a call</a>
+  </nav>
+
+  <main class="main wrap">
+    <div class="block">
+      <p class="eyebrow"><i></i>The AI front desk built for HVAC shops</p>
+      <h1><span class="l1">Calls in.</span><span class="l2">Booked jobs out.</span></h1>
+      <p class="sub">HVAC Foundry answers new leads, follows up on quiet estimates and puts the visit on your board, while your crew stays on the job.</p>
+      <div class="cta-row">
+        <a class="btn" href="#book">Book a call with our team
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+        <a class="link" href="#does">See what it does</a>
+      </div>
+      <p class="trust">Built for after hours, overflow and the busy season.</p>
+
+      <aside class="card" aria-label="Illustration: an after-hours call being answered and booked">
+        <div class="card-top"><span class="who"><i></i>Front desk</span><span class="tag">Illustration</span></div>
+        <p class="ctx">9:42 PM · After-hours call</p>
+        <div class="states">
+          <div class="st s1">Answering</div>
+          <div class="st s2">Details taken</div>
+          <div class="st s3"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="#5B9DFF"/><path d="M6 10.4l2.6 2.6L14 7.6" stroke="#0B0C0E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>On the board for 8:00 AM</div>
+        </div>
+        <div class="steps" aria-hidden="true"><i></i><i></i><i></i></div>
+      </aside>
+    </div>
+  </main>
+</header>
+<div class="chip">Hero 7 · Type Only</div>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Hero 6, Navy Cream Copper</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0D1726; --surface:#15263F; --text:#F4EFE6; --muted:#B9B5AA;
+  --accent:#A9CBE3; --copper:#D07B3A; --copper-lt:#E3A06C;
+  --cta:#D07B3A; --cta-hover:#DD8D50; --cta-text:#0D1726;
+  --line:rgba(244,239,230,.18);
+  --head:'Bricolage Grotesque','Helvetica Neue',Arial,sans-serif;
+  --body:'Instrument Sans','Helvetica Neue',Arial,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--copper-lt);outline-offset:3px;border-radius:4px}
+
+.hero{position:relative;isolation:isolate;min-height:100vh;min-height:max(100svh,700px);display:flex;flex-direction:column;overflow:hidden;
+  background:
+    radial-gradient(760px 620px at 76% 52%,#182C48 0%,rgba(24,44,72,0) 72%),
+    radial-gradient(900px 500px at 8% 110%,rgba(208,123,58,.07) 0%,rgba(208,123,58,0) 70%),
+    linear-gradient(180deg,#0E1929 0%,#0C1522 100%)}
+.wrap{width:100%;max-width:1240px;margin:0 auto;padding:0 48px}
+
+/* nav */
+.nav{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:92px}
+.wm{font-family:var(--head);font-size:23px;letter-spacing:-.02em;display:inline-flex;gap:.26em;line-height:1;justify-self:start;font-variation-settings:"opsz" 24}
+.wm b{font-weight:700}.wm span{font-weight:400}
+.nav ul{display:flex;gap:36px;list-style:none}
+.nav ul a{font-size:15px;color:var(--muted);transition:color .2s}
+.nav ul a:hover{color:var(--text)}
+.btn-out{justify-self:end;font-size:14.5px;font-weight:500;padding:10px 17px;border-radius:8px;border:1px solid rgba(244,239,230,.34);transition:border-color .2s,background .2s}
+.btn-out:hover{border-color:var(--copper-lt);background:rgba(208,123,58,.08)}
+
+/* copy */
+.grid{flex:1;display:grid;grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr);align-items:center;gap:48px;padding-top:8px;padding-bottom:84px}
+.eyebrow{display:flex;align-items:center;gap:13px;font-size:12.5px;font-weight:600;letter-spacing:.17em;text-transform:uppercase;color:var(--copper-lt);margin-bottom:28px}
+.eyebrow i{width:28px;height:1.5px;background:var(--copper);flex:none}
+h1{font-family:var(--head);font-weight:600;font-size:clamp(40px,5.4vw,80px);line-height:1.02;letter-spacing:-.018em;margin-bottom:28px;font-variation-settings:"opsz" 96}
+h1 span{display:block;white-space:nowrap}
+h1 .l1{color:#CDC8BC}
+.sub{font-size:clamp(17px,1.36vw,19.5px);line-height:1.6;color:var(--muted);max-width:31em;margin-bottom:38px;text-wrap:pretty}
+.cta-row{display:flex;flex-wrap:wrap;align-items:center;gap:26px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:11px;height:58px;padding:0 28px;border-radius:9px;background:linear-gradient(180deg,#DA8847 0%,#CB7433 100%);color:var(--cta-text);font-family:var(--body);font-weight:600;font-size:17px;letter-spacing:-.005em;box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 16px 40px -12px rgba(208,123,58,.5);transition:filter .2s,transform .2s}
+.btn:hover{filter:brightness(1.07);transform:translateY(-1px)}
+.btn svg{width:17px;height:17px}
+.link{font-size:16px;font-weight:500;color:var(--text);padding-bottom:3px;border-bottom:1px solid rgba(244,239,230,.38);transition:border-color .2s}
+.link:hover{border-color:var(--copper-lt)}
+.trust{display:flex;align-items:center;gap:12px;margin-top:32px;font-size:14.5px;color:var(--muted)}
+.trust i{width:6px;height:6px;border-radius:50%;background:var(--accent);flex:none;box-shadow:0 0 0 4px rgba(169,203,227,.14)}
+
+/* gauge */
+.stage{display:flex;justify-content:flex-end}
+.gauge{display:block;width:100%;max-width:548px;height:auto;overflow:visible;margin-right:-22px}
+.gauge text{font-family:var(--body)}
+.needle-settle,.needle-breathe{transform-box:view-box;transform-origin:300px 300px}
+.needle-settle{transform:rotate(96deg);animation:settle 4.2s cubic-bezier(.4,0,.2,1) .5s backwards}
+@keyframes settle{0%{transform:rotate(-118deg)}72%{transform:rotate(100.5deg)}88%{transform:rotate(94.6deg)}100%{transform:rotate(96deg)}}
+.needle-breathe{animation:sway 9s ease-in-out 5s infinite}
+@keyframes sway{0%,100%{transform:rotate(0deg)}30%{transform:rotate(.8deg)}70%{transform:rotate(-.6deg)}}
+.breath{animation:breath 7s ease-in-out infinite alternate}
+@keyframes breath{from{opacity:.55}to{opacity:1}}
+
+.chip{position:fixed;left:14px;bottom:12px;z-index:20;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:rgba(244,239,230,.62);padding:6px 9px;border-radius:6px;border:1px solid rgba(244,239,230,.13);background:rgba(13,23,38,.72)}
+
+@media (max-width:980px){
+  .nav{grid-template-columns:1fr auto}
+  .nav ul{display:none}
+  .grid{grid-template-columns:1fr;align-items:start;gap:40px;padding-top:36px;padding-bottom:64px}
+  h1{font-size:clamp(40px,8.4vw,72px)}
+  .stage{justify-content:center}
+  .gauge{max-width:min(78vw,400px);margin-right:0}
+}
+@media (max-width:520px){
+  body{font-size:16px}
+  .wrap{padding:0 24px}
+  .nav{height:68px}
+  .wm{font-size:20px}
+  .btn-out{font-size:13.5px;padding:8px 13px}
+  .grid{padding-top:26px;gap:30px;padding-bottom:56px}
+  .eyebrow{font-size:10.5px;letter-spacing:.09em;gap:9px;margin-bottom:18px}
+  .eyebrow i{width:16px}
+  h1{font-size:min(11.2vw,46px);margin-bottom:18px}
+  .sub{font-size:16px;line-height:1.52;margin-bottom:26px}
+  .cta-row{gap:18px}
+  .btn{width:100%;height:56px}
+  .link{margin:0 auto}
+  .trust{margin-top:20px;font-size:13.5px;justify-content:center}
+  .gauge{max-width:min(74vw,300px)}
+}
+@media (prefers-reduced-motion:reduce){
+  .needle-settle,.needle-breathe,.breath{animation:none}
+  .btn{transition:none}
+}
+</style>
+</head>
+<body>
+<header class="hero">
+  <nav class="nav wrap" aria-label="Main">
+    <a class="wm" href="#" aria-label="HVAC Foundry"><b>HVAC</b><span>Foundry</span></a>
+    <ul>
+      <li><a href="#does">What it does</a></li>
+      <li><a href="#limits">What it does not do</a></li>
+    </ul>
+    <a class="btn-out" href="#book">Book a call</a>
+  </nav>
+
+  <main class="grid wrap">
+    <div class="copy">
+      <p class="eyebrow"><i></i>The AI front desk built for HVAC shops</p>
+      <h1><span class="l1">Calls in.</span><span class="l2">Booked jobs out.</span></h1>
+      <p class="sub">HVAC Foundry answers new leads, follows up on quiet estimates and puts the visit on your board, while your crew stays on the job.</p>
+      <div class="cta-row">
+        <a class="btn" href="#book">Book a call with our team
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+        <a class="link" href="#does">See what it does</a>
+      </div>
+      <p class="trust"><i></i>Built for after hours, overflow and the busy season.</p>
+    </div>
+
+    <div class="stage">
+      <svg class="gauge" viewBox="0 0 600 600" role="img" aria-label="Illustration of an instrument gauge. The needle moves from calls in and settles on booked.">
+        <defs>
+          <radialGradient id="face6" cx="50%" cy="40%" r="62%">
+            <stop offset="0" stop-color="#1A2E4B"/><stop offset="1" stop-color="#101E33"/>
+          </radialGradient>
+          <radialGradient id="cool6" cx="50%" cy="50%" r="50%">
+            <stop offset="0" stop-color="#A9CBE3" stop-opacity=".2"/><stop offset="1" stop-color="#A9CBE3" stop-opacity="0"/>
+          </radialGradient>
+          <linearGradient id="ndl6" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#E9A56E"/><stop offset="1" stop-color="#C9712F"/>
+          </linearGradient>
+        </defs>
+        <circle class="breath" cx="452" cy="340" r="270" fill="url(#cool6)"/>
+        <circle cx="300" cy="300" r="272" fill="none" stroke="#F4EFE6" stroke-opacity=".1"/>
+        <circle cx="300" cy="300" r="258" fill="url(#face6)" stroke="#F4EFE6" stroke-opacity=".42" stroke-width="1.5"/>
+        <circle cx="300" cy="300" r="250" fill="none" stroke="#F4EFE6" stroke-opacity=".08"/>
+        <path d="M157.16 442.84 A202 202 0 1 1 442.84 442.84" fill="none" stroke="#F4EFE6" stroke-opacity=".16" stroke-width="1"/>
+        <path d="M157.16 442.84 A202 202 0 0 1 100.49 268.40" fill="none" stroke="#F4EFE6" stroke-opacity=".5" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M463.42 181.27 A202 202 0 0 1 442.84 442.84" fill="none" stroke="#A9CBE3" stroke-width="3" stroke-linecap="round"/>
+        <path d="M148.68 451.32 L131.71 468.29" stroke="#F4EFE6" stroke-opacity="0.92" stroke-width="2" stroke-linecap="round"/>
+        <path d="M125.86 444.06 L116.62 451.71" stroke="#F4EFE6" stroke-opacity="0.42" stroke-width="1" stroke-linecap="round"/>
+        <path d="M113.08 427.03 L103.15 433.78" stroke="#F4EFE6" stroke-opacity="0.42" stroke-width="1" stroke-linecap="round"/>
+        <path d="M101.95 408.88 L91.44 414.66" stroke="#F4EFE6" stroke-opacity="0.42" stroke-width="1" stroke-linecap="round"/>
+        <path d="M92.59 389.76 L81.57 394.52" stroke="#F4EFE6" stroke-opacity="0.42" stroke-width="1" stroke-linecap="round"/>
+        <path d="M96.47 366.13 L73.65 373.55" stroke="#F4EFE6" stroke-opacity="0.92" stroke-width="2" stroke-linecap="round"/>
+        <path d="M79.44 349.30 L67.73 351.92" stroke="#F4EFE6" stroke-opacity="0.42" stroke-width="1" stroke-linecap="round"/>
+        <path d="M75.78 328.33 L63.88 329.83" stroke="#F4EFE6" stroke-opacity="0.42" stroke-width="1" stroke-linecap="round"/>
+        <path d="M74.11 307.10 L62.12 307.48" stroke="#F4EFE6" stroke-opacity="0.42" stroke-width="1" stroke-linecap="round"/>
+        <path d="M74.45 285.81 L62.47 285.06" stroke="#F4EFE6" stroke-opacity="0.42" stroke-width="1" stroke-linecap="round"/>
+        <path d="M88.63 266.52 L64.93 262.77" stroke="#F4EFE6" stroke-opacity="0.92" stroke-width="2" stroke-linecap="round"/>
+        <path d="M81.10 243.80 L69.48 240.81" stroke="#F4EFE6" stroke-opacity="0.42" stroke-width="1" stroke-linecap="round"/>
+        <path d="M87.36 223.45 L76.07 219.38" stroke="#F4EFE6" stroke-opacity="0.42" stroke-width="1" stroke-linecap="round"/>
+        <path d="M95.51 203.77 L84.65 198.66" stroke="#F4EFE6" stroke-opacity="0.42" stroke-width="1" stroke-linecap="round"/>
+        <path d="M105.47 184.96 L95.14 178.85" stroke="#F4EFE6" stroke-opacity="0.42" stroke-width="1" stroke-linecap="round"/>
+        <path d="M126.87 174.21 L107.45 160.11" stroke="#F4EFE6" stroke-opacity="0.92" stroke-width="2" stroke-linecap="round"/>
+        <path d="M130.47 150.54 L121.47 142.61" stroke="#F4EFE6" stroke-opacity="0.42" stroke-width="1" stroke-linecap="round"/>
+        <path d="M145.29 135.25 L137.08 126.51" stroke="#F4EFE6" stroke-opacity="0.42" stroke-width="1" stroke-linecap="round"/>
+        <path d="M161.48 121.42 L154.13 111.94" stroke="#F4EFE6" stroke-opacity="0.42" stroke-width="1" stroke-linecap="round"/>
+        <path d="M178.90 109.18 L172.47 99.05" stroke="#F4EFE6" stroke-opacity="0.42" stroke-width="1" stroke-linecap="round"/>
+        <path d="M202.85 109.32 L191.95 87.94" stroke="#F4EFE6" stroke-opacity="0.92" stroke-width="2" stroke-linecap="round"/>
+        <path d="M216.80 89.87 L212.39 78.71" stroke="#F4EFE6" stroke-opacity="0.42" stroke-width="1" stroke-linecap="round"/>
+        <path d="M236.95 82.97 L233.60 71.45" stroke="#F4EFE6" stroke-opacity="0.42" stroke-width="1" stroke-linecap="round"/>
+        <path d="M257.65 78.00 L255.40 66.22" stroke="#F4EFE6" stroke-opacity="0.42" stroke-width="1" stroke-linecap="round"/>
+        <path d="M278.73 75.00 L277.60 63.06" stroke="#F4EFE6" stroke-opacity="0.42" stroke-width="1" stroke-linecap="round"/>
+        <path d="M300.00 86.00 L300.00 62.00" stroke="#F4EFE6" stroke-opacity="0.92" stroke-width="2" stroke-linecap="round"/>
+        <path d="M321.27 75.00 L322.40 63.06" stroke="#F4EFE6" stroke-opacity="0.42" stroke-width="1" stroke-linecap="round"/>
+        <path d="M342.35 78.00 L344.60 66.22" stroke="#F4EFE6" stroke-opacity="0.42" stroke-width="1" stroke-linecap="round"/>
+        <path d="M363.05 82.97 L366.40 71.45" stroke="#F4EFE6" stroke-opacity="0.42" stroke-width="1" stroke-linecap="round"/>
+        <path d="M383.20 89.87 L387.61 78.71" stroke="#F4EFE6" stroke-opacity="0.42" stroke-width="1" stroke-linecap="round"/>
+        <path d="M397.15 109.32 L408.05 87.94" stroke="#F4EFE6" stroke-opacity="0.92" stroke-width="2" stroke-linecap="round"/>
+        <path d="M421.10 109.18 L427.53 99.05" stroke="#F4EFE6" stroke-opacity="0.42" stroke-width="1" stroke-linecap="round"/>
+        <path d="M438.52 121.42 L445.87 111.94" stroke="#F4EFE6" stroke-opacity="0.42" stroke-width="1" stroke-linecap="round"/>
+        <path d="M454.71 135.25 L462.92 126.51" stroke="#F4EFE6" stroke-opacity="0.42" stroke-width="1" stroke-linecap="round"/>
+        <path d="M469.53 150.54 L478.53 142.61" stroke="#F4EFE6" stroke-opacity="0.42" stroke-width="1" stroke-linecap="round"/>
+        <path d="M473.13 174.21 L492.55 160.11" stroke="#A9CBE3" stroke-opacity="1" stroke-width="2" stroke-linecap="round"/>
+        <path d="M494.53 184.96 L504.86 178.85" stroke="#A9CBE3" stroke-opacity="0.7" stroke-width="1" stroke-linecap="round"/>
+        <path d="M504.49 203.77 L515.35 198.66" stroke="#A9CBE3" stroke-opacity="0.7" stroke-width="1" stroke-linecap="round"/>
+        <path d="M512.64 223.45 L523.93 219.38" stroke="#A9CBE3" stroke-opacity="0.7" stroke-width="1" stroke-linecap="round"/>
+        <path d="M518.90 243.80 L530.52 240.81" stroke="#A9CBE3" stroke-opacity="0.7" stroke-width="1" stroke-linecap="round"/>
+        <path d="M511.37 266.52 L535.07 262.77" stroke="#A9CBE3" stroke-opacity="1" stroke-width="2" stroke-linecap="round"/>
+        <path d="M525.55 285.81 L537.53 285.06" stroke="#A9CBE3" stroke-opacity="0.7" stroke-width="1" stroke-linecap="round"/>
+        <path d="M525.89 307.10 L537.88 307.48" stroke="#A9CBE3" stroke-opacity="0.7" stroke-width="1" stroke-linecap="round"/>
+        <path d="M524.22 328.33 L536.12 329.83" stroke="#A9CBE3" stroke-opacity="0.7" stroke-width="1" stroke-linecap="round"/>
+        <path d="M520.56 349.30 L532.27 351.92" stroke="#A9CBE3" stroke-opacity="0.7" stroke-width="1" stroke-linecap="round"/>
+        <path d="M503.53 366.13 L526.35 373.55" stroke="#A9CBE3" stroke-opacity="1" stroke-width="2" stroke-linecap="round"/>
+        <path d="M507.41 389.76 L518.43 394.52" stroke="#A9CBE3" stroke-opacity="0.7" stroke-width="1" stroke-linecap="round"/>
+        <path d="M498.05 408.88 L508.56 414.66" stroke="#A9CBE3" stroke-opacity="0.7" stroke-width="1" stroke-linecap="round"/>
+        <path d="M486.92 427.03 L496.85 433.78" stroke="#A9CBE3" stroke-opacity="0.7" stroke-width="1" stroke-linecap="round"/>
+        <path d="M474.14 444.06 L483.38 451.71" stroke="#A9CBE3" stroke-opacity="0.7" stroke-width="1" stroke-linecap="round"/>
+        <path d="M451.32 451.32 L468.29 468.29" stroke="#A9CBE3" stroke-opacity="1" stroke-width="2" stroke-linecap="round"/>
+        <text x="300" y="206" text-anchor="middle" font-size="17" fill="#F4EFE6" fill-opacity=".86" style="font-family:'Bricolage Grotesque',sans-serif;letter-spacing:-.01em"><tspan font-weight="700">HVAC</tspan><tspan font-weight="400" dx="4">Foundry</tspan></text>
+        <text x="300" y="226" text-anchor="middle" font-size="9.5" font-weight="500" letter-spacing="2.6" fill="#F4EFE6" fill-opacity=".56">FRONT DESK</text>
+        <text x="186" y="404" text-anchor="middle" font-size="12.5" font-weight="600" letter-spacing="2.4" fill="#F4EFE6" fill-opacity=".78">CALLS IN</text>
+        <text x="416" y="404" text-anchor="middle" font-size="12.5" font-weight="600" letter-spacing="2.4" fill="#A9CBE3">BOOKED</text>
+        <text x="300" y="486" text-anchor="middle" font-size="9.5" font-weight="500" letter-spacing="2.6" fill="#F4EFE6" fill-opacity=".56">ILLUSTRATION</text>
+        <g class="needle-settle"><g class="needle-breathe">
+          <path d="M295.8 300 299.2 110h1.6L304.2 300l-1.6 48h-5.2z" fill="url(#ndl6)"/>
+        </g></g>
+        <circle cx="300" cy="300" r="16" fill="#101E33" stroke="#F4EFE6" stroke-opacity=".75" stroke-width="1.5"/>
+        <circle cx="300" cy="300" r="4.5" fill="#F4EFE6"/>
+      </svg>
+    </div>
+  </main>
+</header>
+<div class="chip">Hero 6 · Navy Cream Copper</div>
+</body>
+</html>

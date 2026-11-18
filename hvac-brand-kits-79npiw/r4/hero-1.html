@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Hero 1, Setpoint Blue</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0B0D; --surface:#121418; --line:#262A31;
+  --text:#FFFFFF; --muted:#A9AFB9; --dim:#7F8691;
+  --accent:#3B9DFF; --accent-hi:#6BB5FF;
+  --cta:#3B9DFF; --cta-text:#04111F;
+  --head:'Hanken Grotesk','Helvetica Neue',Arial,sans-serif;
+  --body:'Hanken Grotesk','Helvetica Neue',Arial,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  --c:#FF8048;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit;text-decoration:none}
+h1,p,ul{margin:0;padding:0}
+:focus-visible{outline:2px solid var(--accent-hi);outline-offset:3px;border-radius:4px}
+
+.hero{position:relative;min-height:max(100vh,700px);display:flex;flex-direction:column;overflow:hidden;isolation:isolate;background:
+  radial-gradient(70% 90% at 78% 46%,#0F1319 0%,rgba(10,11,13,0) 62%),var(--bg)}
+.wrap{width:100%;max-width:1280px;margin:0 auto;padding:0 64px}
+
+/* nav */
+.nav{display:flex;align-items:center;justify-content:space-between;padding-top:30px;position:relative;z-index:3}
+.wm{font-family:var(--head);font-size:21px;letter-spacing:-.02em;line-height:1;white-space:nowrap}
+.wm b{font-weight:700}
+.wm span{font-weight:400;margin-left:.26em}
+.nav-r{display:flex;align-items:center;gap:36px}
+.nav ul{display:flex;gap:34px;list-style:none}
+.nav ul a{font-size:15px;color:var(--muted);transition:color .2s}
+.nav ul a:hover{color:#fff}
+.btn-out{display:inline-flex;align-items:center;height:40px;padding:0 18px;border-radius:999px;border:1px solid #363B44;font-size:14.5px;font-weight:500;color:#fff;transition:border-color .2s,background .2s}
+.btn-out:hover{border-color:#8B919A;background:rgba(255,255,255,.04)}
+
+/* grid */
+.grid{flex:1;display:grid;grid-template-columns:minmax(0,1.04fr) minmax(0,1fr);gap:56px;align-items:center;padding-top:20px;padding-bottom:64px;min-height:0}
+.copy{position:relative;z-index:2}
+.eyebrow{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.eyebrow i{display:block;width:28px;height:2px;border-radius:2px;background:var(--accent);flex:none}
+h1{font-family:var(--head);font-weight:500;font-size:clamp(40px,5.15vw,78px);line-height:1.02;letter-spacing:-.042em;margin-top:26px}
+h1 span{display:block;white-space:nowrap}
+h1 em{font-style:normal;color:var(--accent)}
+.sub{margin-top:26px;font-size:19px;line-height:1.55;color:var(--muted);max-width:520px}
+.cta{display:flex;align-items:center;gap:28px;margin-top:38px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:58px;padding:0 30px;border-radius:999px;background:var(--cta);color:var(--cta-text);font-size:17px;font-weight:600;letter-spacing:-.01em;box-shadow:0 0 0 1px rgba(107,181,255,.35) inset,0 14px 44px -14px rgba(59,157,255,.7);transition:transform .2s ease,background .2s ease,box-shadow .2s ease}
+.btn:hover{transform:translateY(-1px);background:var(--accent-hi)}
+.btn svg{width:17px;height:17px}
+.link{display:inline-flex;align-items:center;gap:8px;font-size:16px;font-weight:500;color:#fff}
+.link svg{width:16px;height:16px;transition:transform .2s ease}
+.link:hover svg{transform:translateX(3px)}
+.trust{display:flex;align-items:center;gap:10px;margin-top:30px;font-size:14.5px;color:var(--muted)}
+.trust svg{width:16px;height:16px;flex:none;color:var(--accent)}
+
+/* dial */
+.visual{display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:0;position:relative}
+.dial{position:relative;width:min(560px,66vh,100%);aspect-ratio:1/1;container-type:inline-size}
+.glow{position:absolute;inset:-16%;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--c) 30%,transparent) 0%,color-mix(in srgb,var(--c) 9%,transparent) 52%,transparent 74%);opacity:.5;pointer-events:none}
+.dial.rest .glow{animation:breathe 8s ease-in-out infinite}
+@keyframes breathe{0%,100%{opacity:.42;transform:scale(.985)}50%{opacity:.72;transform:scale(1.03)}}
+.dial svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.readout{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none}
+.readout .set{font-family:var(--mono);font-size:max(9.5px,2.2cqw);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:8px}
+.readout .set i{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.readout .num{font-family:var(--head);font-weight:300;font-size:27cqw;line-height:1;letter-spacing:-.05em;margin:1.2cqw 0 1.8cqw;font-variant-numeric:tabular-nums;position:relative;color:#fff}
+.readout .num sup{position:absolute;left:calc(100% + .05em);top:.12em;width:.1em;height:.1em;border:max(1.5px,.015em) solid var(--muted);border-radius:50%;font-size:1em}
+.readout .status{position:relative;height:1.6em;width:80%;font-family:var(--mono);font-size:max(9.5px,2.2cqw);letter-spacing:.12em;text-transform:uppercase;color:var(--c)}
+.readout .status span{position:absolute;inset:0;opacity:0;transition:opacity .6s ease;white-space:nowrap}
+.readout .status span.on{opacity:1}
+.illus{position:absolute;left:50%;transform:translateX(-50%);bottom:5.5%;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+
+.chip{position:fixed;left:14px;bottom:12px;z-index:20;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:var(--dim);padding:5px 9px;border:1px solid rgba(255,255,255,.1);border-radius:6px;background:rgba(10,11,13,.6)}
+
+@media (max-width:1100px){
+  .wrap{padding:0 40px}
+  .nav ul{gap:24px}
+  .grid{gap:36px}
+}
+@media (max-width:900px){
+  .wrap{padding:0 22px}
+  .hero{height:max(100vh,700px);min-height:0}
+  .nav{padding-top:18px}
+  .nav ul{display:none}
+  .wm{font-size:19px}
+  .btn-out{height:36px;padding:0 15px;font-size:13.5px}
+  .grid{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:14px;padding-top:30px;padding-bottom:34px;align-items:stretch}
+  .eyebrow{font-size:10.5px;letter-spacing:.06em;gap:9px}
+  .eyebrow i{width:18px}
+  h1{font-size:clamp(34px,10.9vw,56px);margin-top:16px}
+  .sub{font-size:16px;line-height:1.5;margin-top:14px;max-width:34em}
+  .cta{margin-top:22px;gap:14px;flex-direction:column;align-items:stretch}
+  .btn{height:54px;font-size:16.5px;width:100%}
+  .link{justify-content:center;font-size:15px}
+  .trust{margin-top:14px;font-size:13px;justify-content:center;gap:8px}
+  .trust svg{width:14px;height:14px}
+  .visual{min-height:0}
+  .dial{width:auto;height:min(100%,340px);max-width:100%}
+  .illus{display:none}
+}
+@supports (height:100svh){
+  .hero{min-height:max(100svh,700px)}
+  @media (max-width:900px){.hero{height:max(100svh,700px);min-height:0}}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+  .glow{opacity:.6}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <nav class="nav wrap" aria-label="Main">
+    <a class="wm" href="#" aria-label="HVAC Foundry"><b>HVAC</b><span>Foundry</span></a>
+    <div class="nav-r">
+      <ul>
+        <li><a href="#does">What it does</a></li>
+        <li><a href="#limits">What it does not do</a></li>
+      </ul>
+      <a class="btn-out" href="#book">Book a call</a>
+    </div>
+  </nav>
+
+  <div class="grid wrap">
+    <div class="copy">
+      <p class="eyebrow"><i></i>The AI front desk built for HVAC shops</p>
+      <h1><span>Calls in.</span><span><em>Booked jobs</em> out.</span></h1>
+      <p class="sub">HVAC Foundry answers new leads, follows up on quiet estimates and puts the visit on your board, while your crew stays on the job.</p>
+      <div class="cta">
+        <a class="btn" href="#book">Book a call with our team
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+        <a class="link" href="#does">See what it does
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+      </div>
+      <p class="trust">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.6V8l2.2 1.6"/></svg>
+        Built for after hours, overflow and the busy season.</p>
+    </div>
+
+    <div class="visual">
+      <div class="dial" id="dial" role="img" aria-label="Thermostat dial settling from 88 degrees to a setpoint of 72">
+        <div class="glow"></div>
+        <svg viewBox="-40 -40 680 680" aria-hidden="true">
+          <defs>
+            <radialGradient id="face" cx="36%" cy="24%" r="90%">
+              <stop offset="0" stop-color="#1A1D22"/><stop offset=".55" stop-color="#0F1114"/><stop offset="1" stop-color="#0A0B0D"/>
+            </radialGradient>
+            <radialGradient id="inner" cx="50%" cy="104%" r="78%">
+              <stop id="innerA" offset="0" stop-color="#FF8048" stop-opacity=".26"/>
+              <stop id="innerB" offset="1" stop-color="#FF8048" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="7"/></filter>
+          </defs>
+          <g id="ticks"></g>
+          <g id="nums" font-family="'JetBrains Mono',ui-monospace,monospace" font-size="14" fill="#7F8691" text-anchor="middle"></g>
+          <circle id="ringglow" cx="300" cy="300" r="212" fill="none" stroke="#FF8048" stroke-width="7" opacity=".45" filter="url(#soft)"/>
+          <circle cx="300" cy="300" r="212" fill="url(#face)" stroke="#262A31" stroke-width="1.5"/>
+          <circle cx="300" cy="300" r="211" fill="url(#inner)"/>
+          <circle id="ring" cx="300" cy="300" r="212" fill="none" stroke="#FF8048" stroke-width="2.25"/>
+          <circle cx="300" cy="300" r="178" fill="none" stroke="#1B1E23" stroke-width="1"/>
+          <line id="setmark" stroke="#3B9DFF" stroke-width="4" stroke-linecap="round"/>
+          <g id="knob">
+            <circle r="14" fill="#0A0B0D" stroke="#2C3038" stroke-width="1.5"/>
+            <circle id="knobdot" r="6" fill="#FF8048"/>
+          </g>
+        </svg>
+        <div class="readout" aria-hidden="true">
+          <div class="set"><i></i>Setpoint 72</div>
+          <div class="num"><span id="num">88</span><sup></sup></div>
+          <div class="status" id="status"><span class="on">Cooling</span><span>Holding steady</span></div>
+        </div>
+        <span class="illus">Illustration</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="chip">Hero 1 · Setpoint Blue</div>
+
+<script>
+(function(){
+  var NS='http://www.w3.org/2000/svg',CX=300,CY=300,VMIN=60,HOT=88,SET=72;
+  var STOPS=[[255,128,72],[255,186,124],[238,240,244],[150,204,255],[59,157,255]];
+  var DIM=[40,44,51],AZ=[59,157,255];
+  function rgb(a,b,f){return 'rgb('+Math.round(a[0]+(b[0]-a[0])*f)+','+Math.round(a[1]+(b[1]-a[1])*f)+','+Math.round(a[2]+(b[2]-a[2])*f)+')';}
+  function ramp(u){u=Math.max(0,Math.min(1,u))*(STOPS.length-1);var i=Math.min(STOPS.length-2,Math.floor(u));return rgb(STOPS[i],STOPS[i+1],u-i);}
+  function pt(v,r){var a=(-135+(v-VMIN)*9)*Math.PI/180;return [CX+r*Math.sin(a),CY-r*Math.cos(a)];}
+  function el(n,at,p){var e=document.createElementNS(NS,n);for(var k in at)e.setAttribute(k,at[k]);if(p)p.appendChild(e);return e;}
+
+  var ticks=[],tg=document.getElementById('ticks');
+  for(var i=0;i<=60;i++){
+    var v=VMIN+i*.5,major=(i%10===0),mid=(i%2===0);
+    var a=pt(v,234),b=pt(v,major?262:(mid?254:248));
+    ticks.push({v:v,state:'',el:el('line',{x1:a[0].toFixed(2),y1:a[1].toFixed(2),x2:b[0].toFixed(2),y2:b[1].toFixed(2),'stroke-width':major?2.6:2,'stroke-linecap':'round',stroke:'#282C33'},tg)});
+  }
+  var ng=document.getElementById('nums');
+  [60,70,80,90].forEach(function(v){var p=pt(v,288);el('text',{x:p[0].toFixed(1),y:(p[1]+5).toFixed(1)},ng).textContent=v;});
+  var sm=document.getElementById('setmark'),s1=pt(SET,270),s2=pt(SET,281);
+  sm.setAttribute('x1',s1[0]);sm.setAttribute('y1',s1[1]);sm.setAttribute('x2',s2[0]);sm.setAttribute('y2',s2[1]);
+
+  var dial=document.getElementById('dial'),ring=document.getElementById('ring'),rg=document.getElementById('ringglow');
+  var knob=document.getElementById('knob'),kd=document.getElementById('knobdot');
+  var iA=document.getElementById('innerA'),iB=document.getElementById('innerB');
+  var numEl=document.getElementById('num'),st=document.getElementById('status').children,lastN=-1,lastS=-1;
+
+  function render(p){
+    var cur=HOT-(HOT-SET)*p,col=ramp(p),settle=Math.max(0,(p-.72)/.28);
+    dial.style.setProperty('--c',col);
+    ring.setAttribute('stroke',col);rg.setAttribute('stroke',col);kd.setAttribute('fill',col);
+    iA.setAttribute('stop-color',col);iB.setAttribute('stop-color',col);
+    var k=pt(cur,212);knob.setAttribute('transform','translate('+k[0].toFixed(2)+','+k[1].toFixed(2)+')');
+    for(var i=0;i<ticks.length;i++){
+      var t=ticks[i],c;
+      if(t.v>SET+.01&&t.v<=cur+.01){c=ramp(1-(t.v-SET)/(HOT-SET));}
+      else if(t.v<=SET+.01){c=rgb(DIM,AZ,settle*(.12+.88*Math.pow((t.v-VMIN)/(SET-VMIN),1.7)));}
+      else{c='#282C33';}
+      if(c!==t.state){t.el.setAttribute('stroke',c);t.state=c;}
+    }
+    var n=Math.round(cur);if(n!==lastN){numEl.textContent=n;lastN=n;}
+    var s=p>=.985?1:0;if(s!==lastS){for(var j=0;j<st.length;j++)st[j].classList.toggle('on',j===s);lastS=s;}
+  }
+  function rest(){render(1);dial.classList.add('rest');}
+
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){rest();return;}
+  render(0);
+  var DELAY=600,DUR=3200,t0=null,done=false;
+  function ease(x){return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2;}
+  function frame(ts){
+    if(done)return;
+    if(t0===null)t0=ts;
+    var x=(ts-t0-DELAY)/DUR;
+    if(x>=1){done=true;rest();return;}
+    render(ease(Math.max(0,x)));
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  setTimeout(function(){if(!done){done=true;rest();}},DELAY+DUR+400);
+})();
+</script>
+</body>
+</html>

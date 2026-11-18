@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Hero 4, Midnight Aurora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050810; --navy:#0D1B3A; --surface:#0C1428;
+  --text:#FFFFFF; --muted:#AEBBD2; --dim:#7C89A1;
+  --glow:#4A84FF; --accent:#9CC2FF;
+  --cta:#FFFFFF; --cta-text:#070B16;
+  --head:'Outfit','Helvetica Neue',Arial,sans-serif;
+  --body:'DM Sans','Helvetica Neue',Arial,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit;text-decoration:none}
+h1,p,ul{margin:0;padding:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+
+.hero{position:relative;min-height:max(100vh,700px);display:flex;flex-direction:column;overflow:hidden;isolation:isolate;background:
+  radial-gradient(90% 70% at 8% -10%,rgba(30,62,130,.5) 0%,rgba(30,62,130,0) 62%),
+  linear-gradient(168deg,#0D1B3A 0%,#081022 36%,#04060D 76%,#020307 100%)}
+.wrap{width:100%;max-width:1280px;margin:0 auto;padding:0 64px}
+
+/* nav */
+.nav{display:flex;align-items:center;justify-content:space-between;padding-top:30px;position:relative;z-index:3}
+.wm{font-family:var(--head);font-size:22px;letter-spacing:-.01em;line-height:1;white-space:nowrap}
+.wm b{font-weight:700}
+.wm span{font-weight:400;margin-left:.24em}
+.nav-r{display:flex;align-items:center;gap:36px}
+.nav ul{display:flex;gap:34px;list-style:none}
+.nav ul a{font-size:15px;color:var(--muted);transition:color .2s}
+.nav ul a:hover{color:#fff}
+.btn-out{display:inline-flex;align-items:center;height:40px;padding:0 18px;border-radius:12px;border:1px solid rgba(255,255,255,.22);font-family:var(--head);font-size:15px;font-weight:500;color:#fff;background:rgba(255,255,255,.03);transition:border-color .2s,background .2s}
+.btn-out:hover{border-color:rgba(255,255,255,.55);background:rgba(255,255,255,.07)}
+
+/* grid */
+.grid{flex:1;display:grid;grid-template-columns:minmax(0,1.06fr) minmax(0,1fr);gap:56px;align-items:center;padding-top:20px;padding-bottom:64px;min-height:0}
+.copy{position:relative;z-index:2}
+.eyebrow{display:flex;align-items:center;gap:11px;font-size:15px;font-weight:500;letter-spacing:.005em;color:#C6D4EC}
+.eyebrow i{width:7px;height:7px;border-radius:50%;background:#7FB0FF;box-shadow:0 0 0 4px rgba(127,176,255,.16),0 0 14px 2px rgba(127,176,255,.7);flex:none}
+h1{font-family:var(--head);font-weight:500;font-size:clamp(40px,5.2vw,78px);line-height:1.04;letter-spacing:-.032em;margin-top:24px}
+h1 span{display:block;white-space:nowrap}
+h1 em{font-style:normal;color:var(--accent);background:linear-gradient(96deg,#7DAEFF 0%,#C4DAFF 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;padding-bottom:.12em}
+.sub{margin-top:22px;font-size:19px;line-height:1.55;color:var(--muted);max-width:520px}
+.cta{display:flex;align-items:center;gap:28px;margin-top:38px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:58px;padding:0 30px;border-radius:15px;background:var(--cta);color:var(--cta-text);font-family:var(--head);font-size:17.5px;font-weight:600;letter-spacing:-.005em;box-shadow:0 0 0 1px rgba(255,255,255,.9),0 16px 48px -14px rgba(120,165,255,.75);transition:transform .2s ease,background .2s ease,box-shadow .2s ease}
+.btn:hover{transform:translateY(-1px);background:#EAF1FF}
+.btn svg{width:17px;height:17px}
+.link{display:inline-flex;align-items:center;gap:8px;font-family:var(--head);font-size:16.5px;font-weight:500;color:#fff}
+.link svg{width:16px;height:16px;color:var(--accent);transition:transform .2s ease}
+.link:hover svg{transform:translateX(3px)}
+.trust{display:flex;align-items:center;gap:10px;margin-top:30px;font-size:14.5px;color:var(--muted)}
+.trust svg{width:16px;height:16px;flex:none;color:var(--accent)}
+
+/* fan */
+.visual{display:flex;justify-content:center;align-items:center;min-height:0;position:relative}
+.fanbox{position:relative;width:min(560px,68vh,106%);aspect-ratio:1/1;flex:none}
+.aura{position:absolute;inset:-24%;border-radius:50%;background:radial-gradient(closest-side,rgba(74,132,255,.62) 0%,rgba(74,132,255,.26) 44%,rgba(74,132,255,.07) 66%,rgba(74,132,255,0) 78%);animation:aura 10s ease-in-out infinite;pointer-events:none}
+@keyframes aura{0%,100%{opacity:.72;transform:scale(.98)}50%{opacity:1;transform:scale(1.03)}}
+.fanbox svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.fan{transform-box:fill-box;transform-origin:center;animation:spin 24s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ring{transform-box:fill-box;transform-origin:center;fill:none;stroke:#A9C6FF;stroke-width:1.4;vector-effect:non-scaling-stroke;opacity:0;animation:ring 9s cubic-bezier(.2,.6,.4,1) infinite}
+.ring:nth-child(2){animation-delay:-3s}
+.ring:nth-child(3){animation-delay:-6s}
+@keyframes ring{0%{transform:scale(.94);opacity:0}18%{opacity:.34}100%{transform:scale(1.62);opacity:0}}
+
+.chip{position:fixed;left:14px;bottom:12px;z-index:20;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:var(--dim);padding:5px 9px;border:1px solid rgba(255,255,255,.1);border-radius:6px;background:rgba(4,6,13,.7)}
+
+@media (max-width:1100px){
+  .wrap{padding:0 40px}
+  .nav ul{gap:24px}
+  .grid{gap:36px}
+}
+@media (max-width:900px){
+  .wrap{padding:0 22px}
+  .hero{height:max(100vh,700px);min-height:0}
+  .nav{padding-top:18px}
+  .nav ul{display:none}
+  .wm{font-size:20px}
+  .btn-out{height:36px;padding:0 15px;font-size:14px;border-radius:10px}
+  .grid{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:0;padding-top:30px;padding-bottom:0;align-items:stretch}
+  .eyebrow{font-size:13.5px;gap:10px}
+  h1{font-size:clamp(34px,10.8vw,56px);margin-top:16px}
+  .sub{font-size:16px;line-height:1.5;margin-top:12px;max-width:34em}
+  .cta{margin-top:22px;gap:14px;flex-direction:column;align-items:stretch}
+  .btn{height:54px;font-size:17px;width:100%}
+  .link{justify-content:center;font-size:15.5px}
+  .trust{margin-top:14px;font-size:13px;justify-content:center;gap:8px}
+  .trust svg{width:14px;height:14px}
+  .visual{align-items:flex-start;overflow:visible}
+  .fanbox{width:min(104vw,430px);margin-top:40px}
+  .aura{inset:-14%}
+}
+@supports (height:100svh){
+  .hero{min-height:max(100svh,700px)}
+  @media (max-width:900px){.hero{height:max(100svh,700px);min-height:0}}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+  .ring:nth-child(1){opacity:.26;transform:scale(1.12)}
+  .ring:nth-child(2){opacity:.16;transform:scale(1.3)}
+  .ring:nth-child(3){opacity:.08;transform:scale(1.5)}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <nav class="nav wrap" aria-label="Main">
+    <a class="wm" href="#" aria-label="HVAC Foundry"><b>HVAC</b><span>Foundry</span></a>
+    <div class="nav-r">
+      <ul>
+        <li><a href="#does">What it does</a></li>
+        <li><a href="#limits">What it does not do</a></li>
+      </ul>
+      <a class="btn-out" href="#book">Book a call</a>
+    </div>
+  </nav>
+
+  <div class="grid wrap">
+    <div class="copy">
+      <p class="eyebrow"><i></i>The AI front desk built for HVAC shops</p>
+      <h1><span>Calls in.</span><span><em>Booked jobs</em> out.</span></h1>
+      <p class="sub">HVAC Foundry answers new leads, follows up on quiet estimates and puts the visit on your board, while your crew stays on the job.</p>
+      <div class="cta">
+        <a class="btn" href="#book">Book a call with our team
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+        <a class="link" href="#does">See what it does
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+      </div>
+      <p class="trust">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.6V8l2.2 1.6"/></svg>
+        Built for after hours, overflow and the busy season.</p>
+    </div>
+
+    <div class="visual">
+      <div class="fanbox" role="img" aria-label="A condenser fan and grille seen from above, turning slowly">
+        <div class="aura"></div>
+        <svg viewBox="-300 -300 600 600" aria-hidden="true">
+          <defs>
+            <linearGradient id="rim" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#EAF2FF" stop-opacity=".95"/><stop offset=".5" stop-color="#8FB4FF" stop-opacity=".55"/><stop offset="1" stop-color="#5E86D6" stop-opacity=".3"/>
+            </linearGradient>
+            <radialGradient id="well" cx="50%" cy="50%" r="50%">
+              <stop offset="0" stop-color="#101E44"/><stop offset=".7" stop-color="#091228"/><stop offset="1" stop-color="#060B1A"/>
+            </radialGradient>
+            <radialGradient id="hub" cx="38%" cy="30%" r="80%">
+              <stop offset="0" stop-color="#2A4686"/><stop offset=".6" stop-color="#12224A"/><stop offset="1" stop-color="#0A1430"/>
+            </radialGradient>
+            <linearGradient id="blade" gradientUnits="userSpaceOnUse" x1="30" y1="-20" x2="200" y2="-80">
+              <stop offset="0" stop-color="#8FB2FF" stop-opacity=".06"/><stop offset=".55" stop-color="#7FA6FF" stop-opacity=".2"/><stop offset="1" stop-color="#A9C6FF" stop-opacity=".34"/>
+            </linearGradient>
+            <path id="bl" d="M11.9-44.4C44-104 104-140 167.1-130.5A212 212 0 0 1 211.9 7.4C150 14 92 2 44.4-11.9A46 46 0 0 0 11.9-44.4Z"/>
+          </defs>
+
+          <g>
+            <circle class="ring" r="250"/>
+            <circle class="ring" r="250"/>
+            <circle class="ring" r="250"/>
+          </g>
+
+          <!-- housing -->
+          <circle r="252" fill="#070D1E" fill-opacity=".72" stroke="#A9C6FF" stroke-opacity=".28" stroke-width="1.5"/>
+          <g fill="#BCD3FF" fill-opacity=".5">
+            <circle cx="240" cy="0" r="2.6"/><circle cx="-240" cy="0" r="2.6"/><circle cx="0" cy="240" r="2.6"/><circle cx="0" cy="-240" r="2.6"/>
+            <circle cx="169.7" cy="169.7" r="2.6"/><circle cx="-169.7" cy="169.7" r="2.6"/><circle cx="169.7" cy="-169.7" r="2.6"/><circle cx="-169.7" cy="-169.7" r="2.6"/>
+          </g>
+          <circle r="227" fill="url(#well)"/>
+
+          <!-- fan -->
+          <g class="fan">
+            <circle r="216" fill="none"/>
+            <g fill="url(#blade)" stroke="#BCD3FF" stroke-opacity=".55" stroke-width="1.6" stroke-linejoin="round">
+              <use href="#bl"/><use href="#bl" transform="rotate(90)"/><use href="#bl" transform="rotate(180)"/><use href="#bl" transform="rotate(270)"/>
+            </g>
+          </g>
+
+          <!-- grille -->
+          <g fill="none" stroke="#C6DAFF" stroke-opacity=".24" stroke-width="1.5">
+            <circle r="204"/><circle r="181"/><circle r="158"/><circle r="135"/><circle r="112"/><circle r="89"/><circle r="66"/>
+          </g>
+          <g stroke="#C6DAFF" stroke-opacity=".3" stroke-width="1.8" stroke-linecap="round">
+            <path d="M46 0H227M-46 0H-227M0 46V227M0-46V-227"/>
+            <path d="M32.5 32.5 160.5 160.5M-32.5 32.5-160.5 160.5M32.5-32.5 160.5-160.5M-32.5-32.5-160.5-160.5"/>
+          </g>
+          <circle r="227" fill="none" stroke="url(#rim)" stroke-width="2.6"/>
+
+          <!-- hub -->
+          <circle r="46" fill="url(#hub)" stroke="#D5E4FF" stroke-opacity=".7" stroke-width="1.6"/>
+          <circle r="29" fill="none" stroke="#D5E4FF" stroke-opacity=".22" stroke-width="1.2"/>
+          <circle r="5" fill="#DCE8FF"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="chip">Hero 4 · Midnight Aurora</div>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Hero 2, Night Airflow</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Red+Hat+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#081120; --surface:#0E1B30; --line:#22324B;
+  --text:#F5F8FC; --muted:#A9B8CC; --dim:#7B8BA3;
+  --warm:#F6A552; --warm-hi:#FFBC76; --cool:#74D2FF;
+  --cta:#F6A552; --cta-text:#1D1103;
+  --head:'Red Hat Display','Helvetica Neue',Arial,sans-serif;
+  --body:'Figtree','Helvetica Neue',Arial,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit;text-decoration:none}
+h1,p,ul{margin:0;padding:0}
+:focus-visible{outline:2px solid var(--cool);outline-offset:3px;border-radius:4px}
+
+.hero{position:relative;min-height:max(100vh,700px);display:flex;flex-direction:column;overflow:hidden;isolation:isolate;background:
+  radial-gradient(46% 62% at 100% 52%,rgba(64,150,230,.13) 0%,rgba(64,150,230,0) 100%),
+  radial-gradient(40% 60% at 0% 60%,rgba(246,165,82,.055) 0%,rgba(246,165,82,0) 100%),
+  linear-gradient(180deg,#0A1528 0%,#081120 46%,#060D19 100%)}
+#flow{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.hero>*:not(canvas){position:relative;z-index:1}
+.wrap{width:100%;max-width:1280px;margin:0 auto;padding:0 64px}
+
+/* nav */
+.nav{display:flex;align-items:center;justify-content:space-between;padding-top:30px}
+.wm{font-family:var(--head);font-size:21px;letter-spacing:-.015em;line-height:1;white-space:nowrap}
+.wm b{font-weight:700}
+.wm span{font-weight:400;margin-left:.26em}
+.nav-r{display:flex;align-items:center;gap:36px}
+.nav ul{display:flex;gap:34px;list-style:none}
+.nav ul a{font-size:15px;font-weight:500;color:var(--muted);transition:color .2s}
+.nav ul a:hover{color:#fff}
+.btn-out{display:inline-flex;align-items:center;height:40px;padding:0 17px;border-radius:10px;border:1px solid #33455F;font-family:var(--head);font-size:14.5px;font-weight:600;color:#fff;background:rgba(8,17,32,.5);transition:border-color .2s,background .2s}
+.btn-out:hover{border-color:#7B8BA3;background:rgba(255,255,255,.04)}
+
+/* grid */
+.grid{flex:1;display:grid;grid-template-columns:minmax(0,1.04fr) minmax(0,1fr);gap:64px;align-items:center;padding-top:20px;padding-bottom:64px;min-height:0}
+.eyebrow{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.eyebrow i{display:block;width:30px;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--warm),var(--cool));flex:none}
+h1{font-family:var(--head);font-weight:800;font-size:clamp(40px,5.1vw,76px);line-height:1.0;letter-spacing:-.036em;margin-top:26px}
+h1 span{display:block;white-space:nowrap}
+h1 em{font-style:normal;color:var(--cool)}
+.sub{margin-top:26px;font-size:19px;line-height:1.55;color:var(--muted);max-width:510px}
+.cta{display:flex;align-items:center;gap:28px;margin-top:38px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:58px;padding:0 28px;border-radius:14px;background:var(--cta);color:var(--cta-text);font-family:var(--head);font-size:17px;font-weight:700;letter-spacing:-.005em;box-shadow:0 1px 0 rgba(255,255,255,.35) inset,0 14px 40px -14px rgba(246,165,82,.6);transition:transform .2s ease,background .2s ease}
+.btn:hover{transform:translateY(-1px);background:var(--warm-hi)}
+.btn svg{width:17px;height:17px}
+.link{display:inline-flex;align-items:center;gap:8px;font-family:var(--head);font-size:16px;font-weight:600;color:#fff;padding-bottom:3px;border-bottom:1.5px solid rgba(116,210,255,.45);transition:border-color .2s}
+.link:hover{border-color:var(--cool)}
+.trust{display:flex;align-items:center;gap:10px;margin-top:30px;font-size:14.5px;color:var(--muted)}
+.trust svg{width:16px;height:16px;flex:none;color:var(--cool)}
+
+/* stage */
+.stage{position:relative;min-height:0}
+#unit{display:block;width:100%;height:auto;overflow:visible}
+@media (min-width:1380px){#unit,.inout{width:110%}}
+.inout{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:14px;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase}
+.inout .w{color:var(--warm)}
+.inout .c{color:var(--cool)}
+.inout .i{color:var(--dim);font-size:10px;font-weight:400}
+
+.chip{position:fixed;left:14px;bottom:12px;z-index:20;font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;color:var(--dim);padding:5px 9px;border:1px solid rgba(255,255,255,.1);border-radius:6px;background:rgba(6,13,25,.7)}
+
+@media (max-width:1100px){
+  .wrap{padding:0 40px}
+  .nav ul{gap:24px}
+  .grid{gap:40px}
+}
+@media (max-width:900px){
+  .wrap{padding:0 22px}
+  .hero{height:max(100vh,700px);min-height:0}
+  .nav{padding-top:18px}
+  .nav ul{display:none}
+  .wm{font-size:19px}
+  .btn-out{height:36px;padding:0 14px;font-size:13.5px}
+  .grid{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:14px;padding-top:30px;padding-bottom:40px;align-items:stretch}
+  .eyebrow{font-size:10.5px;letter-spacing:.06em;gap:9px}
+  .eyebrow i{width:18px}
+  h1{font-size:clamp(34px,10.5vw,54px);margin-top:16px}
+  .sub{font-size:16px;line-height:1.5;margin-top:14px;max-width:34em}
+  .cta{margin-top:22px;gap:14px;flex-direction:column;align-items:stretch}
+  .btn{height:54px;font-size:16.5px;width:100%}
+  .link{align-self:center;font-size:15px}
+  .trust{margin-top:14px;font-size:13px;justify-content:center;gap:8px}
+  .trust svg{width:14px;height:14px}
+  .stage{display:flex;flex-direction:column;justify-content:center}
+  #unit{max-height:calc(100% - 34px);width:auto;max-width:100%;margin:0 auto}
+  .inout{margin-top:10px;font-size:10px}
+}
+@supports (height:100svh){
+  .hero{min-height:max(100svh,700px)}
+  @media (max-width:900px){.hero{height:max(100svh,700px);min-height:0}}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+
+<header class="hero" id="hero">
+  <canvas id="flow" aria-hidden="true"></canvas>
+
+  <nav class="nav wrap" aria-label="Main">
+    <a class="wm" href="#" aria-label="HVAC Foundry"><b>HVAC</b><span>Foundry</span></a>
+    <div class="nav-r">
+      <ul>
+        <li><a href="#does">What it does</a></li>
+        <li><a href="#limits">What it does not do</a></li>
+      </ul>
+      <a class="btn-out" href="#book">Book a call</a>
+    </div>
+  </nav>
+
+  <div class="grid wrap">
+    <div class="copy" id="copy">
+      <p class="eyebrow"><i></i>The AI front desk built for HVAC shops</p>
+      <h1><span>Calls in.</span><span><em>Booked jobs</em> out.</span></h1>
+      <p class="sub">HVAC Foundry answers new leads, follows up on quiet estimates and puts the visit on your board, while your crew stays on the job.</p>
+      <div class="cta">
+        <a class="btn" href="#book">Book a call with our team
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+        <a class="link" href="#does">See what it does</a>
+      </div>
+      <p class="trust">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.6V8l2.2 1.6"/></svg>
+        Built for after hours, overflow and the busy season.</p>
+    </div>
+
+    <div class="stage">
+      <svg id="unit" viewBox="0 34 520 226" role="img" aria-label="Line drawing of an air handler. Warm air enters on the left and leaves cool on the right.">
+        <defs>
+          <linearGradient id="cab" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0" stop-color="#1A1A22" stop-opacity=".56"/>
+            <stop offset=".42" stop-color="#0B1627" stop-opacity=".58"/>
+            <stop offset="1" stop-color="#0B2038" stop-opacity=".62"/>
+          </linearGradient>
+          <linearGradient id="edge" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0" stop-color="#F3D9BC"/><stop offset=".45" stop-color="#E4ECF6"/><stop offset="1" stop-color="#BFE6FF"/>
+          </linearGradient>
+        </defs>
+        <g fill="none" stroke="url(#edge)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- return flare -->
+          <path d="M14 52 70 84M14 248 70 216" opacity=".5"/>
+          <!-- cabinet -->
+          <rect x="70" y="64" width="380" height="172" rx="16" fill="url(#cab)"/>
+          <path d="M112 236v10M408 236v10M98 246h28M394 246h28" opacity=".55"/>
+          <!-- supply duct -->
+          <path d="M450 92h58M450 208h58" opacity=".5"/>
+          <path d="M450 86v128" stroke-width="3.2"/>
+          <!-- filter -->
+          <rect x="98" y="84" width="13" height="132" rx="3" opacity=".85"/>
+          <path d="M98 98l13-8M98 114l13-8M98 130l13-8M98 146l13-8M98 162l13-8M98 178l13-8M98 194l13-8M98 210l13-8" stroke-width="1" opacity=".6"/>
+        </g>
+        <!-- coil -->
+        <g fill="none" stroke="#74D2FF" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M186 88 246 150 186 212"/>
+          <path d="M202 88 262 150 202 212"/>
+          <path d="M194 96h8M201 104h8M209 112h8M217 120h8M225 128h8M232 136h8M240 144h8M240 156h8M232 164h8M225 172h8M217 180h8M209 188h8M201 196h8M194 204h8" stroke-width="1.1" opacity=".8"/>
+        </g>
+        <!-- blower -->
+        <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="352" cy="150" r="58" stroke="#DCEBFA" stroke-width="1.8" fill="rgba(8,17,32,.35)"/>
+          <g id="blower" stroke="#74D2FF">
+            <circle cx="352" cy="150" r="47" stroke-width="1.1" opacity=".7"/>
+            <g id="blades" stroke-width="1.5"></g>
+            <circle cx="352" cy="150" r="13" stroke-width="1.8" fill="#0B1A2E"/>
+            <circle cx="352" cy="150" r="3" fill="#74D2FF" stroke="none"/>
+          </g>
+        </g>
+        <!-- nameplate led -->
+        <rect x="400" y="77" width="36" height="12" rx="3" fill="none" stroke="#DCEBFA" stroke-width="1" opacity=".45"/>
+        <path d="M405 83h16" stroke="#DCEBFA" stroke-width="1" opacity=".4"/>
+        <circle cx="430" cy="83" r="2" fill="#74D2FF"/>
+      </svg>
+      <div class="inout" aria-hidden="true"><span class="w">Warm in</span><span class="i">Illustration</span><span class="c">Cool out</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="chip">Hero 2 · Night Airflow</div>
+
+<script>
+(function(){
+  var hero=document.getElementById('hero'),cv=document.getElementById('flow'),ctx=cv.getContext('2d');
+  var unit=document.getElementById('unit'),blower=document.getElementById('blower'),bladesG=document.getElementById('blades'),copy=document.getElementById('copy');
+  var mq=window.matchMedia('(prefers-reduced-motion: reduce)');
+  var NS='http://www.w3.org/2000/svg';
+  for(var b=0;b<12;b++){var bp=document.createElementNS(NS,'path');bp.setAttribute('d','M352 134c7-8 9-19 5-30');bp.setAttribute('transform','rotate('+(b*30)+' 352 150)');bladesG.appendChild(bp);}
+
+  var W=0,H=0,U=null,lines=[],mobile=false,visible=true,raf=0,last=0,time=0,spin=0;
+  var WARM='246,165,82',COOL='116,210,255';
+  function rnd(s){var x=Math.sin(s*127.1)*43758.5453;return x-Math.floor(x);}
+  function sm(x){x=x<0?0:x>1?1:x;return x*x*(3-2*x);}
+  function measure(){
+    var r=hero.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,2);
+    W=r.width;H=r.height;cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);
+    var u=unit.getBoundingClientRect(),s=u.width/520;
+    mobile=W<=900;
+    U={x0:u.left-r.left+70*s,x1:u.left-r.left+450*s,cy:u.top-r.top+116*s,ch:122*s,ca:u.left-r.left+190*s,cb:u.left-r.left+264*s,L:(mobile?.5:.86)*u.width};
+    var n=mobile?13:23;lines=[];
+    for(var i=0;i<n;i++){
+      lines.push({t:(i/(n-1))*2-1,ph:rnd(i+1)*6.28,ph2:rnd(i+40)*6.28,a:7+rnd(i+9)*11,
+        pulses:[{o:rnd(i+3),v:34+rnd(i+5)*30,len:80+rnd(i+7)*90},{o:rnd(i+13),v:30+rnd(i+15)*28,len:60+rnd(i+17)*70}]});
+    }
+    draw();
+  }
+  function yAt(l,x){
+    var w=x<U.x0?sm(1-(U.x0-x)/U.L):x>U.x1?sm(1-(x-U.x1)/(U.L*.7)):1;
+    var spread=mobile?Math.min(H*.1,U.ch*1.35):H*.34;
+    var free=U.cy+l.t*spread+l.a*Math.sin(x*.0052+l.ph+time*.5)+l.a*.5*Math.sin(x*.011-time*.36+l.ph2);
+    var chan=U.cy+l.t*U.ch*.5+1.1*Math.sin(x*.05+l.ph+time*1.8);
+    return free+(chan-free)*w;
+  }
+  function grad(alpha){
+    var g=ctx.createLinearGradient(0,0,W,0),lead=mobile?.7:.26;
+    function st(x,c,a){g.addColorStop(Math.max(0,Math.min(1,x/W)),'rgba('+c+','+(a*alpha).toFixed(3)+')');}
+    st(0,WARM,0);st(W*.04,WARM,lead);st(Math.max(W*.05,U.x0-U.L*.42),WARM,lead);st(U.x0,WARM,1);st(U.ca,WARM,1);st(U.cb,COOL,1);st(Math.max(U.cb+1,W*.96),COOL,.95);
+    g.addColorStop(1,'rgba('+COOL+',0)');
+    return g;
+  }
+  function draw(){
+    if(!U)return;
+    ctx.clearRect(0,0,W,H);
+    ctx.lineCap='round';ctx.lineJoin='round';
+    var step=mobile?8:10,i,x,l,y;
+    ctx.strokeStyle=grad(.36);ctx.lineWidth=1;
+    for(i=0;i<lines.length;i++){
+      l=lines[i];ctx.beginPath();
+      for(x=-10;x<=W+10;x+=step){y=yAt(l,x);if(x===-10)ctx.moveTo(x,y);else ctx.lineTo(x,y);}
+      ctx.stroke();
+    }
+    ctx.strokeStyle=grad(1);ctx.lineWidth=1.9;
+    for(i=0;i<lines.length;i++){
+      l=lines[i];
+      for(var k=0;k<l.pulses.length;k++){
+        var pu=l.pulses[k],span=W+pu.len*2,head=((pu.o*span+time*pu.v)%span)-pu.len,seg=pu.len/4;
+        for(var s=0;s<4;s++){
+          var xa=head-pu.len+s*seg,xb=xa+seg;
+          ctx.globalAlpha=[.1,.26,.5,.85][s];
+          ctx.beginPath();ctx.moveTo(xa,yAt(l,xa));
+          for(x=xa+6;x<xb;x+=6)ctx.lineTo(x,yAt(l,x));
+          ctx.lineTo(xb,yAt(l,xb));ctx.stroke();
+        }
+      }
+    }
+    ctx.globalAlpha=1;
+    blower.setAttribute('transform','rotate('+spin.toFixed(2)+' 352 150)');
+  }
+  function frame(now){
+    raf=0;if(!visible||mq.matches)return;
+    var dt=Math.min(.05,(now-last)/1000||0);last=now;
+    time+=dt;spin=(spin+dt*30)%360;
+    draw();raf=requestAnimationFrame(frame);
+  }
+  function start(){if(!raf&&visible&&!mq.matches){last=performance.now();raf=requestAnimationFrame(frame);}}
+  function staticFrame(){time=2.4;spin=8;draw();}
+  if('IntersectionObserver' in window){new IntersectionObserver(function(e){visible=e[0].isIntersecting;if(visible)start();}).observe(hero);}
+  if('ResizeObserver' in window){new ResizeObserver(measure).observe(hero);}else{window.addEventListener('resize',measure);}
+  (mq.addEventListener?mq.addEventListener.bind(mq,'change'):mq.addListener.bind(mq))(function(){if(mq.matches){staticFrame();}else{start();}});
+  time=2.4;measure();
+  if(document.fonts&&document.fonts.ready){document.fonts.ready.then(measure);}
+  window.addEventListener('load',measure);
+  if(mq.matches){staticFrame();}else{start();}
+})();
+</script>
+</body>
+</html>
