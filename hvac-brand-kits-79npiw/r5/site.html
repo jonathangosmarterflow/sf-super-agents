@@ -66,7 +66,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .wrap{width:100%;max-width:1320px;margin:0 auto;padding:0 64px}
 
 /* ---- lockup, exactly as the spec ---- */
-.hf-lockup{display:inline-flex;align-items:center;gap:.5em;color:var(--hf-text);font-family:var(--hf-font)}
+.hf-lockup{display:inline-flex;align-items:center;gap:.36em;color:var(--hf-text);font-family:var(--hf-font)}
 .hf-icon{width:1.5em;height:1.5em;flex:none}
 .hf-word{display:inline-flex;gap:.26em;letter-spacing:-.02em;font-size:1em;line-height:1}
 .hf-word b{font-weight:700}.hf-word i{font-weight:400;font-style:normal}
@@ -109,6 +109,10 @@ h1 em{font-style:normal;color:var(--hf-accent)}
 .tag{position:absolute;font-family:var(--hf-mono);font-weight:500;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--hf-muted)}
 .slot .tag.bl{left:16px;bottom:13px}
 .slot .tag.tl{left:16px;top:14px}
+/* 2026-11-19 (his words, FB-2031): the dial needs no background card and no "Illustration" label. The frame shows only when the video is in the slot. */
+:root:not([data-hero="video"]) .slot{border-color:transparent;background:none;box-shadow:none;overflow:visible}
+:root:not([data-hero="video"]) .slot .tag.bl{display:none}
+:root:not([data-hero="video"]) .dial{height:124%;transform:translate(-50%,-50%)}
 
 .dial{position:absolute;top:50%;left:50%;height:114%;aspect-ratio:1/1;transform:translate(-50%,-46.2%);container-type:inline-size;--c:var(--hf-warm)}
 .glow{position:absolute;inset:-6%;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--c) 26%,transparent) 0%,color-mix(in srgb,var(--c) 8%,transparent) 55%,transparent 76%);opacity:var(--glow-op);pointer-events:none}
@@ -247,7 +251,7 @@ footer .btn{height:50px;padding:0 24px;font-size:16px}
     <div class="visual">
       <div class="slot">
         <!-- default: thermostat dial. Settles once on load, never tied to scroll -->
-        <div class="dial" id="dial" role="img" aria-label="Illustration: a thermostat dial settling from 88 degrees to a setpoint of 72">
+        <div class="dial" id="dial" role="img" aria-label="A thermostat dial settling from 88 degrees to a setpoint of 72">
           <div class="glow"></div>
           <svg viewBox="-8 -8 616 616" aria-hidden="true">
             <defs>
