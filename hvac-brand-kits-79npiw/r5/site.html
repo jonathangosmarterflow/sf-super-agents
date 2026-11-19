@@ -1,0 +1,442 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>HVAC Foundry, site preview</title>
+<script>
+/* theme + hero mode from the URL, before first paint */
+(function(){var q=new URLSearchParams(location.search),d=document.documentElement;
+  if(q.get('theme')==='light')d.setAttribute('data-theme','light');
+  if(q.get('hero')==='video')d.setAttribute('data-hero','video');})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+/* ---- brand tokens, exactly as BRAND-CANDIDATE.md ---- */
+:root{
+  --hf-bg:#0A0B0D; --hf-surface:#121418; --hf-surface-2:#1A1D23; --hf-line:#262A32;
+  --hf-text:#FFFFFF; --hf-muted:#A9AFB9;
+  --hf-accent:#3B9DFF;
+  --hf-cta:#3B9DFF; --hf-cta-text:#04111F; --hf-cta-hover:#62B1FF;
+  --hf-warm:#FF8A3D;
+  --hf-font:'Hanken Grotesk','Helvetica Neue',Arial,sans-serif;
+  --hf-mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  --hf-radius:12px;
+  color-scheme:dark;
+}
+:root[data-theme="light"]{
+  --hf-bg:#F5F7FA; --hf-surface:#FFFFFF; --hf-surface-2:#EDF1F6; --hf-line:#DCE2EA;
+  --hf-text:#0A0E14; --hf-muted:#4E5968;
+  --hf-accent:#1668E3;
+  --hf-cta:#1668E3; --hf-cta-text:#FFFFFF; --hf-cta-hover:#0F56C2;
+  --hf-warm:#C2540F;
+  color-scheme:light;
+}
+/* ---- component values derived from the tokens (hero slot + dial only) ---- */
+:root{
+  --slot-bg:linear-gradient(180deg,#14171C 0%,#0D0F12 100%);
+  --slot-shadow:0 40px 90px -50px rgba(0,0,0,.9);
+  --halo:16%;
+  --btn-shadow:0 0 0 1px rgba(255,255,255,.14) inset,0 14px 40px -16px rgba(59,157,255,.65);
+  --face-1:#1C2026; --face-2:#101216; --face-3:#0A0B0D;
+  --face-shadow:rgba(0,0,0,.55); --inner-op:.24; --ringglow-op:.45; --glow-op:.42;
+  --play-bg:#FFFFFF; --play-fg:#0A0B0D; --mark-op:.05;
+}
+:root[data-theme="light"]{
+  --slot-bg:linear-gradient(180deg,#FFFFFF 0%,#F3F6FA 100%);
+  --slot-shadow:0 1px 2px rgba(10,14,20,.05),0 30px 70px -40px rgba(16,60,130,.35);
+  --halo:10%;
+  --btn-shadow:0 1px 0 rgba(255,255,255,.18) inset,0 12px 30px -14px rgba(22,104,227,.6);
+  --face-1:#FFFFFF; --face-2:#F6F8FB; --face-3:#E8EDF3;
+  --face-shadow:rgba(20,45,90,.2); --inner-op:.13; --ringglow-op:.28; --glow-op:.2;
+  --play-bg:#0A0E14; --play-fg:#FFFFFF; --mark-op:.04;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+html,body{margin:0}
+body{background:var(--hf-bg);color:var(--hf-text);font-family:var(--hf-font);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:inherit;text-decoration:none}
+h1,h2,h3,p,ul{margin:0;padding:0}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--hf-accent);outline-offset:3px;border-radius:4px}
+.wrap{width:100%;max-width:1320px;margin:0 auto;padding:0 64px}
+
+/* ---- lockup, exactly as the spec ---- */
+.hf-lockup{display:inline-flex;align-items:center;gap:.5em;color:var(--hf-text);font-family:var(--hf-font)}
+.hf-icon{width:1.5em;height:1.5em;flex:none}
+.hf-word{display:inline-flex;gap:.26em;letter-spacing:-.02em;font-size:1em;line-height:1}
+.hf-word b{font-weight:700}.hf-word i{font-weight:400;font-style:normal}
+
+/* ---- nav (ordinary, not sticky) ---- */
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:28px;padding-bottom:8px}
+.nav .hf-lockup{font-size:21px;white-space:nowrap}
+.nav-r{display:flex;align-items:center;gap:30px}
+.nav ul{display:flex;gap:32px;list-style:none}
+.nav ul a{font-size:15px;color:var(--hf-muted);transition:color .15s}
+.nav ul a:hover{color:var(--hf-text)}
+.mode{display:inline-flex;padding:2px;border:1px solid var(--hf-line);border-radius:999px}
+.mode button{height:26px;padding:0 10px;border-radius:999px;font-family:var(--hf-mono);font-weight:500;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--hf-muted)}
+.mode button[aria-pressed="true"]{background:var(--hf-surface-2);color:var(--hf-text)}
+.btn-out{display:inline-flex;align-items:center;height:40px;padding:0 18px;border-radius:999px;border:1px solid color-mix(in srgb,var(--hf-text) 26%,transparent);font-size:14.5px;font-weight:500;color:var(--hf-text);white-space:nowrap;transition:border-color .15s,background .15s}
+.btn-out:hover{border-color:color-mix(in srgb,var(--hf-text) 55%,transparent);background:color-mix(in srgb,var(--hf-text) 5%,transparent)}
+
+/* ---- hero ---- */
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:56px;align-items:center;padding-top:72px;padding-bottom:104px}
+.eyebrow{display:flex;align-items:center;gap:12px;font-family:var(--hf-mono);font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--hf-muted)}
+.eyebrow i{display:block;width:28px;height:2px;border-radius:2px;background:var(--hf-accent);flex:none}
+h1{font-weight:600;font-size:clamp(40px,4.85vw,70px);line-height:1.04;letter-spacing:-.03em;margin-top:24px}
+h1 span{display:block;white-space:nowrap}
+h1 em{font-style:normal;color:var(--hf-accent)}
+.sub{margin-top:24px;font-size:19px;line-height:1.55;color:var(--hf-muted);max-width:500px}
+.cta{display:flex;align-items:center;gap:28px;margin-top:36px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:58px;padding:0 30px;border-radius:999px;background:var(--hf-cta);color:var(--hf-cta-text);font-size:17px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;box-shadow:var(--btn-shadow);transition:background .15s ease}
+.btn:hover{background:var(--hf-cta-hover)}
+.btn svg{width:17px;height:17px}
+.link{display:inline-flex;align-items:center;gap:8px;font-size:16px;font-weight:500;color:var(--hf-text)}
+.link svg{width:16px;height:16px}
+.link:hover{text-decoration:underline;text-underline-offset:4px}
+.trust{display:flex;align-items:center;gap:10px;margin-top:28px;font-size:14.5px;color:var(--hf-muted)}
+.trust svg{width:16px;height:16px;flex:none;color:var(--hf-accent)}
+
+/* ---- the 16:9 slot (dial today, video later) ---- */
+.visual{position:relative}
+.visual::before{content:"";position:absolute;inset:-14% -10%;background:radial-gradient(closest-side,color-mix(in srgb,var(--hf-accent) var(--halo),transparent),transparent 72%);pointer-events:none}
+.slot{position:relative;aspect-ratio:16/9;width:100%;border-radius:16px;border:1px solid var(--hf-line);background:var(--slot-bg);box-shadow:var(--slot-shadow);overflow:hidden}
+.tag{position:absolute;font-family:var(--hf-mono);font-weight:500;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--hf-muted)}
+.slot .tag.bl{left:16px;bottom:13px}
+.slot .tag.tl{left:16px;top:14px}
+
+.dial{position:absolute;top:50%;left:50%;height:114%;aspect-ratio:1/1;transform:translate(-50%,-46.2%);container-type:inline-size;--c:var(--hf-warm)}
+.glow{position:absolute;inset:-6%;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--c) 26%,transparent) 0%,color-mix(in srgb,var(--c) 8%,transparent) 55%,transparent 76%);opacity:var(--glow-op);pointer-events:none}
+.dial.rest .glow{animation:breathe 9s ease-in-out infinite}
+@keyframes breathe{0%,100%{opacity:var(--glow-op)}50%{opacity:calc(var(--glow-op)*1.45)}}
+.dial svg{position:absolute;inset:0;width:100%;height:100%}
+.d-shadow{fill:var(--face-shadow)}
+.d-face{stroke:var(--hf-line)}
+.d-inring{stroke:var(--hf-line);opacity:.7}
+.d-knob{fill:var(--hf-bg);stroke:var(--hf-line)}
+.d-nums{fill:var(--hf-muted)}
+.d-set{stroke:var(--hf-accent)}
+#face stop:nth-child(1){stop-color:var(--face-1)}
+#face stop:nth-child(2){stop-color:var(--face-2)}
+#face stop:nth-child(3){stop-color:var(--face-3)}
+#innerA{stop-opacity:var(--inner-op)}
+#ringglow{opacity:var(--ringglow-op)}
+.readout{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;pointer-events:none}
+.readout .set{font-family:var(--hf-mono);font-weight:500;font-size:clamp(8.5px,3cqw,12px);letter-spacing:.12em;text-transform:uppercase;color:var(--hf-muted);display:flex;align-items:center;gap:.7em}
+.readout .set i{width:.55em;height:.55em;border-radius:50%;background:var(--hf-accent)}
+.readout .num{font-weight:400;font-size:29cqw;line-height:1;letter-spacing:-.05em;margin:1cqw 0 2cqw;font-variant-numeric:tabular-nums;position:relative;color:var(--hf-text)}
+.readout .num sup{position:absolute;left:calc(100% + .06em);top:.13em;width:.11em;height:.11em;border:max(1.5px,.018em) solid var(--hf-muted);border-radius:50%;font-size:1em}
+.readout .status{position:relative;height:1.6em;width:80%;font-family:var(--hf-mono);font-weight:500;font-size:clamp(8.5px,3cqw,12px);letter-spacing:.12em;text-transform:uppercase;color:var(--c)}
+.readout .status span{position:absolute;inset:0;opacity:0;white-space:nowrap}
+.readout .status span.on{opacity:1}
+
+/* video poster (placeholder) */
+.poster{display:none;position:absolute;inset:0;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center}
+.poster .mark{position:absolute;right:-9%;top:50%;height:150%;width:auto;aspect-ratio:1/1;transform:translateY(-50%);color:var(--hf-text);opacity:var(--mark-op)}
+.poster .play{position:relative;width:76px;height:76px;border-radius:50%;background:var(--play-bg);color:var(--play-fg);display:grid;place-items:center;box-shadow:0 18px 40px -18px rgba(0,0,0,.55)}
+.poster .play svg{width:26px;height:26px;margin-left:4px}
+.poster .label{position:relative;font-size:18px;font-weight:600;letter-spacing:-.015em;color:var(--hf-text);line-height:1.2}
+.poster .hf-lockup{position:absolute;left:18px;bottom:15px;font-size:13px}
+:root[data-hero="video"] .dial,:root[data-hero="video"] .slot .tag.bl{display:none}
+:root[data-hero="video"] .poster{display:flex}
+
+/* ---- sections ---- */
+.sec{border-top:1px solid var(--hf-line)}
+.sec .wrap{padding-top:84px;padding-bottom:88px}
+h2{font-weight:600;font-size:clamp(28px,3vw,40px);line-height:1.08;letter-spacing:-.03em}
+.sec-sub{margin-top:12px;font-size:18px;color:var(--hf-muted);max-width:560px;line-height:1.5}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:40px;list-style:none}
+.card{background:var(--hf-surface);border:1px solid var(--hf-line);border-radius:var(--hf-radius);padding:24px 24px 26px}
+.card .ic{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--hf-accent) 16%,transparent);color:var(--hf-accent)}
+.card .ic svg{width:15px;height:15px}
+.card h3{margin-top:18px;font-size:18.5px;font-weight:600;letter-spacing:-.015em;line-height:1.25}
+.card p{margin-top:8px;font-size:15.5px;line-height:1.5;color:var(--hf-muted)}
+.cards.not .card{background:transparent}
+.cards.not .ic{background:transparent;border:1px solid color-mix(in srgb,var(--hf-muted) 55%,transparent);color:var(--hf-muted)}
+
+/* ---- footer ---- */
+footer{border-top:1px solid var(--hf-line)}
+footer .wrap{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;padding-top:40px;padding-bottom:44px}
+footer .hf-lockup{font-size:19px}
+footer .note{flex-basis:100%;font-family:var(--hf-mono);font-weight:500;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--hf-muted)}
+footer .btn{height:50px;padding:0 24px;font-size:16px}
+
+@media (max-width:1100px){
+  .wrap{padding:0 40px}
+  .nav ul{gap:22px}
+  .nav-r{gap:20px}
+  .grid{gap:36px}
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:900px){
+  .wrap{padding:0 22px}
+  .nav{padding-top:16px;gap:10px}
+  .nav ul{display:none}
+  .nav-r{gap:10px}
+  .nav .hf-lockup{font-size:17px}
+  .mode button{height:26px;padding:0 8px;font-size:9.5px;letter-spacing:.08em}
+  .btn-out{height:32px;padding:0 13px;font-size:13px}
+  .grid{grid-template-columns:minmax(0,1fr);gap:34px;padding-top:34px;padding-bottom:56px}
+  .eyebrow{font-size:10.5px;letter-spacing:.07em;gap:9px}
+  .eyebrow i{width:18px}
+  h1{font-size:clamp(34px,11vw,56px);margin-top:16px}
+  .sub{font-size:16.5px;line-height:1.5;margin-top:14px;max-width:34em}
+  .cta{margin-top:24px;gap:16px;flex-direction:column;align-items:stretch}
+  .btn{height:54px;font-size:16.5px;width:100%}
+  .link{justify-content:center;font-size:15px}
+  .trust{margin-top:16px;font-size:13px;justify-content:center;gap:8px}
+  .trust svg{width:14px;height:14px}
+  .slot{border-radius:12px}
+  .slot .tag{font-size:8.5px}
+  .slot .tag.bl{left:11px;bottom:9px}.slot .tag.tl{left:11px;top:10px}
+  .poster{gap:12px}
+  .poster .play{width:56px;height:56px}.poster .play svg{width:20px;height:20px;margin-left:3px}
+  .poster .label{font-size:15px}
+  .poster .hf-lockup{display:none}
+  .sec .wrap{padding-top:56px;padding-bottom:60px}
+  .sec-sub{font-size:16.5px}
+  .cards{grid-template-columns:minmax(0,1fr);gap:12px;margin-top:28px}
+  .card{padding:20px}
+  footer .wrap{padding-top:32px;padding-bottom:36px}
+  footer .btn{width:100%}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="nav wrap" aria-label="Main">
+    <a class="hf-lockup" href="#" aria-label="HVAC Foundry"><svg class="hf-icon" viewBox="0 0 64 64" aria-hidden="true"><mask id="hfm1" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64"><circle cx="32" cy="32" r="21.5" fill="none" stroke="#fff" stroke-width="13"/><circle cx="47.2" cy="16.8" r="11.7" fill="#000"/></mask><rect width="64" height="64" fill="currentColor" mask="url(#hfm1)"/><circle cx="47.2" cy="16.8" r="7.5" fill="var(--hf-accent)"/></svg><span class="hf-word"><b>HVAC</b><i>Foundry</i></span></a>
+    <div class="nav-r">
+      <ul>
+        <li><a href="#does">What it does</a></li>
+        <li><a href="#limits">What it does not do</a></li>
+      </ul>
+      <div class="mode" role="group" aria-label="Color mode">
+        <button type="button" data-set="dark" aria-pressed="true">Dark</button>
+        <button type="button" data-set="light" aria-pressed="false">Light</button>
+      </div>
+      <a class="btn-out" href="#book">Book a call</a>
+    </div>
+  </nav>
+
+  <div class="grid wrap">
+    <div class="copy">
+      <p class="eyebrow"><i></i>The AI front desk built for HVAC shops</p>
+      <h1><span>Calls in.</span><span><em>Booked jobs</em> out.</span></h1>
+      <p class="sub">HVAC Foundry answers new leads, follows up on quiet estimates and puts the visit on your board, while your crew stays on the job.</p>
+      <div class="cta">
+        <a class="btn" href="#book">Book a call with our team
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+        <a class="link" href="#does">See what it does
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+      </div>
+      <p class="trust">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M8 4.6V8l2.2 1.6"/></svg>
+        Built for after hours, overflow and the busy season.</p>
+    </div>
+
+    <div class="visual">
+      <div class="slot">
+        <!-- default: thermostat dial. Settles once on load, never tied to scroll -->
+        <div class="dial" id="dial" role="img" aria-label="Illustration: a thermostat dial settling from 88 degrees to a setpoint of 72">
+          <div class="glow"></div>
+          <svg viewBox="-8 -8 616 616" aria-hidden="true">
+            <defs>
+              <radialGradient id="face" cx="36%" cy="24%" r="90%"><stop offset="0"/><stop offset=".55"/><stop offset="1"/></radialGradient>
+              <radialGradient id="inner" cx="50%" cy="104%" r="78%"><stop id="innerA" offset="0"/><stop id="innerB" offset="1" stop-opacity="0"/></radialGradient>
+              <filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="7"/></filter>
+              <filter id="soft2" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="14"/></filter>
+            </defs>
+            <g id="ticks"></g>
+            <g id="nums" class="d-nums" font-family="'JetBrains Mono',ui-monospace,monospace" font-weight="500" font-size="15" text-anchor="middle"></g>
+            <circle class="d-shadow" cx="300" cy="316" r="204" filter="url(#soft2)"/>
+            <circle id="ringglow" cx="300" cy="300" r="212" fill="none" stroke-width="7" filter="url(#soft)"/>
+            <circle class="d-face" cx="300" cy="300" r="212" fill="url(#face)" stroke-width="1.5"/>
+            <circle cx="300" cy="300" r="211" fill="url(#inner)"/>
+            <circle id="ring" cx="300" cy="300" r="212" fill="none" stroke-width="2.5"/>
+            <circle class="d-inring" cx="300" cy="300" r="178" fill="none" stroke-width="1"/>
+            <line id="setmark" class="d-set" stroke-width="4.5" stroke-linecap="round"/>
+            <g id="knob">
+              <circle class="d-knob" r="14" stroke-width="1.5"/>
+              <circle id="knobdot" r="6"/>
+            </g>
+          </svg>
+          <div class="readout" aria-hidden="true">
+            <div class="set"><i></i>Setpoint 72</div>
+            <div class="num"><span id="num">88</span><sup></sup></div>
+            <div class="status" id="status"><span class="on">Cooling</span><span>Holding steady</span></div>
+          </div>
+        </div>
+        <span class="tag bl">Illustration</span>
+
+        <!-- ?hero=video: the same slot holds the video poster -->
+        <div class="poster" role="img" aria-label="Video placeholder. Watch: how the front desk works">
+          <svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><mask id="hfm4" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64"><circle cx="32" cy="32" r="21.5" fill="none" stroke="#fff" stroke-width="13"/><circle cx="47.2" cy="16.8" r="11.7" fill="#000"/></mask><rect width="64" height="64" fill="currentColor" mask="url(#hfm4)"/><circle cx="47.2" cy="16.8" r="7.5" fill="currentColor"/></svg>
+          <span class="tag tl">Video placeholder</span>
+          <span class="play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 3.6v16.8a.9.9 0 0 0 1.37.77l13.7-8.4a.9.9 0 0 0 0-1.54L7.37 2.83A.9.9 0 0 0 6 3.6z"/></svg></span>
+          <span class="label">Watch: how the front desk works</span>
+          <span class="hf-lockup" aria-hidden="true"><svg class="hf-icon" viewBox="0 0 64 64"><mask id="hfm3" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64"><circle cx="32" cy="32" r="21.5" fill="none" stroke="#fff" stroke-width="13"/><circle cx="47.2" cy="16.8" r="11.7" fill="#000"/></mask><rect width="64" height="64" fill="currentColor" mask="url(#hfm3)"/><circle cx="47.2" cy="16.8" r="7.5" fill="var(--hf-accent)"/></svg><span class="hf-word"><b>HVAC</b><i>Foundry</i></span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="sec" id="does">
+    <div class="wrap">
+      <h2>What it does</h2>
+      <p class="sec-sub">The front desk work that slips when the phones are busy.</p>
+      <ul class="cards">
+        <li class="card">
+          <span class="ic"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.2 8.4l3 3 6.6-6.8"/></svg></span>
+          <h3>Answers new leads</h3>
+          <p>New calls, web forms and texts get a prompt reply in your shop's voice, including after hours.</p>
+        </li>
+        <li class="card">
+          <span class="ic"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.2 8.4l3 3 6.6-6.8"/></svg></span>
+          <h3>Follows up on quiet estimates</h3>
+          <p>It checks back on estimates that have gone quiet, so fewer of them get forgotten.</p>
+        </li>
+        <li class="card">
+          <span class="ic"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.2 8.4l3 3 6.6-6.8"/></svg></span>
+          <h3>Puts the visit on your board</h3>
+          <p>When the customer is ready, the visit goes on your board for your office to confirm.</p>
+        </li>
+        <li class="card">
+          <span class="ic"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.2 8.4l3 3 6.6-6.8"/></svg></span>
+          <h3>Hands emergencies to your on-call tech</h3>
+          <p>Urgent calls, such as no heat or no cooling, go to the tech you have on call, with the details.</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="sec" id="limits">
+    <div class="wrap">
+      <h2>What it does not do</h2>
+      <p class="sec-sub">The judgment calls stay with your team.</p>
+      <ul class="cards not">
+        <li class="card">
+          <span class="ic"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4.4 4.4l7.2 7.2M11.6 4.4l-7.2 7.2"/></svg></span>
+          <h3>Quote prices</h3>
+          <p>It collects the details. Your team gives the price.</p>
+        </li>
+        <li class="card">
+          <span class="ic"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4.4 4.4l7.2 7.2M11.6 4.4l-7.2 7.2"/></svg></span>
+          <h3>Diagnose equipment</h3>
+          <p>It notes the symptoms and the unit. Your techs make the diagnosis.</p>
+        </li>
+        <li class="card">
+          <span class="ic"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4.4 4.4l7.2 7.2M11.6 4.4l-7.2 7.2"/></svg></span>
+          <h3>Dispatch on its own</h3>
+          <p>It books the visit. Who goes, and when a truck rolls, stays with your dispatcher.</p>
+        </li>
+        <li class="card">
+          <span class="ic"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4.4 4.4l7.2 7.2M11.6 4.4l-7.2 7.2"/></svg></span>
+          <h3>Replace 911 or the gas utility</h3>
+          <p>For a gas smell or any danger, callers are told to call 911 or the gas utility first.</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer id="book">
+  <div class="wrap">
+    <span class="hf-lockup"><svg class="hf-icon" viewBox="0 0 64 64" aria-hidden="true"><mask id="hfm2" maskUnits="userSpaceOnUse" x="0" y="0" width="64" height="64"><circle cx="32" cy="32" r="21.5" fill="none" stroke="#fff" stroke-width="13"/><circle cx="47.2" cy="16.8" r="11.7" fill="#000"/></mask><rect width="64" height="64" fill="currentColor" mask="url(#hfm2)"/><circle cx="47.2" cy="16.8" r="7.5" fill="var(--hf-accent)"/></svg><span class="hf-word"><b>HVAC</b><i>Foundry</i></span></span>
+    <a class="btn" href="#book">Book a call with our team
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
+    <p class="note">Site preview, round 5. Not the final site.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var root=document.documentElement;
+  var NS='http://www.w3.org/2000/svg',CX=300,CY=300,VMIN=60,HOT=88,SET=72;
+  /* color ramps per mode: warm token to accent token */
+  var PAL={
+    dark:{stops:[[255,138,61],[255,190,130],[238,240,244],[150,204,255],[59,157,255]],dim:[40,44,51],az:[59,157,255]},
+    light:{stops:[[194,84,15],[214,142,90],[132,142,158],[74,140,236],[22,104,227]],dim:[203,210,221],az:[22,104,227]}
+  };
+  function pal(){return root.getAttribute('data-theme')==='light'?PAL.light:PAL.dark;}
+  function rgb(a,b,f){return 'rgb('+Math.round(a[0]+(b[0]-a[0])*f)+','+Math.round(a[1]+(b[1]-a[1])*f)+','+Math.round(a[2]+(b[2]-a[2])*f)+')';}
+  function ramp(P,u){var S=P.stops;u=Math.max(0,Math.min(1,u))*(S.length-1);var i=Math.min(S.length-2,Math.floor(u));return rgb(S[i],S[i+1],u-i);}
+  function pt(v,r){var a=(-135+(v-VMIN)*9)*Math.PI/180;return [CX+r*Math.sin(a),CY-r*Math.cos(a)];}
+  function el(n,at,p){var e=document.createElementNS(NS,n);for(var k in at)e.setAttribute(k,at[k]);if(p)p.appendChild(e);return e;}
+
+  var ticks=[],tg=document.getElementById('ticks');
+  for(var i=0;i<=60;i++){
+    var v=VMIN+i*.5,major=(i%10===0),mid=(i%2===0);
+    var a=pt(v,232),b=pt(v,major?260:(mid?252:246));
+    ticks.push({v:v,state:'',el:el('line',{x1:a[0].toFixed(2),y1:a[1].toFixed(2),x2:b[0].toFixed(2),y2:b[1].toFixed(2),'stroke-width':major?2.8:2.2,'stroke-linecap':'round'},tg)});
+  }
+  var ng=document.getElementById('nums');
+  [60,70,80,90].forEach(function(v){var p=pt(v,286);el('text',{x:p[0].toFixed(1),y:(p[1]+5).toFixed(1)},ng).textContent=v;});
+  var sm=document.getElementById('setmark'),s1=pt(SET,268),s2=pt(SET,280);
+  sm.setAttribute('x1',s1[0]);sm.setAttribute('y1',s1[1]);sm.setAttribute('x2',s2[0]);sm.setAttribute('y2',s2[1]);
+
+  var dial=document.getElementById('dial'),ring=document.getElementById('ring'),rg=document.getElementById('ringglow');
+  var knob=document.getElementById('knob'),kd=document.getElementById('knobdot');
+  var iA=document.getElementById('innerA'),iB=document.getElementById('innerB');
+  var numEl=document.getElementById('num'),st=document.getElementById('status').children,curP=0;
+
+  function render(p){
+    curP=p;
+    var P=pal(),cur=HOT-(HOT-SET)*p,col=ramp(P,p),settle=Math.max(0,(p-.6)/.4);
+    dial.style.setProperty('--c',col);
+    ring.setAttribute('stroke',col);rg.setAttribute('stroke',col);kd.setAttribute('fill',col);
+    iA.setAttribute('stop-color',col);iB.setAttribute('stop-color',col);
+    var k=pt(cur,212);knob.setAttribute('transform','translate('+k[0].toFixed(2)+','+k[1].toFixed(2)+')');
+    var dimc=rgb(P.dim,P.dim,0);
+    for(var i=0;i<ticks.length;i++){
+      var t=ticks[i],c;
+      if(t.v>SET+.01&&t.v<=cur+.01){c=ramp(P,1-(t.v-SET)/(HOT-SET));}
+      else if(t.v<=SET+.01){c=rgb(P.dim,P.az,settle*(.12+.88*Math.pow((t.v-VMIN)/(SET-VMIN),1.7)));}
+      else{c=dimc;}
+      if(c!==t.state){t.el.setAttribute('stroke',c);t.state=c;}
+    }
+    numEl.textContent=Math.round(cur);
+    var s=p>=.985?1:0;for(var j=0;j<st.length;j++)st[j].classList.toggle('on',j===s);
+  }
+  function rest(){render(1);dial.classList.add('rest');}
+
+  /* Dark / Light switch: live, nothing stored */
+  var btns=document.querySelectorAll('.mode button');
+  function syncBtns(){var t=root.getAttribute('data-theme')==='light'?'light':'dark';
+    for(var i=0;i<btns.length;i++)btns[i].setAttribute('aria-pressed',String(btns[i].getAttribute('data-set')===t));}
+  for(var b2=0;b2<btns.length;b2++)btns[b2].addEventListener('click',function(){
+    if(this.getAttribute('data-set')==='light')root.setAttribute('data-theme','light');else root.removeAttribute('data-theme');
+    syncBtns();render(curP);
+  });
+  syncBtns();
+
+  /* settle once on load: 88 to 72 in about 1.2 seconds, then rest. Not tied to scroll. */
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){rest();return;}
+  render(0);
+  var DELAY=150,DUR=1050,t0=null,done=false;
+  function ease(x){return 1-Math.pow(1-x,3);}
+  function frame(ts){
+    if(done)return;
+    if(t0===null)t0=ts;
+    var x=(ts-t0-DELAY)/DUR;
+    if(x>=1){done=true;rest();return;}
+    render(ease(Math.max(0,x)));
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  setTimeout(function(){if(!done){done=true;rest();}},DELAY+DUR+200);
+})();
+</script>
+</body>
+</html>
